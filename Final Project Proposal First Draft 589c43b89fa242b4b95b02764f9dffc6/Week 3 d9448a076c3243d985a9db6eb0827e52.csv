@@ -1,0 +1,10 @@
+﻿Category,Score,Detailed Rubrics
+Front-end UI,4,"+2: Properly set up query page
++2: Properly set up learning page"
+Query Features,6,"+2: Can collect words by adding date
++2: Can collect words by Ebbinghaus Curve
++2: Can collect words by synonyms/related words
+(Bonus) +2: Can collect words by prefix/suffix (Can be nonviable as there may be no related APIs)"
+Snapshot/Unit testing,4,"1: If a GUI React Component is not covered
+-0.5: If a library function is not tested"
+Manual testing,3,-3: If no manual testing

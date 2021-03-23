@@ -1,0 +1,12 @@
+﻿Category,Score,Detailed Rubrics
+Set Up Firebase,3,"+1: Can successfully sign in/sign up/sign out account
++1: Can successfully connect and fetch database content
++1: Can be hosted to a platform
+Note: Its safe to directly expose app config in front-end code"
+Front-end UI,5,"+1: Properly set up UI framework
++1: Properly set up sign in/sign out/sign up pages
++2: Properly set up user info display page
++1: Properly set up responsive layout/auto dark mode switch"
+CI/CD,4,"+2: CI workflow for development branch
++2: CD workflow for production branch"
+Snapshot/Unit testing,2,-1: if a GUI React Component is not covered.

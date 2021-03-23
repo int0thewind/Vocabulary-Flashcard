@@ -1,0 +1,14 @@
+﻿Category,Score,Detailed Rubrics
+Front-end UI,3,"+1: Properly set up additional layouts
++1: Properly set up vocabulary adding dialog
++1: Properly set up vocabulary exporting dialog"
+Vocabulary adding,4,"+1: Can add a word with manual entry
++2: Can add multiple words with meanings automatically fetched
++1: Can import by exported data"
+Vocabulary exporting,2,+2: Can export one or multiple vocabulary meanings
+Dictionary API,3,"+1: Add Merriam-Webster Dictionary API
++1: Add Oxford Dictionary of English API
++1: If all API keys are not exposed"
+Snapshot/Unit testing,3,"-1: If a GUI React Component is not covered
+-0.5: If a library function is not tested"
+Manual testing,2,-2: If no manual testing
