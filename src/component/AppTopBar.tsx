@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 import 'firebase/auth';
 import {
   AppBar, Button, Drawer, Hidden, IconButton, Toolbar, Typography, List,
@@ -37,25 +38,35 @@ function AppTopBar() {
           <List>
             {user ? (
               <ListItem button>
-                <ListItemText>Sign Out</ListItemText>
+                <Link href="/signout">
+                  <ListItemText>Sign Out</ListItemText>
+                </Link>
               </ListItem>
             ) : (
               <ListItem button>
-                <ListItemText>Sign In</ListItemText>
+                <Link href="/signin">
+                  <ListItemText>Sign In</ListItemText>
+                </Link>
               </ListItem>
             )}
           </List>
         </Drawer>
 
-        <Typography variant="h6" className={classes.title}>
-          Vocabulary Flashcard
-        </Typography>
+        <Link href="/">
+          <Typography variant="h6" className={classes.title}>
+            Vocabulary Flashcard
+          </Typography>
+        </Link>
 
         <Hidden xsDown>
           {user ? (
-            <Button color="inherit">Sign Out</Button>
+            <Link href="/signout">
+              <Button color="inherit">Sign Out</Button>
+            </Link>
           ) : (
-            <Button color="inherit">Sign In</Button>
+            <Link href="/signin">
+              <Button color="inherit">Sign In</Button>
+            </Link>
           )}
         </Hidden>
 
