@@ -3,23 +3,17 @@ import Link from 'next/link';
 import 'firebase/auth';
 import {
   AppBar, Button, Drawer, Hidden, IconButton, Toolbar, Typography, List,
-  ListItem, ListItemText, makeStyles, useTheme, useMediaQuery,
+  ListItem, ListItemText, useTheme, useMediaQuery, Divider, Avatar, Box,
 } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import { useUser } from 'reactfire';
-
-const useAppTopBarStyle = makeStyles((themes) => ({
-  title: { flexGrow: 1 },
-  menuIcon: { marginRight: themes.spacing(2) },
-}));
+import { appTopBarRoutesSignedIn, appTopBarRoutesSignedOut } from '../lib/routes';
 
 function AppTopBar() {
   const user = useUser().data;
-  const classes = useAppTopBarStyle();
 
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   const closeDrawer = () => setDrawerOpen(false);
-  // const openDrawer = () => setDrawerOpen(true);
   const toggleDrawer = () => setDrawerOpen((pre) => !pre);
 
   const theme = useTheme();
@@ -32,53 +26,50 @@ function AppTopBar() {
   return (
     <AppBar position="sticky">
       <Toolbar>
-
         <Hidden smUp>
-          <IconButton onClick={toggleDrawer} color="inherit" className={classes.menuIcon}>
+          <IconButton onClick={toggleDrawer} color="inherit" style={{ marginRight: theme.spacing(2) }}>
             <MenuIcon />
           </IconButton>
         </Hidden>
 
         <Drawer anchor="top" open={drawerOpen} onClose={closeDrawer}>
           <List>
-            {user ? (
+            {(user ? appTopBarRoutesSignedIn : appTopBarRoutesSignedOut).map((val) => (
               <ListItem button>
-                <Link href="/signout">
-                  <ListItemText onClick={closeDrawer}>
-                    Sign Out
-                  </ListItemText>
+                <Link href={val.link}>
+                  <ListItemText onClick={closeDrawer}>{val.caption}</ListItemText>
                 </Link>
               </ListItem>
-            ) : (
-              <ListItem button>
-                <Link href="/signin">
-                  <ListItemText onClick={closeDrawer}>
-                    Sign In
-                  </ListItemText>
-                </Link>
-              </ListItem>
-            )}
+            ))}
           </List>
         </Drawer>
 
         <Link href="/">
-          <Typography variant="h6" className={classes.title}>
+          <Typography variant="h6" style={{ cursor: 'pointer' }}>
             Vocabulary Flashcard
           </Typography>
         </Link>
 
+        {/* Placeholder */}
+        <Box flex={1} />
+
         <Hidden xsDown>
-          {user ? (
-            <Link href="/signout">
-              <Button color="inherit">Sign Out</Button>
+          {(user ? appTopBarRoutesSignedIn : appTopBarRoutesSignedOut).map((val) => (
+            <Link href={val.link}>
+              <Button color="inherit">{val.caption}</Button>
             </Link>
-          ) : (
-            <Link href="/signin">
-              <Button color="inherit">Sign In</Button>
-            </Link>
+          ))}
+          {user && (
+            <>
+              <Divider orientation="vertical" />
+              <Link href="/user">
+                <Avatar alt={user.displayName} src={user.photoURL} style={{ cursor: 'pointer' }}>
+                  {user.displayName[0].toUpperCase()}
+                </Avatar>
+              </Link>
+            </>
           )}
         </Hidden>
-
       </Toolbar>
     </AppBar>
   );

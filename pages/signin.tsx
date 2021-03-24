@@ -24,7 +24,7 @@ export default function SignIn() {
       ui.start(firebaseAuthRef.current, uiConfig);
     });
 
-    return () => { ui.delete(); }; // Cannot return a Promise in `useEffect`
+    return () => { ui.delete(); };
   }, [auth]);
 
   return (
