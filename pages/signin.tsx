@@ -18,6 +18,7 @@ export default function SignIn() {
       ],
     };
 
+    // Must import Firebase-UI on the client side as `window` is undefined on the server
     import('firebaseui').then((firebaseui) => {
       ui = new firebaseui.auth.AuthUI(auth);
       ui.start(firebaseAuthRef.current, uiConfig);

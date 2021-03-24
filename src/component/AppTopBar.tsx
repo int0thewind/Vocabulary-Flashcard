@@ -16,7 +16,12 @@ const useAppTopBarStyle = makeStyles((themes) => ({
 function AppTopBar() {
   const user = useUser().data;
   const classes = useAppTopBarStyle();
+
   const [drawerOpen, setDrawerOpen] = React.useState(false);
+  const closeDrawer = () => setDrawerOpen(false);
+  // const openDrawer = () => setDrawerOpen(true);
+  const toggleDrawer = () => setDrawerOpen((pre) => !pre);
+
   const theme = useTheme();
   const isSmUp = useMediaQuery(theme.breakpoints.up('sm'));
 
@@ -29,23 +34,27 @@ function AppTopBar() {
       <Toolbar>
 
         <Hidden smUp>
-          <IconButton onClick={() => setDrawerOpen((pre) => !pre)} color="inherit" className={classes.menuIcon}>
+          <IconButton onClick={toggleDrawer} color="inherit" className={classes.menuIcon}>
             <MenuIcon />
           </IconButton>
         </Hidden>
 
-        <Drawer anchor="top" open={drawerOpen} onClose={() => setDrawerOpen(false)}>
+        <Drawer anchor="top" open={drawerOpen} onClose={closeDrawer}>
           <List>
             {user ? (
               <ListItem button>
                 <Link href="/signout">
-                  <ListItemText>Sign Out</ListItemText>
+                  <ListItemText onClick={closeDrawer}>
+                    Sign Out
+                  </ListItemText>
                 </Link>
               </ListItem>
             ) : (
               <ListItem button>
                 <Link href="/signin">
-                  <ListItemText>Sign In</ListItemText>
+                  <ListItemText onClick={closeDrawer}>
+                    Sign In
+                  </ListItemText>
                 </Link>
               </ListItem>
             )}
