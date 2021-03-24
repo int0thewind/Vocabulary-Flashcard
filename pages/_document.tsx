@@ -15,10 +15,7 @@ export default class MyDocument extends Document {
   render() {
     return (
       <Html lang="en">
-        <Head>
-          {/* TODO: Set PWA primary color. Need to import theme object */}
-          {/* <meta name="theme-color" content={theme.palette.primary.main} /> */}
-        </Head>
+        <Head />
         <body>
           <Main />
           <NextScript />

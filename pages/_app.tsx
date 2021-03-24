@@ -30,6 +30,8 @@ export default function App({ Component, pageProps }: AppProps) {
         <style>
           {`html,body {margin: 0} body {background-color: ${theme.palette.background.default}}`}
         </style>
+        {/* TODO: Set PWA primary color. Need to import theme object */}
+        {/* <meta name="theme-color" content={theme.palette.primary.main} /> */}
       </Head>
       <ThemeProvider theme={theme}>
         <FirebaseAppProvider firebaseConfig={environment.firebaseConfig}>
