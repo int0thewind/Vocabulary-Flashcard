@@ -36,7 +36,7 @@ export default function SignIn() {
       alignItems="center"
       flexDirection="column"
     >
-      <Typography variant="h2" color="textPrimary">
+      <Typography variant="h2" color="textPrimary" gutterBottom>
         Sign In
       </Typography>
       <div id="firebase-auth" ref={firebaseAuthRef} />
