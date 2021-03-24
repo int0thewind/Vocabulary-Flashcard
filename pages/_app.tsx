@@ -3,22 +3,22 @@ import React from 'react';
 import Head from 'next/head';
 import type { AppProps } from 'next/app';
 import { FirebaseAppProvider } from 'reactfire';
-import { createMuiTheme, ThemeProvider } from '@material-ui/core';
+import { Theme, ThemeProvider } from '@material-ui/core';
 import environment from '../src/environment';
 import AppTopBar from '../src/component/AppTopBar';
+import { darkTheme, lightTheme } from '../src/lib/theme';
 
 export default function App({ Component, pageProps }: AppProps) {
-  const [isDarkMode, setDarkMode] = React.useState(false);
+  const [theme, setTheme] = React.useState<Theme>(darkTheme);
+  const mediaChangeListener = (e: MediaQueryListEvent) => {
+    setTheme(e.matches ? darkTheme : lightTheme);
+  };
 
   React.useEffect(() => {
-    setDarkMode(window.matchMedia('(prefers-color-scheme: dark)').matches);
-    window.matchMedia('(prefers-color-scheme: dark)')
-      .addEventListener('change', (e) => setDarkMode(e.matches));
+    const matchMedia = window.matchMedia('(prefers-color-scheme: dark)');
+    setTheme(matchMedia.matches ? darkTheme : lightTheme);
+    matchMedia.addEventListener('change', mediaChangeListener);
   }, []);
-
-  const theme = createMuiTheme({
-    palette: { type: isDarkMode ? 'dark' : 'light' },
-  });
 
   return (
     <>
@@ -28,7 +28,7 @@ export default function App({ Component, pageProps }: AppProps) {
           href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
         />
         <style>
-          {`html,body {margin: 0} body {background-color: ${theme.palette.background.default}}`}
+          {`html,body{margin:0}body{background-color:${theme.palette.background.default}}`}
         </style>
         <meta name="theme-color" content={theme.palette.primary.main} />
       </Head>
