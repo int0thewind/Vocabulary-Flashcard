@@ -1,5 +1,9 @@
+import { Typography } from '@material-ui/core';
+
 export default function Home() {
   return (
-    <p>Home Page Works!</p>
+    <Typography color="textPrimary">
+      Home Page Works!
+    </Typography>
   );
 }
