@@ -1,12 +1,14 @@
 import React from 'react';
-import { Box, Typography } from '@material-ui/core';
+import { Box, Typography, CircularProgress } from '@material-ui/core';
 import firebase from 'firebase/app';
 import { useRouter } from 'next/dist/client/router';
 import 'firebaseui/dist/firebaseui.css';
+import { useAuthState } from 'react-firebase-hooks/auth';
 import { appAuth } from '../src/firebase';
 
 export default function SignIn() {
   const router = useRouter();
+  const [user, loading, error] = useAuthState(appAuth);
   const fbUIRef: React.LegacyRef<HTMLDivElement> = React.useRef();
   const uiConfig = {
     signInSuccessUrl: '/user',
@@ -17,22 +19,24 @@ export default function SignIn() {
     callbacks: {
       signInSuccessWithAuthResult() {
         router.push('/user');
-        return false; // Do not let firebaseui to redirect for us.
+        return false; // Stop firebaseui to redirect for us.
       },
     },
   };
   let ui: firebaseui.auth.AuthUI = null;
 
   React.useEffect(() => {
-    import('firebaseui').then((firebaseui) => {
-      if (!ui) {
+    if (!(user || loading || error)) {
+      import('firebaseui').then((firebaseui) => {
+        if (!ui) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        ui = new firebaseui.auth.AuthUI(appAuth);
-        ui.start(fbUIRef.current, uiConfig);
-      }
-    });
+          ui = new firebaseui.auth.AuthUI(appAuth);
+          ui.start(fbUIRef.current, uiConfig);
+        }
+      });
+    }
     return () => { if (ui) ui.delete(); };
-  }, [ui]);
+  }, [ui, user, loading, error]);
 
   return (
     <Box
@@ -43,10 +47,22 @@ export default function SignIn() {
       alignItems="center"
       flexDirection="column"
     >
-      <Typography variant="h2" color="textPrimary" gutterBottom>
+      <Typography variant="h3" color="textPrimary" gutterBottom>
         Sign In
       </Typography>
+      {loading && <CircularProgress />}
       <div id="firebase-ui" ref={fbUIRef} />
+      {user && (
+      <Typography color="textSecondary">
+        You have already signed in.
+      </Typography>
+      )}
+      {error && (
+      <Typography color="error">
+        An error occurred when trying to sign in.
+        {`${error.code}: ${error.message}`}
+      </Typography>
+      )}
     </Box>
   );
 }

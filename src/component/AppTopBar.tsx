@@ -11,7 +11,7 @@ import { appTopBarRoutesSignedIn, appTopBarRoutesSignedOut } from '../lib/routes
 import { appAuth } from '../firebase';
 
 function AppTopBar() {
-  const [user] = useAuthState(appAuth);
+  const [user, loading, error] = useAuthState(appAuth);
 
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   const closeDrawer = () => setDrawerOpen(false);
@@ -24,6 +24,43 @@ function AppTopBar() {
     if (isSmUp) setDrawerOpen(false);
   }, [isSmUp]);
 
+  const drawerSignedIn = (
+    <Drawer anchor="top" open={drawerOpen} onClose={closeDrawer}>
+      <List>
+        {appTopBarRoutesSignedIn.map((val) => (
+          <ListItem button key={val.caption}>
+            <Link href={val.link}>
+              <ListItemText onClick={closeDrawer}>{val.caption}</ListItemText>
+            </Link>
+          </ListItem>
+        ))}
+      </List>
+    </Drawer>
+  );
+  const drawerSignedOut = (
+    <Drawer anchor="top" open={drawerOpen} onClose={closeDrawer}>
+      <List>
+        {appTopBarRoutesSignedOut.map((val) => (
+          <ListItem button key={val.caption}>
+            <Link href={val.link}>
+              <ListItemText onClick={closeDrawer}>{val.caption}</ListItemText>
+            </Link>
+          </ListItem>
+        ))}
+      </List>
+    </Drawer>
+  );
+  const buttonSignedIn = appTopBarRoutesSignedIn.map((val) => (
+    <Link href={val.link} key={val.caption}>
+      <Button color="inherit">{val.caption}</Button>
+    </Link>
+  ));
+  const buttonSignedOut = appTopBarRoutesSignedOut.map((val) => (
+    <Link href={val.link} key={val.caption}>
+      <Button color="inherit">{val.caption}</Button>
+    </Link>
+  ));
+
   return (
     <AppBar position="sticky">
       <Toolbar>
@@ -33,17 +70,7 @@ function AppTopBar() {
           </IconButton>
         </Hidden>
 
-        <Drawer anchor="top" open={drawerOpen} onClose={closeDrawer}>
-          <List>
-            {(user ? appTopBarRoutesSignedIn : appTopBarRoutesSignedOut).map((val) => (
-              <ListItem button key={val.caption}>
-                <Link href={val.link}>
-                  <ListItemText onClick={closeDrawer}>{val.caption}</ListItemText>
-                </Link>
-              </ListItem>
-            ))}
-          </List>
-        </Drawer>
+        {!(loading || error) && (user ? drawerSignedIn : drawerSignedOut)}
 
         <Link href="/">
           <Typography variant="h6" style={{ cursor: 'pointer' }}>
@@ -51,25 +78,10 @@ function AppTopBar() {
           </Typography>
         </Link>
 
-        {/* Placeholder */}
         <Box flex={1} />
 
         <Hidden xsDown>
-          {(user ? appTopBarRoutesSignedIn : appTopBarRoutesSignedOut).map((val) => (
-            <Link href={val.link} key={val.caption}>
-              <Button color="inherit">{val.caption}</Button>
-            </Link>
-          ))}
-          {user && (
-            <>
-              <Divider orientation="vertical" />
-              <Link href="/user">
-                <Avatar alt={user.displayName} src={user.photoURL} style={{ cursor: 'pointer' }}>
-                  {user.displayName[0].toUpperCase()}
-                </Avatar>
-              </Link>
-            </>
-          )}
+          {!(loading || error) && (user ? buttonSignedIn : buttonSignedOut)}
         </Hidden>
       </Toolbar>
     </AppBar>

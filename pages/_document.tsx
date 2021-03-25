@@ -3,15 +3,14 @@ import React from 'react';
 import Document, {
   Html, Head, Main, NextScript,
 } from 'next/document';
-import { ServerStyleSheets, withTheme } from '@material-ui/core/styles';
+import { ServerStyleSheets, Theme, withTheme } from '@material-ui/core/styles';
 
-/*
-Content copied from
-https://github.com/mui-org/material-ui/blob/master/examples/nextjs/pages/_document.js
-to resolve SSR themeing error
-*/
-
-class MyDocument extends Document {
+/**
+ * Content copied from
+ * https://github.com/mui-org/material-ui/blob/master/examples/nextjs/pages/_document.js
+ * to resolve SSR themeing error
+ */
+class MyDocument extends Document<{ theme: Theme }> {
   render() {
     return (
       <Html lang="en" style={{ margin: 0 }}>
