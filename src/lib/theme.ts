@@ -1,4 +1,4 @@
-import { createMuiTheme } from '@material-ui/core';
+import { createMuiTheme, responsiveFontSizes } from '@material-ui/core';
 import { teal, deepOrange } from '@material-ui/core/colors';
 
 const paletteScheme = {
@@ -6,10 +6,10 @@ const paletteScheme = {
   secondary: { main: deepOrange.A400 },
 };
 
-export const lightTheme = createMuiTheme({
+export const lightTheme = responsiveFontSizes(createMuiTheme({
   palette: { type: 'light', ...paletteScheme },
-});
+}));
 
-export const darkTheme = createMuiTheme({
+export const darkTheme = responsiveFontSizes(createMuiTheme({
   palette: { type: 'dark', ...paletteScheme },
-});
+}));

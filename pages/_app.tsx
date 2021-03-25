@@ -19,7 +19,7 @@ export default function App({ Component, pageProps }: AppProps) {
     const matchMedia = window.matchMedia('(prefers-color-scheme: dark)');
     changeTheme(matchMedia.matches);
     matchMedia.addEventListener('change', (e) => changeTheme(e.matches));
-  });
+  }, []);
 
   return (
     <>

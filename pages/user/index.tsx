@@ -6,7 +6,7 @@ import { appAuth } from '../../src/firebase';
 // TODO: factor loading into the page.
 
 function User() {
-  const [user, loading] = useAuthState(appAuth);
+  const [user] = useAuthState(appAuth);
   return (
     <Typography variant="h2" color="textPrimary">
       {`${user?.displayName} signed in!`}

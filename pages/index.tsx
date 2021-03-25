@@ -1,13 +1,15 @@
-import { Typography } from '@material-ui/core';
+import { Typography, Box } from '@material-ui/core';
 
 export default function Home() {
   return (
-    <Typography color="textPrimary">
-      {[...new Array(24)].map(() => `Cras mattis consectetur purus sit amet fermentum.
-Cras justo odio, dapibus ac facilisis in, egestas eget quam.
-Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
-Praesent commodo cursus magna, vel scelerisque nisl consectetur et.`)
-        .join('\n')}
-    </Typography>
+    <Box margin={2}>
+      <Typography variant="h1" color="textPrimary" align="center" gutterBottom>
+        Vocabulary Flashcard
+      </Typography>
+      <Typography paragraph color="textPrimary">
+        Welcome to Vocabulary Flashcard!
+        This web app allows you to add, export, and learn new English verbiages!
+      </Typography>
+    </Box>
   );
 }

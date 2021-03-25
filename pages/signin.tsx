@@ -47,7 +47,7 @@ export default function SignIn() {
       alignItems="center"
       flexDirection="column"
     >
-      <Typography variant="h3" color="textPrimary" gutterBottom>
+      <Typography variant="h1" color="textPrimary" gutterBottom>
         Sign In
       </Typography>
       {loading && <CircularProgress />}
