@@ -9,15 +9,17 @@ import '../src/firebase';
 
 export default function App({ Component, pageProps }: AppProps) {
   const [theme, setTheme] = React.useState<Theme>(darkTheme);
-  const mediaChangeListener = (e: MediaQueryListEvent) => {
-    setTheme(e.matches ? darkTheme : lightTheme);
+  const changeTheme = (isDark: boolean) => {
+    const themeToSet = isDark ? darkTheme : lightTheme;
+    setTheme(themeToSet);
+    document.body.style.backgroundColor = themeToSet.palette.background.default;
   };
 
   React.useEffect(() => {
     const matchMedia = window.matchMedia('(prefers-color-scheme: dark)');
-    setTheme(matchMedia.matches ? darkTheme : lightTheme);
-    matchMedia.addEventListener('change', mediaChangeListener);
-  }, []);
+    changeTheme(matchMedia.matches);
+    matchMedia.addEventListener('change', (e) => changeTheme(e.matches));
+  });
 
   return (
     <>
