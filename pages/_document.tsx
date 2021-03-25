@@ -6,9 +6,10 @@ import Document, {
 import { ServerStyleSheets } from '@material-ui/core/styles';
 
 /**
- * Content copied from
- * https://github.com/mui-org/material-ui/blob/master/examples/nextjs/pages/_document.js
- * to resolve SSR themeing error
+ * This custom Document instance injects styles for html and body tag
+ * and resolves SSR themeing error.
+ *
+ * @see https://github.com/mui-org/material-ui/blob/master/examples/nextjs/pages/_document.js
  */
 export default class MyDocument extends Document {
   render() {
@@ -27,13 +28,10 @@ export default class MyDocument extends Document {
 MyDocument.getInitialProps = async (ctx) => {
   const sheets = new ServerStyleSheets();
   const originalRenderPage = ctx.renderPage;
-
   ctx.renderPage = () => originalRenderPage({
     enhanceApp: (App) => (props) => sheets.collect(<App {...props} />),
   });
-
   const initialProps = await Document.getInitialProps(ctx);
-
   return {
     ...initialProps,
     styles: [...React.Children.toArray(initialProps.styles), sheets.getStyleElement()],
