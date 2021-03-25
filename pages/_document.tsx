@@ -14,9 +14,9 @@ to resolve SSR themeing error
 export default class MyDocument extends Document {
   render() {
     return (
-      <Html lang="en">
+      <Html lang="en" style={{ margin: 0 }}>
         <Head />
-        <body>
+        <body style={{ margin: 0 }}>
           <Main />
           <NextScript />
         </body>
@@ -24,6 +24,8 @@ export default class MyDocument extends Document {
     );
   }
 }
+
+// TODO: may resolve _app style to _document with withStyle?
 
 MyDocument.getInitialProps = async (ctx) => {
   const sheets = new ServerStyleSheets();

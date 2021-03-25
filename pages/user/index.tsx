@@ -2,10 +2,10 @@ import React from 'react';
 import { Typography } from '@material-ui/core';
 import { useRouter } from 'next/dist/client/router';
 import { InferGetServerSidePropsType } from 'next';
-import firebase from 'firebase/app';
+import { appAuth } from '../../src/firebase';
 
 export async function getServerSideProps() {
-  const user = firebase.auth().currentUser;
+  const user = appAuth.currentUser;
   return {
     props: { user },
   };
@@ -16,7 +16,7 @@ type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
 function User({ user }: Props) {
   const router = useRouter();
   React.useEffect(() => {
-    if (!user) router.push('/');
+    if (user === null) router.push('/');
   }, [user, router]);
   return (
     <>

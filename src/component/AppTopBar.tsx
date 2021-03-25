@@ -6,11 +6,11 @@ import {
   ListItem, ListItemText, useTheme, useMediaQuery, Divider, Avatar, Box,
 } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
-import { useUser } from 'reactfire';
 import { appTopBarRoutesSignedIn, appTopBarRoutesSignedOut } from '../lib/routes';
+import { appAuth } from '../firebase';
 
 function AppTopBar() {
-  const user = useUser().data;
+  const user = appAuth.currentUser;
 
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   const closeDrawer = () => setDrawerOpen(false);

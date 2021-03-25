@@ -2,20 +2,12 @@ import React from 'react';
 import { Box, Typography } from '@material-ui/core';
 import firebase from 'firebase/app';
 import { useRouter } from 'next/dist/client/router';
-import { InferGetServerSidePropsType } from 'next';
-import FirebaseUI from '../src/component/FirebaseUI';
+import 'firebaseui/dist/firebaseui.css';
+import { appAuth } from '../src/firebase';
 
-export function getServerSideProps() {
-  const user = firebase.auth().currentUser;
-  return {
-    props: { user },
-  };
-}
-
-type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
-
-export default function SignIn({ user }: Props) {
+export default function SignIn() {
   const router = useRouter();
+  const fbUIRef: React.LegacyRef<HTMLDivElement> = React.useRef();
   const uiConfig = {
     signInSuccessUrl: '/user',
     signInOptions: [
@@ -29,9 +21,21 @@ export default function SignIn({ user }: Props) {
       },
     },
   };
+  let ui: firebaseui.auth.AuthUI = null;
+
   React.useEffect(() => {
-    if (!user) router.push('/');
-  }, [router, user]);
+    if (appAuth.currentUser) router.push('/');
+
+    import('firebaseui').then((firebaseui) => {
+      if (!ui) {
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        ui = new firebaseui.auth.AuthUI(appAuth);
+        ui.start(fbUIRef.current, uiConfig);
+      }
+    });
+
+    return () => { if (ui) ui.delete(); };
+  });
 
   return (
     <Box
@@ -45,7 +49,7 @@ export default function SignIn({ user }: Props) {
       <Typography variant="h2" color="textPrimary" gutterBottom>
         Sign In
       </Typography>
-      <FirebaseUI uiConfig={uiConfig} />
+      <div id="firebase-ui" ref={fbUIRef} />
     </Box>
   );
 }
