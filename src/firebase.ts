@@ -3,9 +3,7 @@ import 'firebase/auth';
 import 'firebase/firestore';
 import 'firebase/storage';
 
-console.log('Firebase Script Evaluated!');
-
-const prodConfig = {
+const firebaseConfig = process.env.NODE_ENV === 'production' ? {
   apiKey: 'AIzaSyA1idIe2_-3X4oL7Z6GV-QOyxVIlZib8MM',
   authDomain: 'vocabulary-flashcard-938b9.firebaseapp.com',
   projectId: 'vocabulary-flashcard-938b9',
@@ -13,9 +11,7 @@ const prodConfig = {
   messagingSenderId: '441447059126',
   appId: '1:441447059126:web:93d294f2cda818c31c2017',
   measurementId: 'G-SVWSMP865K',
-};
-
-const firebaseConfig = {
+} : {
   apiKey: 'AIzaSyB4WJBuJiPtGGX1sVLhdlamQBkPiHlHWcw',
   authDomain: 'vocabulary-flashcard-dev.firebaseapp.com',
   projectId: 'vocabulary-flashcard-dev',
@@ -25,11 +21,7 @@ const firebaseConfig = {
   measurementId: 'G-CNH29N75YE',
 };
 
-console.log(`Prev App length ${firebase.apps.length}`);
-
 if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-
-console.log(`App length ${firebase.apps.length}`);
 
 export const appAuth = firebase.auth();
 export const appFirestore = firebase.firestore();

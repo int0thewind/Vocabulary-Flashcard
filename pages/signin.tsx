@@ -24,8 +24,6 @@ export default function SignIn() {
   let ui: firebaseui.auth.AuthUI = null;
 
   React.useEffect(() => {
-    if (appAuth.currentUser) router.push('/');
-
     import('firebaseui').then((firebaseui) => {
       if (!ui) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -33,9 +31,8 @@ export default function SignIn() {
         ui.start(fbUIRef.current, uiConfig);
       }
     });
-
     return () => { if (ui) ui.delete(); };
-  });
+  }, [ui]);
 
   return (
     <Box

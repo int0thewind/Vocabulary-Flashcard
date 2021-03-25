@@ -26,9 +26,6 @@ export default function App({ Component, pageProps }: AppProps) {
           rel="stylesheet"
           href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
         />
-        <style>
-          {`body{background-color:${theme.palette.background.default}}`}
-        </style>
         <meta name="theme-color" content={theme.palette.primary.main} />
       </Head>
       <ThemeProvider theme={theme}>

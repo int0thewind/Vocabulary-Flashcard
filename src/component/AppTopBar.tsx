@@ -6,11 +6,12 @@ import {
   ListItem, ListItemText, useTheme, useMediaQuery, Divider, Avatar, Box,
 } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
+import { useAuthState } from 'react-firebase-hooks/auth';
 import { appTopBarRoutesSignedIn, appTopBarRoutesSignedOut } from '../lib/routes';
 import { appAuth } from '../firebase';
 
 function AppTopBar() {
-  const user = appAuth.currentUser;
+  const [user] = useAuthState(appAuth);
 
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   const closeDrawer = () => setDrawerOpen(false);
