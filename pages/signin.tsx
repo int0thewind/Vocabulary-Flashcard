@@ -1,31 +1,37 @@
 import React from 'react';
 import { Box, Typography } from '@material-ui/core';
 import firebase from 'firebase/app';
-import 'firebaseui/dist/firebaseui.css';
-import { useAuth } from 'reactfire';
+import { useRouter } from 'next/dist/client/router';
+import { InferGetServerSidePropsType } from 'next';
+import FirebaseUI from '../src/component/FirebaseUI';
 
-export default function SignIn() {
-  const auth = useAuth();
-  const firebaseAuthRef: React.LegacyRef<HTMLDivElement> = React.useRef(null);
+export function getServerSideProps() {
+  const user = firebase.auth().currentUser;
+  return {
+    props: { user },
+  };
+}
 
+type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
+
+export default function SignIn({ user }: Props) {
+  const router = useRouter();
+  const uiConfig = {
+    signInSuccessUrl: '/user',
+    signInOptions: [
+      firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+      firebase.auth.EmailAuthProvider.PROVIDER_ID,
+    ],
+    callbacks: {
+      signInSuccessWithAuthResult() {
+        router.push('/user');
+        return false; // Do not let firebaseui to redirect for us.
+      },
+    },
+  };
   React.useEffect(() => {
-    let ui: firebaseui.auth.AuthUI | null = null;
-    const uiConfig: firebaseui.auth.Config = {
-      signInSuccessUrl: '/',
-      signInOptions: [
-        firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-        firebase.auth.EmailAuthProvider.PROVIDER_ID,
-      ],
-    };
-
-    // Must import Firebase-UI on the client side as `window` is undefined on the server
-    import('firebaseui').then((firebaseui) => {
-      ui = new firebaseui.auth.AuthUI(auth);
-      ui.start(firebaseAuthRef.current, uiConfig);
-    });
-
-    return () => { ui.delete(); };
-  }, [auth]);
+    if (!user) router.push('/');
+  }, [router, user]);
 
   return (
     <Box
@@ -39,7 +45,7 @@ export default function SignIn() {
       <Typography variant="h2" color="textPrimary" gutterBottom>
         Sign In
       </Typography>
-      <div id="firebase-auth" ref={firebaseAuthRef} />
+      <FirebaseUI uiConfig={uiConfig} />
     </Box>
   );
 }

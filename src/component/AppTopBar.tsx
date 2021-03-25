@@ -35,7 +35,7 @@ function AppTopBar() {
         <Drawer anchor="top" open={drawerOpen} onClose={closeDrawer}>
           <List>
             {(user ? appTopBarRoutesSignedIn : appTopBarRoutesSignedOut).map((val) => (
-              <ListItem button>
+              <ListItem button key={val.caption}>
                 <Link href={val.link}>
                   <ListItemText onClick={closeDrawer}>{val.caption}</ListItemText>
                 </Link>
@@ -55,7 +55,7 @@ function AppTopBar() {
 
         <Hidden xsDown>
           {(user ? appTopBarRoutesSignedIn : appTopBarRoutesSignedOut).map((val) => (
-            <Link href={val.link}>
+            <Link href={val.link} key={val.caption}>
               <Button color="inherit">{val.caption}</Button>
             </Link>
           ))}
