@@ -1,3 +1,16 @@
+/**
+ * Firebase Connection Module.
+ *
+ * This module fetches the right Google Firebase app config base on the working environment,
+ * initialize the Firebase app, and exports essential Firebase app instance.
+ * Since NextJS is always server side rendering, directly fetching Firebase app information
+ * from the `firebase` NodeJS package is not deterministic. While consuming Firebase app instance
+ * you should always refer to the instances exported from this module.
+ *
+ * @author Hanzhi Yin.
+ * @since  0.1.0
+ */
+
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';

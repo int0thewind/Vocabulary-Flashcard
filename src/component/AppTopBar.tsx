@@ -1,15 +1,31 @@
+/**
+ * App Top Bar Component.
+ *
+ * This component defines the app's global top bar.
+ *
+ * @author Hanzhi Yin.
+ * @since  0.1.0
+ */
+
 import React from 'react';
 import Link from 'next/link';
 import 'firebase/auth';
 import {
   AppBar, Button, Drawer, Hidden, IconButton, Toolbar, Typography, List,
-  ListItem, ListItemText, useTheme, useMediaQuery, Divider, Avatar, Box,
+  ListItem, ListItemText, useTheme, useMediaQuery, Box,
 } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { appTopBarRoutesSignedIn, appTopBarRoutesSignedOut } from '../lib/routes';
 import { appAuth } from '../firebase';
 
+/**
+ * App top bar component.
+ * This app top bar would be hung on the top of all the pages in this web app.
+ *
+ * It displayes different routing buttons depends on user log in
+ * responsively by the viewport's width.
+ */
 function AppTopBar() {
   const [user, loading, error] = useAuthState(appAuth);
 

@@ -7,6 +7,12 @@ import AppTopBar from '../src/component/AppTopBar';
 import { darkTheme, lightTheme } from '../src/lib/theme';
 import '../src/firebase';
 
+/**
+ * Custom app component.
+ *
+ * The goal of the custom global app component is to bring the theme,
+ * the app top bar, and auto dark/light mode alternation to the global level.
+ */
 export default function App({ Component, pageProps }: AppProps) {
   const [theme, setTheme] = React.useState<Theme>(darkTheme);
   const changeTheme = (isDark: boolean) => {

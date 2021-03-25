@@ -1,3 +1,12 @@
+/**
+ * Theme Module.
+ *
+ * This module defines a light mode theme and a dark mode theme for this app.
+ *
+ * @author Hanzhi Yin.
+ * @since  0.1.0
+ */
+
 import { createMuiTheme, responsiveFontSizes } from '@material-ui/core';
 import { teal, deepOrange } from '@material-ui/core/colors';
 
