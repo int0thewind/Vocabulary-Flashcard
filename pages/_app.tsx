@@ -24,7 +24,9 @@ export default function App({ Component, pageProps }: AppProps) {
   React.useEffect(() => {
     const matchMedia = window.matchMedia('(prefers-color-scheme: dark)');
     changeTheme(matchMedia.matches);
-    matchMedia.addEventListener('change', (e) => changeTheme(e.matches));
+    const mediaChangeCallback = (e: MediaQueryListEvent) => changeTheme(e.matches);
+    matchMedia.addEventListener('change', mediaChangeCallback);
+    return () => { matchMedia.removeEventListener('change', mediaChangeCallback); };
   }, []);
 
   return (
