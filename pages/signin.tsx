@@ -9,26 +9,26 @@ import { appAuth } from '../src/firebase';
 export default function SignIn() {
   const router = useRouter();
   const [user, loading, error] = useAuthState(appAuth);
-  const fbUIRef: React.LegacyRef<HTMLDivElement> = React.useRef();
-  const uiConfig = {
-    signInSuccessUrl: '/user',
-    signInOptions: [
-      firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-      firebase.auth.EmailAuthProvider.PROVIDER_ID,
-    ],
-    callbacks: {
-      signInSuccessWithAuthResult() {
-        router.push('/user');
-        return false; // Stop firebaseui to redirect for us.
-      },
-    },
-  };
-  let ui: firebaseui.auth.AuthUI = null;
+  const fbUIRef = React.useRef<HTMLDivElement>(null);
+  let ui: firebaseui.auth.AuthUI | null = null;
 
   React.useEffect(() => {
+    const uiConfig = {
+      signInSuccessUrl: '/user',
+      signInOptions: [
+        firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+        firebase.auth.EmailAuthProvider.PROVIDER_ID,
+      ],
+      callbacks: {
+        signInSuccessWithAuthResult() {
+          router.push('/user');
+          return false; // Stop firebaseui to redirect for us.
+        },
+      },
+    };
     if (!(user || loading || error)) {
       import('firebaseui').then((firebaseui) => {
-        if (!ui) {
+        if (!ui && fbUIRef.current) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
           ui = new firebaseui.auth.AuthUI(appAuth);
           ui.start(fbUIRef.current, uiConfig);
