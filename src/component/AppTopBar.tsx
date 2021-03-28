@@ -15,9 +15,8 @@ import {
   ListItem, ListItemText, useTheme, useMediaQuery, Box,
 } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
-import { useAuthState } from 'react-firebase-hooks/auth';
 import { appTopBarRoutesSignedIn, appTopBarRoutesSignedOut } from '../lib/routes';
-import { appAuth } from '../lib/firebase';
+import { useFirebaseUser } from '../lib/firebase';
 
 /**
  * App top bar component.
@@ -27,7 +26,7 @@ import { appAuth } from '../lib/firebase';
  * responsively by the viewport's width.
  */
 function AppTopBar() {
-  const [user, loading, error] = useAuthState(appAuth);
+  const [user, loading, error] = useFirebaseUser();
 
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   const closeDrawer = () => setDrawerOpen(false);
