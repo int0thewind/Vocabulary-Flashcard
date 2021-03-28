@@ -1,7 +1,7 @@
 import React from 'react';
 import { Typography } from '@material-ui/core';
 import { useRouter } from 'next/dist/client/router';
-import { appAuth } from '../src/firebase';
+import { appAuth } from '../src/lib/firebase';
 
 export default function SignOut() {
   const router = useRouter();

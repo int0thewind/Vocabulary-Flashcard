@@ -17,7 +17,7 @@ import {
 import MenuIcon from '@material-ui/icons/Menu';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { appTopBarRoutesSignedIn, appTopBarRoutesSignedOut } from '../lib/routes';
-import { appAuth } from '../firebase';
+import { appAuth } from '../lib/firebase';
 
 /**
  * App top bar component.

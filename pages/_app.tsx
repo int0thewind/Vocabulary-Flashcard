@@ -5,7 +5,7 @@ import type { AppProps } from 'next/app';
 import { Theme, ThemeProvider } from '@material-ui/core';
 import AppTopBar from '../src/component/AppTopBar';
 import { darkTheme, lightTheme } from '../src/lib/theme';
-import '../src/firebase';
+// import '../src/lib/firebase';
 
 /**
  * Custom app component.

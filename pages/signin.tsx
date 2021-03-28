@@ -2,13 +2,12 @@ import React from 'react';
 import { Box, Typography, CircularProgress } from '@material-ui/core';
 import firebase from 'firebase/app';
 import { useRouter } from 'next/dist/client/router';
+import { appAuth, useFirebaseUser } from '../src/lib/firebase';
 import 'firebaseui/dist/firebaseui.css';
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { appAuth } from '../src/firebase';
 
 export default function SignIn() {
   const router = useRouter();
-  const [user, loading, error] = useAuthState(appAuth);
+  const [user, loading, error] = useFirebaseUser();
   const fbUIRef = React.useRef<HTMLDivElement>(null);
   let ui: firebaseui.auth.AuthUI | null = null;
 
