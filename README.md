@@ -1,34 +1,25 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Vocabulary Flashcard
 
-## Getting Started
+CS 242 SP21 Final Project, co-developed by Hanzhi Yin and Gary Liu.
 
-First, run the development server:
+## Quick regards on branch Structure
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+`dev` branch has pre-written code, all by Hanzhi. This allow both of us to free from low-level configurations. 
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Tech Spec
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+* NextJS with Firebase
+* TypeScript
+* `yarn` as NodeJS package manager
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+## File Structure
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+`pages` and `public` directory are NextJS reserved. All other scripts are under `src`.
 
-## Learn More
+ESLint, Firebase, TypeScript, and NodeJS configs are in the root directory.
 
-To learn more about Next.js, take a look at the following resources:
+## Environment Setup
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Acquire Merriam Webster Collegiate Dictionary/Thesaurus and Oxford Dictionary API keys.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Paste them in `.env.local.sample` and rename it to `.env.local`.
