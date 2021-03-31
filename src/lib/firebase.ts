@@ -15,6 +15,9 @@ import 'firebase/auth';
 import 'firebase/firestore';
 import 'firebase/storage';
 
+// TODO: for development, should we just keep Firebase emulator?
+// If we are doing E2E testing its required to have an online environment.
+
 const firebaseConfig = process.env.NODE_ENV === 'production' ? {
   apiKey: 'AIzaSyA1idIe2_-3X4oL7Z6GV-QOyxVIlZib8MM',
   authDomain: 'vocabulary-flashcard-938b9.firebaseapp.com',
