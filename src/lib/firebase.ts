@@ -13,10 +13,6 @@ import React from 'react';
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
-import 'firebase/storage';
-
-// TODO: for development, should we just keep Firebase emulator?
-// If we are doing E2E testing its required to have an online environment.
 
 const firebaseConfig = process.env.NODE_ENV === 'production' ? {
   apiKey: 'AIzaSyA1idIe2_-3X4oL7Z6GV-QOyxVIlZib8MM',
@@ -40,7 +36,6 @@ if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 
 export const appAuth = firebase.auth();
 export const appFirestore = firebase.firestore();
-export const appStorage = firebase.storage();
 
 type UseFirebaseUserType = [firebase.User | null, boolean, firebase.auth.Error | null];
 
