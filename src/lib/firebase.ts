@@ -13,7 +13,8 @@ import React from 'react';
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
-import 'firebase/storage';
+
+// TODO: for local dev and testing, consider using local emulators.
 
 const firebaseConfig = process.env.NODE_ENV === 'production' ? {
   apiKey: 'AIzaSyA1idIe2_-3X4oL7Z6GV-QOyxVIlZib8MM',
@@ -37,7 +38,13 @@ if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 
 export const appAuth = firebase.auth();
 export const appFirestore = firebase.firestore();
-export const appStorage = firebase.storage();
+
+// Use emulator if app is not in production mode.
+// Emulator config: see ./firebase.json emulators property.
+// if (process.env.NODE_ENV !== 'production') {
+//   appAuth.useEmulator('http://localhost:9099');
+//   appFirestore.useEmulator('localhost', 8080);
+// }
 
 type UseFirebaseUserType = [firebase.User | null, boolean, firebase.auth.Error | null];
 
