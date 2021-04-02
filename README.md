@@ -4,13 +4,13 @@ CS 242 SP21 Final Project, co-developed by Hanzhi Yin and Gary Liu.
 
 ## Technical Data
 
-Language: TypeScript
-Dev environment: NodeJS, yarn
-Framework: NextJS, Firebase
-Test suite: Cypress
-Linter: ESLint
-CI: TBD
-CD: Vercel
+* Language: TypeScript
+* Dev environment: NodeJS, yarn
+* Framework: NextJS, Firebase
+* Test suite: Cypress
+* Linter: ESLint
+* CI: TBD
+* CD: Vercel
 
 ## Project Setup
 
