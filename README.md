@@ -2,24 +2,34 @@
 
 CS 242 SP21 Final Project, co-developed by Hanzhi Yin and Gary Liu.
 
-## Quick regards on branch Structure
+## Technical Data
 
-`dev` branch has pre-written code, all by Hanzhi. This allow both of us to free from low-level configurations. 
+Language: TypeScript
+Dev environment: NodeJS, yarn
+Framework: NextJS, Firebase
+Test suite: Cypress
+Linter: ESLint
+CI: TBD
+CD: Vercel
 
-## Tech Spec
+## Project Setup
 
-* NextJS with Firebase
-* TypeScript
-* `yarn` as NodeJS package manager
+Install NodeJS and yarn.
 
-## File Structure
+Setup environment variables by acquiring API keys from Merriam Webster Collegiate Dictionary, Merriam Webster Collediate Thesaurus, and Oxford Dictionary. Paste API keys in `env.local.sample` and rename it to `env.local`. `env.local` in NextJS is the place to store secrets. [Link](https://nextjs.org/docs/basic-features/environment-variables#loading-environment-variables).
 
-`pages` and `public` directory are NextJS reserved. All other scripts are under `src`.
+Run `yarn` to install dependencies. 
 
-ESLint, Firebase, TypeScript, and NodeJS configs are in the root directory.
+Install Firebase CLI. [Link](https://firebase.google.com/docs/cli).
 
-## Environment Setup
+## Development
 
-Acquire Merriam Webster Collegiate Dictionary/Thesaurus and Oxford Dictionary API keys.
+Firebase would be in emulator mode if not in production. Both commands should be executed to run the app locally:
 
-Paste them in `.env.local.sample` and rename it to `.env.local`.
+```bash
+firebase emulators:start
+```
+
+```bash
+yarn dev
+```
