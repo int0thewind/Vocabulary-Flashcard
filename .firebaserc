@@ -1,6 +1,5 @@
 {
   "projects": {
-    "dev": "vocabulary-flashcard-dev",
-    "prod": "vocabulary-flashcard-938b9"
+    "default": "vocabulary-flashcard-938b9"
   }
 }
