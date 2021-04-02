@@ -16,7 +16,7 @@ CD: Vercel
 
 Install NodeJS and yarn.
 
-Setup environment variables by acquiring API keys from Merriam Webster Collegiate Dictionary, Merriam Webster Collediate Thesaurus, and Oxford Dictionary. Paste API keys in `env.local.sample` and rename it to `env.local`. `env.local` in NextJS is the place to store secrets. [Link](https://nextjs.org/docs/basic-features/environment-variables#loading-environment-variables).
+Setup environment variables by acquiring API keys from Merriam Webster Collegiate Dictionary, Merriam Webster Collegiate Thesaurus, and Oxford Dictionary. Paste API keys in `env.local.sample` and rename it to `env.local`. `env.local` in NextJS is the place to store secrets. [Link](https://nextjs.org/docs/basic-features/environment-variables#loading-environment-variables).
 
 Run `yarn` to install dependencies. 
 
