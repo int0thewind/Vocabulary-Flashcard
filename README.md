@@ -22,6 +22,8 @@ Run `yarn` to install dependencies.
 
 Install Firebase CLI. [Link](https://firebase.google.com/docs/cli).
 
+Java Runtime Environment (JRE) is required by Firebase emulators. Install it from [Java](www.java.com)
+
 ## Development
 
 Firebase would be in emulator mode if not in production. Both commands should be executed to run the app locally:

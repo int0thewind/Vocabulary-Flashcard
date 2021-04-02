@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint . --fix",
-    "test": "jest"
+    "e2e": "cypress run"
   },
   "dependencies": {
     "@material-ui/core": "^4.11.3",
