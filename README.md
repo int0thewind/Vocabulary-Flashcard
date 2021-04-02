@@ -22,7 +22,7 @@ Run `yarn` to install dependencies.
 
 Install Firebase CLI. [Link](https://firebase.google.com/docs/cli).
 
-Java Runtime Environment (JRE) is required by Firebase emulators. Install it from [Java](www.java.com)
+Java Runtime Environment (JRE) is required by Firebase emulators. Install it from [Java](https://www.java.com)
 
 ## Development
 
