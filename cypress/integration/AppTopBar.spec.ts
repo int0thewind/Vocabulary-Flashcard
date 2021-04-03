@@ -10,7 +10,7 @@ describe('Test AppTopBar behaviors.', () => {
       cy.visit('/');
     });
 
-    it('Renderes correct buttons on desktop.', () => {
+    it('Renderes correct buttons with right behaviors on desktop.', () => {
       // Simulate desktop viewport.
       cy.viewport('macbook-13');
 
@@ -22,7 +22,7 @@ describe('Test AppTopBar behaviors.', () => {
       cy.url().should('include', 'signin');
     });
 
-    it('Renderes correct buttons on mobile.', () => {
+    it('Renderes correct buttons with right behaviors on mobile.', () => {
       // Simulate mobile viewport.
       cy.viewport('iphone-8');
 
@@ -54,7 +54,7 @@ describe('Test AppTopBar behaviors.', () => {
       cy.url().should('include', 'user');
     });
 
-    it('Renderes correct buttons on desktop.', () => {
+    it('Renderes correct buttons with right behaviors on desktop.', () => {
       // Simulate desktop viewport.
       cy.viewport('macbook-13');
 
@@ -75,7 +75,7 @@ describe('Test AppTopBar behaviors.', () => {
       cy.url().should('not.include', 'user');
     });
 
-    it('Renderes correct buttons on mobile.', () => {
+    it('Renderes correct buttons with right behaviors on mobile.', () => {
       // Simulate mobile viewport.
       cy.viewport('iphone-8');
 
@@ -93,8 +93,8 @@ describe('Test AppTopBar behaviors.', () => {
       cy.contains('Sign Out');
 
       // Dashboard element in the drawer can route to '/user' page.
-      cy.get('span:contains("Sign Out")').first().click();
-      cy.url().should('not.include', 'user');
+      cy.get('span:contains("Dashboard")').first().click();
+      cy.url().should('include', 'user');
 
       // Sign out element in the drawer can sign out.
       cy.get('header').get('button').click();
