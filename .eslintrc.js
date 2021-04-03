@@ -9,6 +9,7 @@ module.exports = {
     'plugin:react/recommended',
     'airbnb-typescript',
     'airbnb/hooks',
+    'plugin:cypress/recommended',
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
@@ -22,7 +23,7 @@ module.exports = {
   plugins: [
     'react',
     '@typescript-eslint',
-    'jest',
+    'cypress',
   ],
   rules: {
     'react/react-in-jsx-scope': 'off',

@@ -35,3 +35,7 @@ yarn-error.log*
 
 # firebase logs
 *-debug.log
+
+# videos
+*.mp4
+cypress/videos
