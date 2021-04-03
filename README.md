@@ -12,32 +12,33 @@ CS 242 SP21 Final Project, co-developed by Hanzhi Yin and Gary Liu.
 * CI: TBD
 * CD: Vercel
 
+Apple Silicon processor tested compatible.
+
 ## Project Setup
 
 Install NodeJS and yarn.
 
 Install [Firebase CLI](https://firebase.google.com/docs/cli).
+If on Apple Silicon computers, do `brew install firebase-tools` instead. Homebrew version of Firebase CLI is not the latest version but can support Apple Silicon.
 
-Install Java Runtime Environment. JRE is required by Firebase Emulators.
+Install Java Runtime Environment. Firebase Emulators requires it.
 
 Run `yarn` to install dependencies. 
 
 Setup environment variables by acquiring API keys from Merriam Webster Collegiate Dictionary, Merriam Webster Collegiate Thesaurus, and Oxford Dictionary. Paste API keys in `env.local.sample` and rename it to `env.local`. `env.local` in NextJS is the place to store secrets. [Reference](https://nextjs.org/docs/basic-features/environment-variables#loading-environment-variables).
 
-## Project Development
+## Start the Development Server
 
-Run `yarn dev` to start development. Firebase Emulators should also be initiated## Firebase Emulators. 
+Run `yarn dev` to start development. Firebase Emulators should also be initiated, as the app is not in production.
 
 ## Firebase Emulators
 
-This app would run with [Firebase Emulators](https://firebase.google.com/docs/emulator-suite) if not in production mode. Local emulators data are stored in `./firebase-emulators-data` entry. Ensure that you load the pre-defined auth and database data when starting Firebase Emulators, and export any modifications accordingly.
+[Firebase Emulators](https://firebase.google.com/docs/emulator-suite) must be started if not in production. Local emulators data is in `./firebase-emulators-data`. It should be loaded and exported when emulator runs.
 
-```bash
-firebase emulators:start --export-on-exit=firebase-emulators-data --import=firebase-emulators-data
-```
+`firebase emulators:start --export-on-exit=firebase-emulators-data --import=firebase-emulators-data`
 
-## Testing
+## End-to-end Testing
 
-Unit testing is hard when React components entangled with React hooks. End-to-end testing is always more preferred than unit testing, unless the code to test is library code.
+End-to-end testing is more preferred than unit testing. Unit testing is hard when React components are entangled with React hooks.
 
-Start development server before testing. 
+Before running `yarn e2e` to start testing, start the development server and Firebase Emulators.
