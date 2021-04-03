@@ -19,7 +19,7 @@ Apple Silicon processor tested compatible.
 Install NodeJS and yarn.
 
 Install [Firebase CLI](https://firebase.google.com/docs/cli).
-If on Apple Silicon computers, do `brew install firebase-tools` instead. Homebrew version of Firebase CLI is not the latest version but can support Apple Silicon.
+On Apple Silicon computers, do `brew install firebase-cli` instead. Firebase CLI on Homebrew isn't the latest but supports Apple Silicon.
 
 Install Java Runtime Environment. Firebase Emulators requires it.
 
