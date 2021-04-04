@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography } from '@material-ui/core';
+import { CircularProgress, Typography, Box } from '@material-ui/core';
 import { useRouter } from 'next/dist/client/router';
 import { appAuth } from '../src/lib/firebase';
 
@@ -11,8 +11,18 @@ export default function SignOut() {
   });
 
   return (
-    <Typography color="textPrimary">
-      Signing Out...
-    </Typography>
+    <Box
+      width="100vw"
+      height="100vh"
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      flexDirection="column"
+    >
+      <Typography variant="h1" color="textPrimary" gutterBottom>
+        Signing Out...
+      </Typography>
+      <CircularProgress />
+    </Box>
   );
 }
