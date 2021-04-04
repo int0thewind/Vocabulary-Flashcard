@@ -1,5 +1,3 @@
-/// <reference types="cypress" />
-
 const testUserEmail = 'test.auth@example.com';
 const testUserPassword = '123456';
 
