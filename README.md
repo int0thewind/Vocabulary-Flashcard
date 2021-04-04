@@ -7,7 +7,7 @@ CS 242 SP21 Final Project, co-developed by Hanzhi Yin and Gary Liu.
 * Language: TypeScript
 * Dev environment: NodeJS, yarn
 * Framework: NextJS, Firebase
-* Test suite: Cypress
+* Test suite: Cypress, Mocha
 * Linter: ESLint
 * CI: TBD
 * CD: Vercel
@@ -42,3 +42,13 @@ Run `yarn dev` to start development. Firebase Emulators should also be initiated
 End-to-end testing is more preferred than unit testing. Unit testing is hard when React components are entangled with React hooks.
 
 Before running `yarn e2e` to start testing, start the development server and Firebase Emulators.
+
+## Unit Testing for Security Rules
+
+Unit Testing for Security Rules is based on `mocha`. You might need to install `mocha` via `npm install --global mocha`.
+
+To use unit testing for security rules, firstly please set up the environment correctly, and then run:
+
+```
+firebase emulators:exec --only firestore "yarn run test_sec"
+```
