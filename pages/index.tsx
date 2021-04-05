@@ -1,25 +1,36 @@
 import { Typography, Container } from '@material-ui/core';
+import Grid from '@material-ui/core/Grid';
 
 export default function Home() {
   return (
     <Container fixed maxWidth="md">
-      <Typography variant="h1" color="textPrimary" align="center" gutterBottom>
-        Vocabulary Flashcard
-      </Typography>
-      <Typography paragraph color="textPrimary">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-        Quisque eu purus tincidunt, consequat neque a, vulputate felis.
-        Aliquam malesuada vehicula felis, ac efficitur est volutpat a.
-        Mauris quam mauris, bibendum vel urna a, hendrerit elementum ante.
-        Aliquam volutpat, elit quis elementum scelerisque,
-        erat nunc volutpat ante, non vulputate lorem ipsum vel nisl.
-        Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;
-        Integer imperdiet, ipsum quis tristique tincidunt,
-        sapien ipsum laoreet leo, vitae rutrum quam magna nec sem.
-        Maecenas euismod diam eget sollicitudin sollicitudin.
-        Fusce quis felis congue, rutrum enim ut, auctor est.
-        Aliquam in fringilla eros, at aliquet arcu.
-      </Typography>
+      <Grid>
+        <Typography variant="h1" color="textPrimary" align="center">
+          Vocabulary Flashcard
+        </Typography>
+        <Typography variant="subtitle1" color="textSecondary" align="center" gutterBottom>
+          This is a web app aiming at helping people learn vocabularies.
+        </Typography>
+      </Grid>
+      <Grid style={{ marginTop: 10 }}>
+        <Typography paragraph>
+          Having a capacious vocabulary has positive impact on personal success,
+          <br />
+          yet so far, not many word memorizing apps have incorporated the best ways to memorize,
+          <br />
+          which are studying by adding time/Ebbinghaus forgetting curve/synonyms/prefix/suffix.
+        </Typography>
+        <Typography paragraph>
+          Therefore, we decide to create a web app to support:
+          <br />
+          1. allow user to add/export vocabulary,
+          <br />
+          2. automatically fetch definitions from authoritative dictionaries by their APIs,
+          <br />
+          3. and learn/manage their vocabularies by a variety of different methods.
+          <br />
+        </Typography>
+      </Grid>
     </Container>
   );
 }
