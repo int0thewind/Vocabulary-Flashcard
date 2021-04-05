@@ -1,0 +1,33 @@
+image: node
+
+stages:
+  - build
+  - lint
+  - test
+
+cache:
+  paths:
+    - node_modules/
+
+build:
+  stage: build
+  script:
+    - yarn install
+    - yarn build
+
+lint:
+  stage: lint
+  script:
+    - yarn run lint
+
+test:
+  stage: test
+  script:
+    # install java for emulator
+    - apt-get update && apt-get install -y openjdk-8-jdk
+    # install the Firebase CLI and mocha for testing
+    - npm install -g firebase-tools mocha
+    # run e2e tests
+    - firebase emulators:exec --export-on-exit=firebase-emulators-data --import=firebase-emulators-data 'yarn dev & yarn e2e'
+    # run tests for firestore security rules
+    - firebase emulators:exec --only firestore 'yarn run test_sec'
