@@ -28,6 +28,6 @@ unittest_and_e2e:
     - firebase deploy --token "$FIREBASE_TOKEN"
     - firebase use default
   script:
-    - firebase emulators:exec --project default --only firestore 'yarn run test:sec'
+    - firebase emulators:exec --token "$FIREBASE_TOKEN" --project default --only firestore 'yarn run test:sec'
     - yarn run dev &
-    - firebase emulators:exec --project default --import=firebase-emulators-data 'yarn run test:e2e'
+    - firebase emulators:exec --token "$FIREBASE_TOKEN" --project default --import=firebase-emulators-data 'yarn run test:e2e'
