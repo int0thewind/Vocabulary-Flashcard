@@ -8,6 +8,7 @@ stages:
 cache:
   paths:
     - node_modules/
+    - /root/.cache/firebase/emulators
 
 build:
   stage: build
@@ -26,6 +27,6 @@ unittest_and_e2e:
     - apt-get update && apt-get install -y openjdk-8-jre
     - npm i -g firebase-tools
   script:
-    - firebase emulators:exec --token $FIREBASE_TOKEN --project default --only firestore 'yarn run test:sec'
+    - firebase emulators:exec --token $FIREBASE_TOKEN --only firestore 'yarn run test:sec'
     - yarn run dev &
-    - firebase emulators:exec --token $FIREBASE_TOKEN --project default --import=firebase-emulators-data 'yarn run test:e2e'
+    - firebase emulators:exec --token $FIREBASE_TOKEN --import=firebase-emulators-data 'yarn run test:e2e'
