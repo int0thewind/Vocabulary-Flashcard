@@ -49,8 +49,6 @@ after(async () => {
       res.on('error', reject);
     });
   });
-
-  console.log(`View firestore rule coverage information at ${coverageFile}\n`);
 });
 
 describe('Testing users collection and its vocabulary sub-collections', () => {
