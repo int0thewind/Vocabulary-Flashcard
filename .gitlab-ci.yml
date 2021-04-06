@@ -22,20 +22,12 @@ lint:
   script:
     - yarn run lint
 
-unittest:
+unittest_and_e2e:
   stage: test
   before_script:
-    - apt-get install -y openjdk-8-jdk
+    - apt-get install -y openjdk-8-jre
     - npm install -g firebase-tools
   script:
     - firebase emulators:exec --only firestore  'yarn run test:src'
-
-
-e2e:
-  stage: test
-  before_script:
-    - apt-get install -y openjdk-8-jdk
-    - npm install -g firebase-tools
-  script:
     - yarn run dev &
     - firebase emulators:exec --import=firebase-emulators-data 'yarn run test:e2e'
