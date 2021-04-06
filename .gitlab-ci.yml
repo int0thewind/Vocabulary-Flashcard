@@ -12,9 +12,8 @@ cache:
 build:
   stage: build
   script:
-    - echo "################"
     - ls -la
-    - echo "################"
+    - echo $PWD
     - yarn install
     - yarn run build
 
