@@ -13,7 +13,6 @@ build:
   stage: build
   script:
     - yarn install
-    - yarn run build
 
 lint:
   stage: lint
@@ -25,7 +24,7 @@ unittest_and_e2e:
   before_script:
     - echo $FIREBASE_TOKEN
     - apt-get update && apt-get install -y openjdk-8-jre
-    - curl -sL https://firebase.tools | bash
+    - npm i -g firebase-tools
   script:
     - firebase emulators:exec --token $FIREBASE_TOKEN --project default --only firestore 'yarn run test:sec'
     - yarn run dev &
