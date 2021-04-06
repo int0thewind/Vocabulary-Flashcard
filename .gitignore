@@ -39,3 +39,6 @@ yarn-error.log*
 # videos
 *.mp4
 cypress/videos
+
+# firestore-coverage
+firestore-coverage.html

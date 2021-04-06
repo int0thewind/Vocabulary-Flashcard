@@ -6,12 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint . --fix",
-    "e2e": "cypress run",
-    "test_sec": "mocha --exit tests/unit_tests_security_rules/*.spec.js"
+    "lint": "eslint . --max-warnings 0",
+    "test:e2e": "cypress run",
+    "test:sec": "mocha --exit tests/unit_tests_security_rules/*.spec.js"
   },
   "dependencies": {
-    "@firebase/rules-unit-testing": "^1.2.6",
     "@material-ui/core": "^4.11.3",
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.57",
@@ -22,6 +21,8 @@
     "react-dom": "^17.0.2"
   },
   "devDependencies": {
+    "@firebase/rules-unit-testing": "^1.2.6",
+    "@google-cloud/firestore": "^4.9.8",
     "@types/node": "^14.14.35",
     "@types/react": "^17.0.3",
     "@typescript-eslint/eslint-plugin": "^4.19.0",
@@ -35,6 +36,8 @@
     "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-react": "^7.23.0",
     "eslint-plugin-react-hooks": "^4.2.0",
+    "firebase-admin": "^9.6.0",
+    "mocha": "^8.3.2",
     "typescript": "^4.2.3"
   }
 }
