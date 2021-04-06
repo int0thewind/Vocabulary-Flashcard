@@ -7,8 +7,6 @@ stages:
 
 cache:
   paths:
-    - $HOME/.cache/firebase
-    - .npm/
     - node_modules/
 
 build:
@@ -25,7 +23,7 @@ lint:
 unittest_and_e2e:
   stage: test
   before_script:
-    - apt-get install -y openjdk-8-jre
+    - apt-get update && apt-get install -y openjdk-8-jre
     - npm install -g firebase-tools
   script:
     - firebase emulators:exec --only firestore  'yarn run test:src'
