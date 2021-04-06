@@ -3,12 +3,11 @@ image: node
 stages:
   - build
   - lint
-  - unittest
-  - e2e
+  - test
 
 cache:
   paths:
-    - .cache/Cypress
+    - $HOME/.cache/firebase
     - .npm/
     - node_modules/
 
@@ -16,7 +15,7 @@ build:
   stage: build
   script:
     - yarn install
-    - yarn build
+    - yarn run build
 
 lint:
   stage: lint
@@ -24,16 +23,19 @@ lint:
     - yarn run lint
 
 unittest:
-  stage: unittest
+  stage: test
+  before_script:
+    - apt-get update && apt-get install -y openjdk-8-jdk
+    - curl -sL https://firebase.tools | bash
   script:
-    - npm i -g mocha firebase-tools
-    - firebase emulators:exec --only firestore 'yarn run test_sec'
+    - firebase emulators:exec --only firestore  'yarn run test:src'
 
 
 e2e:
-  image: cypress/browsers:node12.14.1-chrome85-ff81
-  stage: e2e
-  script:
+  stage: test
+  before_script:
     - apt-get update && apt-get install -y openjdk-8-jdk
-    - npm i -g firebase-tools
-    - firebase emulators:exec --import=firebase-emulators-data 'yarn dev & yarn e2e'
+    - curl -sL https://firebase.tools | bash
+  script:
+    - yarn run dev &
+    - firebase emulators:exec --import=firebase-emulators-data 'yarn run e2e'

@@ -7,8 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint . --max-warnings 0",
-    "e2e": "cypress run",
-    "test_sec": "mocha --exit tests/unit_tests_security_rules/*.spec.js"
+    "test:e2e": "cypress run",
+    "test:sec": "mocha --exit tests/unit_tests_security_rules/*.spec.js"
   },
   "dependencies": {
     "@material-ui/core": "^4.11.3",
@@ -37,6 +37,7 @@
     "eslint-plugin-react": "^7.23.0",
     "eslint-plugin-react-hooks": "^4.2.0",
     "firebase-admin": "^9.6.0",
+    "mocha": "^8.3.2",
     "typescript": "^4.2.3"
   }
 }
