@@ -26,6 +26,6 @@ unittest_and_e2e:
     - apt-get update && apt-get install -y openjdk-8-jre
     - npm install -g firebase-tools
   script:
-    - firebase emulators:exec --only firestore 'yarn run test:sec'
+    - firebase emulators:exec --project default --only firestore 'yarn run test:sec'
     - yarn run dev &
-    - firebase emulators:exec --import=firebase-emulators-data 'yarn run test:e2e'
+    - firebase emulators:exec --project default --import=firebase-emulators-data 'yarn run test:e2e'
