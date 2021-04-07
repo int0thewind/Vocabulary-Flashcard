@@ -13,14 +13,14 @@ export default function Home() {
         </Typography>
       </Grid>
       <Grid style={{ marginTop: 10 }}>
-        <Typography paragraph>
+        <Typography color="textPrimary" paragraph>
           Having a capacious vocabulary has positive impact on personal success,
           <br />
           yet so far, not many word memorizing apps have incorporated the best ways to memorize,
           <br />
           which are studying by adding time/Ebbinghaus forgetting curve/synonyms/prefix/suffix.
         </Typography>
-        <Typography paragraph>
+        <Typography color="textPrimary" paragraph>
           Therefore, we decide to create a web app to support:
           <br />
           1. allow user to add/export vocabulary,
