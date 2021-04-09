@@ -11,7 +11,7 @@ function PageLoading() {
       alignItems="center"
       flexDirection="column"
     >
-      <Typography variant="h1" color="textPrimary">
+      <Typography variant="h1" color="textPrimary" align="center">
         Loading...
       </Typography>
       <CircularProgress />

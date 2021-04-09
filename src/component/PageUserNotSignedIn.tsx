@@ -12,10 +12,10 @@ function PageUserNotSignedIn() {
       alignItems="center"
       flexDirection="column"
     >
-      <Typography variant="h1" color="textPrimary" gutterBottom>
+      <Typography variant="h1" color="textPrimary" gutterBottom align="center">
         You are not Signed In
       </Typography>
-      <Typography variant="body1" color="textPrimary">
+      <Typography variant="body1" color="textPrimary" align="center">
         Click
         {' '}
         <Link href="/signin">here</Link>

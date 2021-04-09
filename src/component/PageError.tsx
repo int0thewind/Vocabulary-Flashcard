@@ -16,10 +16,10 @@ function PageError({ code, message }: Props) {
       alignItems="center"
       flexDirection="column"
     >
-      <Typography variant="h1" gutterBottom color="textPrimary">
+      <Typography variant="h1" gutterBottom color="textPrimary" align="center">
         An Error Occurred
       </Typography>
-      <Typography variant="body1" color="error">
+      <Typography variant="body1" color="error" align="center">
         {`${code}: ${message}`}
       </Typography>
     </Box>
