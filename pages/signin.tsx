@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, Typography, CircularProgress } from '@material-ui/core';
 import firebase from 'firebase/app';
 import { useRouter } from 'next/dist/client/router';
-import { appAuth, useFirebaseUser } from '../src/lib/firebase';
+import { appAuth, useFirebaseUser } from 'src/lib/firebase';
 import 'firebaseui/dist/firebaseui.css';
 
 export default function SignIn() {
@@ -49,19 +49,24 @@ export default function SignIn() {
       <Typography variant="h1" color="textPrimary" gutterBottom>
         Sign In
       </Typography>
+
       {loading && <CircularProgress />}
-      <div id="firebase-ui" ref={fbUIRef} />
+
       {user && (
       <Typography color="textSecondary">
         You have already signed in.
       </Typography>
       )}
+
       {error && (
       <Typography color="error">
         An error occurred when trying to sign in.
         {`${error.code}: ${error.message}`}
       </Typography>
       )}
+
+      <div id="firebase-ui" ref={fbUIRef} />
+
     </Box>
   );
 }
