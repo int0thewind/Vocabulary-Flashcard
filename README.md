@@ -35,7 +35,7 @@ Run `yarn dev` to start development. Firebase Emulators should also be initiated
 
 [Firebase Emulators](https://firebase.google.com/docs/emulator-suite) must be started if not in production. Local emulators data is in `./firebase-emulators-data`. It should be loaded and exported when emulator runs.
 
-`firebase emulators:start --export-on-exit=firebase-emulators-data --import=firebase-emulators-data`
+`firebase emulators:start --import=firebase-emulators-data --export-on-exit=firebase-emulators-data`
 
 ## End-to-end Testing
 

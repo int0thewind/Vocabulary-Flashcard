@@ -55,11 +55,11 @@ export function useFirebaseUser(): UseFirebaseUserType {
         setLoading(true);
         setUser(newUser);
         setError(null);
+        setLoading(false);
       }, (e) => {
         setLoading(true);
         setError(e);
         setUser(null);
-      }, () => {
         setLoading(false);
       },
     );
