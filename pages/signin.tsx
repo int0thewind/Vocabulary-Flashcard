@@ -1,9 +1,10 @@
 import React from 'react';
-import { Box, Typography, CircularProgress } from '@material-ui/core';
+import { Typography, CircularProgress } from '@material-ui/core';
 import firebase from 'firebase/app';
 import { useRouter } from 'next/dist/client/router';
 import { appAuth, useFirebaseUser } from 'src/lib/firebase';
 import 'firebaseui/dist/firebaseui.css';
+import MiddleCenter from 'src/component/MiddleCenter';
 
 export default function SignIn() {
   const router = useRouter();
@@ -38,35 +39,27 @@ export default function SignIn() {
   }, [ui, user, loading, error]);
 
   return (
-    <Box
-      width="100vw"
-      height="100vh"
-      display="flex"
-      justifyContent="center"
-      alignItems="center"
-      flexDirection="column"
-    >
+    <MiddleCenter>
       <Typography variant="h1" color="textPrimary" gutterBottom>
         Sign In
       </Typography>
 
       {loading && <CircularProgress />}
 
-      {user && (
-      <Typography color="textSecondary">
-        You have already signed in.
-      </Typography>
-      )}
-
-      {error && (
+      {!loading && error && (
       <Typography color="error">
         An error occurred when trying to sign in.
         {`${error.code}: ${error.message}`}
       </Typography>
       )}
 
-      <div id="firebase-ui" ref={fbUIRef} />
+      {!(loading || error) && user && (
+      <Typography color="textSecondary">
+        You have already signed in.
+      </Typography>
+      )}
 
-    </Box>
+      <div id="firebase-ui" ref={fbUIRef} />
+    </MiddleCenter>
   );
 }
