@@ -1,8 +1,8 @@
 import React from 'react';
 import { Typography } from '@material-ui/core';
-import withUserSignedIn from 'src/component/withUserSignedIn';
+import withUserSignedIn, { WithUserSignedInProps } from 'src/component/withUserSignedIn';
 
-function User() {
+function User({ user }: WithUserSignedInProps) {
   return (
     <Typography variant="h1" color="textPrimary">
       User Signed In
