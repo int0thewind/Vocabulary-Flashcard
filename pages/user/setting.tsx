@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import React from 'react';
 import withUserSignedIn, { WithUserSignedInProps } from 'src/component/withUserSignedIn';
 import {
@@ -6,6 +5,7 @@ import {
   TextField, Box, makeStyles, DialogContentText,
 } from '@material-ui/core';
 import { validateEmailAddress } from 'src/utils/account';
+import { useSnackbar } from 'notistack';
 
 const userSettingsStyle = makeStyles((theme) => ({
   hr: {
@@ -16,6 +16,7 @@ const userSettingsStyle = makeStyles((theme) => ({
 
 function UserSettings({ user }: WithUserSignedInProps) {
   const classes = userSettingsStyle();
+  const { enqueueSnackbar } = useSnackbar();
   const { email, emailVerified, displayName } = user;
 
   const [dialogState, setDialogState] = React.useState({
@@ -101,30 +102,52 @@ function UserSettings({ user }: WithUserSignedInProps) {
   };
 
   const changeDisplayName = () => {
+    const { newDisplayName } = dialogState;
     user.updateProfile({
-      displayName: dialogState.newDisplayName,
+      displayName: newDisplayName,
     }).then(() => {
+      enqueueSnackbar(`Successfuly changed display name to "${newDisplayName}".`, { variant: 'success' });
       closeChangeDisplayNameDialog();
-    }).catch(console.error);
+    }).catch((e) => {
+      enqueueSnackbar(`Failed to change display name.\n${e}`, { variant: 'error' });
+    });
   };
-  const verifyEmail = () => user.sendEmailVerification();
+  const verifyEmail = () => {
+    user.sendEmailVerification().then(() => {
+      enqueueSnackbar('Verification email sent. Please check your inbox.', { variant: 'success' });
+    });
+  };
   const changeEmail = () => {
-    user.updateEmail(dialogState.newEmail)
-      .then(() => closeChangeEmailDialog())
-      .catch(console.error);
+    const { newEmail } = dialogState;
+    user.updateEmail(newEmail)
+      .then(() => {
+        enqueueSnackbar(`Successfully changed email to "${newEmail}".`, { variant: 'success' });
+        closeChangeEmailDialog();
+      })
+      .catch((e) => {
+        enqueueSnackbar(`Failed to change email.\n${e}`, { variant: 'error' });
+      });
   };
   const changePassword = () => {
-    user.updatePassword(dialogState.newPassword)
-      .then(() => closeChangePasswordDialog())
-      .catch(console.error);
+    const { newPassword } = dialogState;
+    user.updatePassword(newPassword)
+      .then(() => {
+        enqueueSnackbar('Successfully change password.', { variant: 'success' });
+        closeChangePasswordDialog();
+      })
+      .catch((e) => {
+        enqueueSnackbar(`Failed to change password.\n${e}`, { variant: 'error' });
+      });
   };
   const deleteAccount = () => {
     user.delete()
       .then(() => {
+        enqueueSnackbar('Account deleted.', { variant: 'success' });
         closeDeleteAccountDialog();
-        window.location.href = '/';
       })
-      .catch(console.error);
+      .catch((e) => {
+        enqueueSnackbar(`Failed to change display name.\n${e}`, { variant: 'error' });
+      });
   };
 
   return (
