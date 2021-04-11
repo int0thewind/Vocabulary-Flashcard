@@ -50,16 +50,20 @@ export function useFirebaseUser(): UseFirebaseUserType {
   const [user, setUser] = React.useState<firebase.User | null>(null);
 
   React.useEffect(() => {
-    const unsubscribeListeners = appAuth.onAuthStateChanged((newUser) => {
-      setLoading(true);
-      setUser(newUser);
-      setLoading(false);
-    }, (e) => {
-      setLoading(true);
-      setError(e);
-      setLoading(false);
-    });
-    return () => { unsubscribeListeners(); };
+    const unsubscribeListeners = appAuth.onAuthStateChanged(
+      (newUser) => {
+        setLoading(true);
+        setUser(newUser);
+        setError(null);
+        setLoading(false);
+      }, (e) => {
+        setLoading(true);
+        setError(e);
+        setUser(null);
+        setLoading(false);
+      },
+    );
+    return () => unsubscribeListeners();
   }, []);
 
   return [user, loading, error];

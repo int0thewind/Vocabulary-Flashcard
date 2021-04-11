@@ -12,7 +12,7 @@ import Link from 'next/link';
 import 'firebase/auth';
 import {
   AppBar, Button, Drawer, Hidden, IconButton, Toolbar, Typography, List,
-  ListItem, ListItemText, useTheme, useMediaQuery, Box,
+  ListItem, ListItemText, useTheme, useMediaQuery,
 } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import { appTopBarRoutesSignedIn as signInRoute, appTopBarRoutesSignedOut as signOutRoute } from '../lib/routes';
@@ -69,7 +69,7 @@ function AppTopBar() {
         </Link>
 
         {/* Placeholder. Push the rest to the very right. */}
-        <Box flex={1} />
+        <div style={{ flex: 1 }} />
 
         {/* Right routing buttons. Only on desktop. */}
         <Hidden xsDown>

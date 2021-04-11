@@ -1,16 +1,13 @@
 import React from 'react';
 import { Typography } from '@material-ui/core';
-import { useFirebaseUser } from '../../src/lib/firebase';
+import withUserSignedIn, { WithUserSignedInProps } from 'src/component/withUserSignedIn';
 
-// TODO: factor loading into the page.
-
-function User() {
-  const [user] = useFirebaseUser();
+function User({ user }: WithUserSignedInProps) {
   return (
-    <Typography variant="h2" color="textPrimary">
-      {`${user?.displayName} signed in!`}
+    <Typography variant="h1" color="textPrimary">
+      User Signed In
     </Typography>
   );
 }
 
-export default User;
+export default withUserSignedIn(User);
