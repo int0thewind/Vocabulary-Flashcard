@@ -39,18 +39,10 @@ firebase emulators:start --import=firebase-emulators-data
 
 To modify local emulator data, append this flag: `--export-on-exit=firebase-emulators-data`.
 
-## End-to-end Testing
+## Testing
 
 End-to-end testing is more preferred than unit testing. Unit testing is hard when React components are entangled with React hooks.
 
-Before running `yarn e2e` to start testing, start the development server and Firebase Emulators.
+Run `firebase emulators:exec --import=firebase-emulators-data 'yarn run test:e2e'` to start end-to-end testing. Development server should also be initiated at background by running `yarn run dev &`.
 
-## Unit Testing
-
-Run `yarn test:unit` to start unit testing.
-
-To only test firebase security rules run:
-
-```
-firebase emulators:exec --only firestore "yarn run test:sec"
-```
+Run and `firebase emulators:exec --only firestore` to start unit testing.
