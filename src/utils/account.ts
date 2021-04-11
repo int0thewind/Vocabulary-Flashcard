@@ -29,7 +29,7 @@ export function getNameInitial(name?: string | null): string {
  * @param str the string to check.
  * @returns true if the string has a valid email address
  */
-export function validateEmail(str?: string | null): boolean {
+export function validateEmailAddress(str?: string | null): boolean {
   if (!str) return false;
   return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(str);
 }
