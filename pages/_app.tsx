@@ -39,7 +39,7 @@ export default function App({ Component, pageProps }: AppProps) {
         <meta name="theme-color" content={theme.palette.primary.main} />
       </Head>
       <ThemeProvider theme={theme}>
-        <SnackbarProvider maxSnack={5}>
+        <SnackbarProvider maxSnack={5} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
           <AppTopBar />
           <Component {...pageProps} />
         </SnackbarProvider>

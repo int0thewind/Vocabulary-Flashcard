@@ -2,7 +2,8 @@ import React from 'react';
 import firebase from 'firebase/app';
 import { CircularProgress, Typography } from '@material-ui/core';
 import { useFirebaseUser } from 'src/lib/firebase';
-import Link from 'next/link';
+import { useRouter } from 'next/dist/client/router';
+import { useSnackbar } from 'notistack';
 import MiddleCenter from './MiddleCenter';
 
 export type WithUserSignedInProps<P = {}> = P & {
@@ -18,7 +19,17 @@ type UserComponent<P = {}> = React.FunctionComponent<WithUserSignedInProps<P>>;
 function withUserSignedIn<P = {}>(UserComponent: UserComponent<P>): React.FunctionComponent<P> {
   return (props: P) => {
     const [user, loading, error] = useFirebaseUser();
-    if (loading) {
+    const router = useRouter();
+    const { enqueueSnackbar } = useSnackbar();
+    React.useEffect(() => {
+      if (!(loading || error) && !user) {
+        enqueueSnackbar('You are not signed in.', {
+          variant: 'warning',
+        });
+        router.push('/signin');
+      }
+    }, [user, loading, error, router, enqueueSnackbar]);
+    if (loading || !user) {
       return (
         <MiddleCenter>
           <Typography variant="h1" color="textPrimary" align="center">
@@ -36,22 +47,6 @@ function withUserSignedIn<P = {}>(UserComponent: UserComponent<P>): React.Functi
           </Typography>
           <Typography variant="body1" color="error" align="center">
             {`${error.code}: ${error.message}`}
-          </Typography>
-        </MiddleCenter>
-      );
-    }
-    if (!user) {
-      return (
-        <MiddleCenter>
-          <Typography variant="h1" color="textPrimary" gutterBottom align="center">
-            You are not Signed In
-          </Typography>
-          <Typography variant="body1" color="textPrimary" align="center">
-            Click
-            {' '}
-            <Link href="/signin">here</Link>
-            {' '}
-            to sign in.
           </Typography>
         </MiddleCenter>
       );
