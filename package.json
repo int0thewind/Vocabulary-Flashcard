@@ -8,8 +8,7 @@
     "start": "next start",
     "lint": "eslint . --max-warnings 0",
     "test:e2e": "cypress run",
-    "test:unit": "mocha",
-    "test:sec": "mocha --exit tests/*.spec.js",
+    "test:unit": "mocha --exit",
     "emulators:start": "firebase emulators:start --import=firebase-emulators-data",
     "emulators:modify": "firebase emulators:start --import=firebase-emulators-data --export-on-exit=firebase-emulators-data"
   },
