@@ -1,7 +1,7 @@
 import React from 'react';
 import withUserSignedIn, { WithUserSignedInProps } from 'src/component/withUserSignedIn';
 import {
-  Paper, Container, Typography, Button, Divider, Dialog, DialogTitle, DialogContent, DialogActions,
+  Container, Typography, Button, Divider, Dialog, DialogTitle, DialogContent, DialogActions,
   TextField, Box, makeStyles, DialogContentText,
 } from '@material-ui/core';
 import { validateEmailAddress } from 'src/utils/account';
@@ -147,15 +147,7 @@ function UserSettings({ user }: WithUserSignedInProps) {
         <Dialog open={dialogState.displayNameDialog} onClose={closeChangeDisplayNameDialog}>
           <DialogTitle>Change Display Name</DialogTitle>
           <DialogContent>
-            <TextField
-              autoFocus
-              onChange={onNewDisplayNameChange}
-              color="primary"
-              name="displayName"
-              placeholder="New display name"
-              type="text"
-              fullWidth
-            />
+            <TextField autoFocus onChange={onNewDisplayNameChange} color="primary" name="displayName" placeholder="New display name" type="text" fullWidth />
           </DialogContent>
           <DialogActions>
             <Button variant="text" onClick={closeChangeDisplayNameDialog}>
@@ -192,15 +184,7 @@ function UserSettings({ user }: WithUserSignedInProps) {
         <Dialog open={dialogState.emailDialog} onClose={closeChangeEmailDialog}>
           <DialogTitle>Change Email</DialogTitle>
           <DialogContent>
-            <TextField
-              onChange={onNewEmailChange}
-              autoFocus
-              color="primary"
-              name="email"
-              placeholder="New email address"
-              type="email"
-              fullWidth
-            />
+            <TextField onChange={onNewEmailChange} autoFocus color="primary" name="email" placeholder="New email address" type="email" fullWidth />
           </DialogContent>
           <DialogActions>
             <Button variant="text" onClick={closeChangeEmailDialog}>Cancel</Button>
@@ -219,25 +203,8 @@ function UserSettings({ user }: WithUserSignedInProps) {
         <Dialog open={dialogState.passwordDialog} onClose={closeChangePasswordDialog}>
           <DialogTitle>Change Password</DialogTitle>
           <DialogContent>
-            <TextField
-              autoFocus
-              onChange={onNewPasswordChange}
-              color="primary"
-              name="password"
-              placeholder="New password"
-              type="password"
-              error={!dialogState.passwordButton}
-              fullWidth
-            />
-            <TextField
-              onChange={onNewPasswordVerifyChange}
-              color="primary"
-              name="confirmPassword"
-              placeholder="Confirm new password"
-              type="password"
-              error={!dialogState.passwordButton}
-              fullWidth
-            />
+            <TextField autoFocus onChange={onNewPasswordChange} color="primary" name="password" placeholder="New password" type="password" error={!dialogState.passwordButton} fullWidth />
+            <TextField onChange={onNewPasswordVerifyChange} color="primary" name="confirmPassword" placeholder="Confirm new password" type="password" error={!dialogState.passwordButton} fullWidth />
           </DialogContent>
           <DialogActions>
             <Button variant="text" onClick={closeChangePasswordDialog}>Cancel</Button>
@@ -246,6 +213,7 @@ function UserSettings({ user }: WithUserSignedInProps) {
         </Dialog>
         <Divider className={classes.hr} />
 
+        {/* Delete Account */}
         <Button variant="contained" color="secondary" onClick={openDeleteAccountDialog}>
           Delete Account
         </Button>
@@ -255,18 +223,9 @@ function UserSettings({ user }: WithUserSignedInProps) {
           </DialogTitle>
           <DialogContent>
             <DialogContentText>
-              Are you sure you want to delete your account?
-              Please input your display name to verify.
+              Are you sure you want to delete your account?Please input your display name to verify.
             </DialogContentText>
-            <TextField
-              onChange={onDeleteAccountVerifyChange}
-              color="primary"
-              name="displayNameVerify"
-              placeholder="Confirm display name"
-              type="text"
-              error={!dialogState.deleteAccountButton}
-              fullWidth
-            />
+            <TextField onChange={onDeleteAccountVerifyChange} color="primary" name="displayNameVerify" placeholder="Confirm display name" type="text" error={!dialogState.deleteAccountButton} fullWidth />
           </DialogContent>
           <DialogActions>
             <Button variant="text" onClick={closeDeleteAccountDialog}>Cancel</Button>
