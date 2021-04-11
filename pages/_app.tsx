@@ -3,8 +3,9 @@ import React from 'react';
 import Head from 'next/head';
 import type { AppProps } from 'next/app';
 import { Theme, ThemeProvider } from '@material-ui/core';
-import AppTopBar from '../src/component/AppTopBar';
-import { darkTheme, lightTheme } from '../src/lib/theme';
+import AppTopBar from 'src/component/AppTopBar';
+import { darkTheme, lightTheme } from 'src/lib/theme';
+import { SnackbarProvider } from 'notistack';
 
 /**
  * Custom app component.
@@ -38,8 +39,10 @@ export default function App({ Component, pageProps }: AppProps) {
         <meta name="theme-color" content={theme.palette.primary.main} />
       </Head>
       <ThemeProvider theme={theme}>
-        <AppTopBar />
-        <Component {...pageProps} />
+        <SnackbarProvider maxSnack={5}>
+          <AppTopBar />
+          <Component {...pageProps} />
+        </SnackbarProvider>
       </ThemeProvider>
     </>
   );
