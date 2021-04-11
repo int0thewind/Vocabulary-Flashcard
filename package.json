@@ -8,8 +8,9 @@
     "start": "next start",
     "lint": "eslint . --max-warnings 0",
     "test:e2e": "cypress run",
-    "test:sec": "mocha --exit tests/unit_tests_security_rules/*.spec.js",
-    "emulators:start": "firebase emulators:start --import=firebase-emulators-data"
+    "test:unit": "mocha --exit",
+    "emulators:start": "firebase emulators:start --import=firebase-emulators-data",
+    "emulators:modify": "firebase emulators:start --import=firebase-emulators-data --export-on-exit=firebase-emulators-data"
   },
   "dependencies": {
     "@material-ui/core": "^4.11.3",

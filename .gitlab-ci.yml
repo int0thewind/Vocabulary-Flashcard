@@ -20,13 +20,12 @@ lint:
   script:
     - yarn run lint
 
-unittest_and_e2e:
+test:
   stage: test
   before_script:
-    - echo $FIREBASE_TOKEN
     - apt-get update && apt-get install -y openjdk-8-jre
     - yarn global add firebase-tools
   script:
-    - firebase emulators:exec --token $FIREBASE_TOKEN --only firestore 'yarn run test:sec'
+    - firebase emulators:exec --token $FIREBASE_TOKEN --only firestore 'yarn run test:unit'
     - yarn run dev &
     - firebase emulators:exec --token $FIREBASE_TOKEN --import=firebase-emulators-data 'yarn run test:e2e'

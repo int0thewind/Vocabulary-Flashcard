@@ -9,23 +9,21 @@ CS 242 SP21 Final Project, co-developed by Hanzhi Yin and Gary Liu.
 * Framework: NextJS, Firebase
 * Test suite: Cypress, Mocha
 * Linter: ESLint
-* CI: TBD
-* CD: Vercel
-
-Apple Silicon processor tested compatible.
+* CI: Gitlab CI
+* CD: TBD
 
 ## Project Setup
 
 Install NodeJS and yarn.
 
 Install [Firebase CLI](https://firebase.google.com/docs/cli).
-On Apple Silicon computers, do `brew install firebase-cli` instead. Firebase CLI on Homebrew isn't the latest but supports Apple Silicon.
+On Apple Silicon computers, install version `9.7.0`. Newer versions would break.
 
 Install Java Runtime Environment. Firebase Emulators requires it.
 
 Run `yarn` to install dependencies. 
 
-Setup environment variables by acquiring API keys from Merriam Webster Collegiate Dictionary, Merriam Webster Collegiate Thesaurus, and Oxford Dictionary. Paste API keys in `env.local.sample` and rename it to `env.local`. `env.local` in NextJS is the place to store secrets. [Reference](https://nextjs.org/docs/basic-features/environment-variables#loading-environment-variables).
+Setup environment variables by acquiring API keys from Merriam Webster Collegiate Dictionary, Merriam Webster Collegiate Thesaurus, and Oxford Dictionary. Paste API keys in `env.local.sample` and rename it to `env.local`. `env.local` is the place to store secrets in [NextJS](https://nextjs.org/docs/basic-features/environment-variables#loading-environment-variables).
 
 ## Start the Development Server
 
@@ -35,20 +33,16 @@ Run `yarn dev` to start development. Firebase Emulators should also be initiated
 
 [Firebase Emulators](https://firebase.google.com/docs/emulator-suite) must be started if not in production. Local emulators data is in `./firebase-emulators-data`. It should be loaded and exported when emulator runs.
 
-`firebase emulators:start --import=firebase-emulators-data --export-on-exit=firebase-emulators-data`
+```
+firebase emulators:start --import=firebase-emulators-data
+```
 
-## End-to-end Testing
+To modify local emulator data, append this flag: `--export-on-exit=firebase-emulators-data`.
+
+## Testing
 
 End-to-end testing is more preferred than unit testing. Unit testing is hard when React components are entangled with React hooks.
 
-Before running `yarn e2e` to start testing, start the development server and Firebase Emulators.
+Run `firebase emulators:exec --import=firebase-emulators-data 'yarn run test:e2e'` to start end-to-end testing. Development server should also be initiated at background by running `yarn run dev &`.
 
-## Unit Testing for Security Rules
-
-Unit Testing for Security Rules is based on `mocha`. You might need to install `mocha` via `npm install --global mocha`.
-
-To use unit testing for security rules, firstly please set up the environment correctly, and then run:
-
-```
-firebase emulators:exec --only firestore "yarn run test_sec"
-```
+Run and `firebase emulators:exec --only firestore` to start unit testing.
