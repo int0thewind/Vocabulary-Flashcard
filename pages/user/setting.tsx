@@ -1,11 +1,11 @@
 import React from 'react';
-import withUserSignedIn, { WithUserSignedInProps } from 'src/component/withUserSignedIn';
 import {
   Container, Typography, Button, Divider, Dialog, DialogTitle, DialogContent, DialogActions,
   TextField, Box, makeStyles, DialogContentText,
 } from '@material-ui/core';
-import { validateEmailAddress } from 'src/utils/account';
 import { useSnackbar } from 'notistack';
+import withUserSignedIn, { WithUserSignedInProps } from 'src/component/withUserSignedIn';
+import { validateEmailAddress } from 'src/utils/account';
 
 const userSettingsStyle = makeStyles((theme) => ({
   hr: {

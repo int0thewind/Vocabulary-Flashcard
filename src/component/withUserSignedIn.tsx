@@ -23,9 +23,7 @@ function withUserSignedIn<P = {}>(UserComponent: UserComponent<P>): React.Functi
     const { enqueueSnackbar } = useSnackbar();
     React.useEffect(() => {
       if (!(loading || error) && !user) {
-        enqueueSnackbar('You are not signed in.', {
-          variant: 'warning',
-        });
+        enqueueSnackbar('You are not signed in.', { variant: 'warning' });
         router.push('/signin');
       }
     }, [user, loading, error, router, enqueueSnackbar]);
