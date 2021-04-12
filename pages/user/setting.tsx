@@ -35,6 +35,9 @@ function UserSettings({ user }: WithUserSignedInProps) {
     deleteAccountVerify: '',
   });
 
+  const pushErrorNotification = (e: any) => enqueueSnackbar(`Failed to change display name.\n${e}`, { variant: 'error' });
+  const pushSuccessNotification = (s: string) => enqueueSnackbar(s, { variant: 'success' });
+
   const openChangeDisplayNameDialog = () => {
     setDialogState((s) => ({ ...s, displayNameDialog: true }));
   };
@@ -106,48 +109,40 @@ function UserSettings({ user }: WithUserSignedInProps) {
     user.updateProfile({
       displayName: newDisplayName,
     }).then(() => {
-      enqueueSnackbar(`Successfuly changed display name to "${newDisplayName}".`, { variant: 'success' });
+      pushSuccessNotification(`Successfuly changed display name to "${newDisplayName}".`);
       closeChangeDisplayNameDialog();
-    }).catch((e) => {
-      enqueueSnackbar(`Failed to change display name.\n${e}`, { variant: 'error' });
-    });
+    }).catch(pushErrorNotification);
   };
   const verifyEmail = () => {
     user.sendEmailVerification().then(() => {
-      enqueueSnackbar('Verification email sent. Please check your inbox.', { variant: 'success' });
+      pushSuccessNotification('Verification email sent. Please check your inbox.');
     });
   };
   const changeEmail = () => {
     const { newEmail } = dialogState;
     user.updateEmail(newEmail)
       .then(() => {
-        enqueueSnackbar(`Successfully changed email to "${newEmail}".`, { variant: 'success' });
+        pushSuccessNotification(`Successfully changed email to "${newEmail}".`);
         closeChangeEmailDialog();
       })
-      .catch((e) => {
-        enqueueSnackbar(`Failed to change email.\n${e}`, { variant: 'error' });
-      });
+      .catch(pushErrorNotification);
   };
   const changePassword = () => {
     const { newPassword } = dialogState;
     user.updatePassword(newPassword)
       .then(() => {
-        enqueueSnackbar('Successfully change password.', { variant: 'success' });
+        pushSuccessNotification('Successfully change password.');
         closeChangePasswordDialog();
       })
-      .catch((e) => {
-        enqueueSnackbar(`Failed to change password.\n${e}`, { variant: 'error' });
-      });
+      .catch(pushErrorNotification);
   };
   const deleteAccount = () => {
     user.delete()
       .then(() => {
-        enqueueSnackbar('Account deleted.', { variant: 'success' });
+        pushSuccessNotification('Account deleted.');
         closeDeleteAccountDialog();
       })
-      .catch((e) => {
-        enqueueSnackbar(`Failed to change display name.\n${e}`, { variant: 'error' });
-      });
+      .catch(pushErrorNotification);
   };
 
   return (
