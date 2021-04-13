@@ -4,7 +4,7 @@ import { CircularProgress, Typography } from '@material-ui/core';
 import { useFirebaseUser } from 'src/lib/firebase';
 import { useRouter } from 'next/dist/client/router';
 import { useSnackbar } from 'notistack';
-import MiddleCenter from './MiddleCenter';
+import MiddleCenter from '../component/MiddleCenter';
 
 export type WithUserSignedInProps<P = {}> = P & {
   user: firebase.User;

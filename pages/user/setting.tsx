@@ -4,7 +4,7 @@ import {
   TextField, Box, makeStyles, DialogContentText,
 } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
-import withUserSignedIn, { WithUserSignedInProps } from 'src/component/withUserSignedIn';
+import withUserSignedIn, { WithUserSignedInProps } from 'src/HOC/withUserSignedIn';
 import { validateEmailAddress } from 'src/utils/string';
 
 const userSettingsStyle = makeStyles((theme) => ({

@@ -42,6 +42,3 @@ cypress/videos
 
 # firestore-coverage
 firestore-coverage.html
-
-# firebase credential
-serviceAccountKey.json
