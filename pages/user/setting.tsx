@@ -242,7 +242,8 @@ function UserSettings({ user }: WithUserSignedInProps) {
           </DialogTitle>
           <DialogContent>
             <DialogContentText>
-              Are you sure you want to delete your account?Please input your display name to verify.
+              Are you sure you want to delete your account?
+              Please input your display name to verify.
             </DialogContentText>
             <TextField onChange={onDeleteAccountVerifyChange} color="primary" name="displayNameVerify" placeholder="Confirm display name" type="text" error={!dialogState.deleteAccountButton} fullWidth />
           </DialogContent>

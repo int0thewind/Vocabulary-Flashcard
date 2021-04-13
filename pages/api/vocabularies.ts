@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import db from 'src/utils/db';
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+export default function handler(req: NextApiRequest, res: NextApiResponse) {
   const { method, query } = req;
 
   const uid = query.uid as string; // required
@@ -18,31 +18,37 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   switch (method) {
     case 'GET': {
-      const result = await vocabularyDoc.collection('words').get();
-      const response: FirebaseFirestore.DocumentData[] = [];
-      result.forEach(((docData) => response.push(
-        docData.data(),
-      )));
-      res.status(200).json(response);
+      vocabularyDoc.collection('words').get()
+        .then((result) => {
+          const response: FirebaseFirestore.DocumentData[] = [];
+          result.forEach(((docData) => response.push(
+            docData.data(),
+          )));
+          res.status(200).json(response);
+        });
+
       break;
     }
 
     case 'PUT': {
-      const result = await vocabularyDoc.collection('words').doc(word).set(
+      vocabularyDoc.collection('words').doc(word).set(
         {
           wordLiteral: word,
           rating: 1,
           learningInfo: { learning: true },
           addedAt: Date.now(),
         },
-      );
-      res.status(200).json(result);
+      ).then((result) => {
+        res.status(200).json(result);
+      });
       break;
     }
 
     case 'DELETE': {
-      const result = await vocabularyDoc.collection('words').doc(word).delete();
-      res.status(200).json(result);
+      vocabularyDoc.collection('words').doc(word).delete()
+        .then((result) => {
+          res.status(200).json(result);
+        });
       break;
     }
 
@@ -51,4 +57,4 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       res.status(405).end(`Method ${method} Not Allowed`);
     }
   }
-};
+}

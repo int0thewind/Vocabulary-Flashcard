@@ -1,11 +1,9 @@
+/* eslint-disable no-param-reassign */
 import React from 'react';
 import {
-  Box, Button, Container, IconButton, Typography,
+  Box, Container, IconButton, makeStyles, Typography, Tooltip,
 } from '@material-ui/core';
-import AddIcon from '@material-ui/icons/Add';
-import DeleteIcon from '@material-ui/icons/Delete';
-import UpdateIcon from '@material-ui/icons/Update';
-import RefreshIcon from '@material-ui/icons/Refresh';
+import { AddRounded, DeleteRounded, RefreshRounded } from '@material-ui/icons';
 import {
   DataGrid, GridCellParams, GridColDef, GridToolbar,
 } from '@material-ui/data-grid';
@@ -15,8 +13,13 @@ import AddWordsDialog from 'src/dialog/AddWordsDialog';
 import DeleteWordsDialog from 'src/dialog/DeleteWordsDialog';
 import { WordDefinition, Definitions } from 'src/component/WordDefinition';
 
+const userPageStyle = makeStyles((theme) => ({
+  button: { marginLeft: theme.spacing(1) },
+}));
+
 function User({ user }: WithUserSignedInProps) {
   const { uid } = user;
+  const classes = userPageStyle();
 
   const [addWordDialogOpen, setAddWordDialogOpen] = React.useState(false);
   const openAddWordDialog = () => setAddWordDialogOpen(true);
@@ -35,18 +38,21 @@ function User({ user }: WithUserSignedInProps) {
 
     await Promise.all(
       words.map(async (word: { wordLiteral: string; addedAt: any }) => {
+        // @ts-ignore
         word.id = word.wordLiteral;
         word.addedAt = new Date(word.addedAt);
+        // @ts-ignore
+
         word.learning = word.learningInfo.learning;
 
         const wordsResp = await axios.get('/api/words', {
-          params: {
-            word: word.wordLiteral,
-          },
+          params: { word: word.wordLiteral },
         });
 
         const googleDef = JSON.parse(wordsResp.data.definitionsFromSources['Google Dictionary'].definition)[0];
+        // @ts-ignore
         word.phonetics = googleDef.phonetics[0].text;
+        // @ts-ignore
         word.definitions = googleDef.meanings;
       }),
     );
@@ -80,25 +86,28 @@ function User({ user }: WithUserSignedInProps) {
 
   return (
     <Container maxWidth="md" fixed>
-      <Box padding={2}>
-        <Typography color="textPrimary" variant="h5">
+      <Box padding={1}>
+        <Typography color="textPrimary" variant="h2" gutterBottom>
           Manage Words
         </Typography>
 
         {/* Pannel */}
-        <Box display="flex" flexDirection="row" justifyContent="flex-start" alignItems="center">
-          <IconButton onClick={refreshDataGrid}>
-            <RefreshIcon />
-          </IconButton>
-          <Button variant="contained" startIcon={<AddIcon />} color="primary" onClick={openAddWordDialog}>
-            Add
-          </Button>
-          <Button variant="contained" startIcon={<DeleteIcon />} color="primary" onClick={openDeleteWordDialog}>
-            Delete
-          </Button>
-          <Button variant="contained" startIcon={<UpdateIcon />} color="primary" onClick={openAddWordDialog}>
-            Update Definitions
-          </Button>
+        <Box display="flex" flexDirection="row" justifyContent="flex-start" alignItems="center" flexWrap="wrap">
+          <Tooltip title="Add Words" placement="top">
+            <IconButton onClick={openAddWordDialog} className={classes.button}>
+              <AddRounded />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Delete Words" placement="top">
+            <IconButton onClick={openDeleteWordDialog} className={classes.button}>
+              <DeleteRounded />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Refresh" placement="top">
+            <IconButton onClick={refreshDataGrid} className={classes.button}>
+              <RefreshRounded />
+            </IconButton>
+          </Tooltip>
         </Box>
 
         <AddWordsDialog
@@ -112,17 +121,15 @@ function User({ user }: WithUserSignedInProps) {
           onClose={closeDeleteWordDialog}
         />
 
-        <Box>
-          <div style={{ height: 600, width: '100%' }}>
-            <DataGrid
-              components={{ Toolbar: GridToolbar }}
-              rows={rowData}
-              columns={columns}
-              pageSize={5}
-              checkboxSelection
-            />
-          </div>
-        </Box>
+        <div style={{ height: 600, width: '100%' }}>
+          <DataGrid
+            components={{ Toolbar: GridToolbar }}
+            rows={rowData}
+            columns={columns}
+            pageSize={5}
+            checkboxSelection
+          />
+        </div>
 
       </Box>
     </Container>
