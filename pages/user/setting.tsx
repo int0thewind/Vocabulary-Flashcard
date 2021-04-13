@@ -4,8 +4,8 @@ import {
   TextField, Box, makeStyles, DialogContentText,
 } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
+import { validate as validateEmail } from 'email-validator';
 import withUserSignedIn, { WithUserSignedInProps } from 'src/HOC/withUserSignedIn';
-import { validateEmailAddress } from 'src/utils/string';
 
 const userSettingsStyle = makeStyles((theme) => ({
   hr: {
@@ -76,7 +76,7 @@ function UserSettings({ user }: WithUserSignedInProps) {
     setDialogState((s) => ({
       ...s,
       newEmail,
-      emailButton: validateEmailAddress(newEmail),
+      emailButton: validateEmail(newEmail),
     }));
   };
   const onNewPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {

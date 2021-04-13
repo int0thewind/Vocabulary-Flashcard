@@ -1,23 +1,49 @@
+/**
+ * With User Signed In Higher Order Component Module.
+ *
+ * This module defines the `withUserSignedIn` HOC.
+ *
+ * @author Hanzhi Yin
+ * @version 0.1.0
+ */
+
 import React from 'react';
 import firebase from 'firebase/app';
 import { CircularProgress, Typography } from '@material-ui/core';
 import { useFirebaseUser } from 'src/lib/firebase';
 import { useRouter } from 'next/dist/client/router';
 import { useSnackbar } from 'notistack';
-import MiddleCenter from '../component/MiddleCenter';
+import MiddleCenter from 'src/component/MiddleCenter';
 
-export type WithUserSignedInProps<P = {}> = P & {
+/** Type of UserComponent Prop. Packed witn Firebase user. */
+export type WithUserSignedInProps = {
   user: firebase.User;
 };
 
-type UserComponent<P = {}> = React.FunctionComponent<WithUserSignedInProps<P>>;
+type UserComponent = React.FunctionComponent<WithUserSignedInProps>;
 
 /**
- * A higher order component to inject loading, error,
- * and user not signed in component to a component designed for signed in user.
+ * Inject certain logics and components into a given React Component.
+ *
+ * Most user pages shares same logics and components.
+ * This HOF wraps those same logics and components
+ * by creating a function that returns a React Component.
+ *
+ * If the user is still loading, the page should be loading.
+ * If an error occurred, the error should be displayed.
+ * If no user signed in, the page should be routed to '/signin'.
+ * Otherwise, show the `UserComponent`.
+ *
+ * The `UserComponent` must accept `user` to be a React component prop.
+ * The `user` prop is an instance of Firebase user, which is guaranteed to be a valid instance.
+ *
+ * @see useFirebaseUser
+ *
+ * @param UserComponent The base component to be wrapped upon. It must accept a `user` prop.
+ * @returns A new React component with all the logics and components wrapped up.
  */
-function withUserSignedIn<P = {}>(UserComponent: UserComponent<P>): React.FunctionComponent<P> {
-  return (props: P) => {
+function withUserSignedIn(UserComponent: UserComponent): React.FunctionComponent {
+  return () => {
     const [user, loading, error] = useFirebaseUser();
     const router = useRouter();
     const { enqueueSnackbar } = useSnackbar();
@@ -25,6 +51,9 @@ function withUserSignedIn<P = {}>(UserComponent: UserComponent<P>): React.Functi
       if (!(loading || error) && !user) {
         enqueueSnackbar('You are not signed in.', { variant: 'warning' });
         router.push('/signin');
+      }
+      if (error) {
+        enqueueSnackbar(`${error.code}: ${error.message}`, { variant: 'error' });
       }
     }, [user, loading, error, router, enqueueSnackbar]);
     if (loading || !user) {
@@ -49,8 +78,7 @@ function withUserSignedIn<P = {}>(UserComponent: UserComponent<P>): React.Functi
         </MiddleCenter>
       );
     }
-    // eslint-disable-next-line react/jsx-props-no-spreading
-    return <UserComponent user={user} {...props} />;
+    return <UserComponent user={user} />;
   };
 }
 
