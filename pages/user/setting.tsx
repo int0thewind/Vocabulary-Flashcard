@@ -19,6 +19,7 @@ function UserSettings({ user }: WithUserSignedInProps) {
   const { enqueueSnackbar } = useSnackbar();
   const { email, emailVerified, displayName } = user;
 
+  // TODO: maybe change it to useReducer? But that takes more lines.
   const [dialogState, setDialogState] = React.useState({
     displayNameDialog: false,
     displayNameButton: false,
@@ -158,7 +159,7 @@ function UserSettings({ user }: WithUserSignedInProps) {
           Display Name
         </Typography>
         <Typography color="textSecondary" variant="body1">
-          {displayName}
+          {displayName || 'No display name specified'}
         </Typography>
         <Button variant="text" color="primary" onClick={openChangeDisplayNameDialog}>
           Change Display Name
@@ -184,7 +185,7 @@ function UserSettings({ user }: WithUserSignedInProps) {
           Email
         </Typography>
         <Typography color="textSecondary" variant="body1">
-          { email || 'No email specified'}
+          {email || 'No email specified'}
         </Typography>
         {emailVerified ? (
           <Button variant="text" color="primary" onClick={openChangeEmailDialog}>

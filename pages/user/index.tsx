@@ -5,21 +5,14 @@ import {
 } from '@material-ui/core';
 import { AddRounded, RefreshRounded } from '@material-ui/icons';
 import withUserSignedIn, { WithUserSignedInProps } from 'src/HOC/withUserSignedIn';
-import AddWordsDialog from 'src/dialog/AddWordsDialog';
 
 const userPageStyle = makeStyles((theme) => ({
   button: { marginLeft: theme.spacing(1) },
 }));
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function User({ user }: WithUserSignedInProps) {
-  const { uid } = user;
   const classes = userPageStyle();
-
-  const [{ addWordDialogOpen }, setDialogState] = React.useState({
-    addWordDialogOpen: false,
-  });
-  const openAddWordDialog = () => setDialogState((s) => ({ ...s, addWordDialogOpen: true }));
-  const closeAddWordDialog = () => setDialogState((s) => ({ ...s, addWordDialogOpen: true }));
 
   return (
     <Container maxWidth="md" fixed>
@@ -31,7 +24,7 @@ function User({ user }: WithUserSignedInProps) {
         {/* Pannel */}
         <Box display="flex" flexDirection="row" justifyContent="flex-start" alignItems="center" flexWrap="wrap">
           <Tooltip title="Add Words" placement="top">
-            <IconButton onClick={openAddWordDialog} className={classes.button}>
+            <IconButton className={classes.button}>
               <AddRounded />
             </IconButton>
           </Tooltip>
@@ -41,12 +34,6 @@ function User({ user }: WithUserSignedInProps) {
             </IconButton>
           </Tooltip>
         </Box>
-
-        <AddWordsDialog
-          uid={uid}
-          open={addWordDialogOpen}
-          onClose={closeAddWordDialog}
-        />
 
       </Box>
     </Container>

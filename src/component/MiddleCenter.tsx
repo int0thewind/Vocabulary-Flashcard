@@ -7,19 +7,24 @@
  * @since  0.1.0
  */
 
+import { makeStyles } from '@material-ui/core';
 import React from 'react';
 
-/** Helper component to bring an HTML element to the center of the screen. */
-function MiddleCenter({ children }: React.PropsWithChildren<{}>) {
-  const style: React.CSSProperties = {
+const middleCenterStyle = makeStyles({
+  middleCenter: {
     width: '100vw',
     height: '100vh',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'column',
-  };
-  return <div style={style}>{children}</div>;
+  },
+});
+
+/** Helper component to bring an HTML element to the center of the screen. */
+function MiddleCenter({ children }: React.PropsWithChildren<{}>) {
+  const classes = middleCenterStyle();
+  return <div className={classes.middleCenter}>{children}</div>;
 }
 
 export default MiddleCenter;
