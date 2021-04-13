@@ -16,13 +16,11 @@ function WordQuery({ word, uid }: Props) {
   React.useEffect(() => {
     axios.put('/api/vocabularies', null, {
       params: { word, uid, vocabulary: 'default' },
-    })
-      .then(() => setProgress((v) => v + 50))
+    }).then(() => setProgress((v) => v + 50))
       .catch(() => setProgress(-200));
     axios.put('/api/words', null, {
       params: { word },
-    })
-      .then(() => setProgress((v) => v + 50))
+    }).then(() => setProgress((v) => v + 50))
       .catch(() => setProgress(-200));
   }, [uid, word]);
 

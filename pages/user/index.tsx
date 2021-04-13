@@ -98,11 +98,11 @@ function User({ user }: WithUserSignedInProps) {
               <AddRounded />
             </IconButton>
           </Tooltip>
-          <Tooltip title="Delete Words" placement="top">
+          {/* <Tooltip title="Delete Words" placement="top">
             <IconButton onClick={openDeleteWordDialog} className={classes.button}>
               <DeleteRounded />
             </IconButton>
-          </Tooltip>
+          </Tooltip> */}
           <Tooltip title="Refresh" placement="top">
             <IconButton onClick={refreshDataGrid} className={classes.button}>
               <RefreshRounded />
