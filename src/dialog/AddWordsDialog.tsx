@@ -1,29 +1,37 @@
+import React from 'react';
 import {
   Dialog, DialogActions, DialogContent, DialogTitle, Button, FormControl, InputLabel, Select,
   DialogContentText, TextField, ListSubheader, MenuItem,
 } from '@material-ui/core';
-import React from 'react';
-import axios from 'axios';
+import { parseMultipleWords } from 'src/utils/string';
+import WordQuery from 'src/component/WordQuery';
 
 type Props = {
+  // TODO: extirpate uid in props
   open: boolean;
   uid: string,
   onClose: () => void;
 };
 
-type SourceType = 'MW' | 'Oxford';
+type SourceType = 'MW' | 'Google' | 'Urban';
 
 type DialogStateType = {
+  secondDialogOpen: boolean,
   source: SourceType,
-  input: string
+  input: string,
+  wordQueries: string[],
 };
 
 function AddWordsDialog(props: Props) {
-  const { open, onClose, uid } = props;
+  const { open: firstDialogOpen, onClose: closeFirstDialog, uid } = props;
   const [dialogState, setDialogState] = React.useState<DialogStateType>({
+    secondDialogOpen: false,
     source: 'MW',
     input: '',
+    wordQueries: [],
   });
+  const openSecondDialog = () => setDialogState((s) => ({ ...s, secondDialogOpen: true }));
+  const closeSecondDialog = () => setDialogState((s) => ({ ...s, secondDialogOpen: false }));
   const onSelectChange = (e: React.ChangeEvent<{ name?: string | undefined; value: unknown; }>) => {
     setDialogState((s) => ({
       ...s,
@@ -36,50 +44,55 @@ function AddWordsDialog(props: Props) {
       input: e.target.value,
     }));
   };
-  const submit = () => {
-    // eslint-disable-next-line no-console
-    console.table(dialogState);
-    const words = dialogState.input.split(',');
-    words.map(async (word) => {
-      const vocResp = await axios.put('/api/vocabularies', null, {
-        params: {
-          word,
-          uid,
-          vocabulary: 'default',
-        },
-      });
-      const wordsResp = await axios.put('/api/words', null, {
-        params: {
-          word,
-        },
-      });
-      console.log(vocResp, wordsResp);
-    });
-    onClose();
+  const submitQuery = () => {
+    setDialogState((s) => ({ ...s, wordQueries: parseMultipleWords(dialogState.input) }));
+    closeFirstDialog();
+    openSecondDialog();
   };
   return (
-    <Dialog open={open} onClose={onClose}>
-      <DialogTitle>Add Words</DialogTitle>
-      <DialogContent>
-        <FormControl>
-          <InputLabel>Select Source</InputLabel>
-          <Select defaultValue="MW" onChange={onSelectChange}>
-            <ListSubheader>Auto Query</ListSubheader>
-            <MenuItem value="MW">Merriam-Webster</MenuItem>
-            <MenuItem value="Oxford">Oxford</MenuItem>
-            <ListSubheader>Manual</ListSubheader>
-          </Select>
-        </FormControl>
-        <TextField fullWidth multiline rows={2} placeholder="Input words" variant="outlined" onChange={onInputChange} />
-        <DialogContentText>
-          Input words to add. To add multiple words, separate them with comma (,).
-        </DialogContentText>
-      </DialogContent>
-      <DialogActions>
-        <Button variant="text" color="primary" onClick={onClose}>Cancel</Button>
-        <Button variant="text" color="secondary" onClick={submit}>Submit</Button>
-      </DialogActions>
-    </Dialog>
+    <>
+      <Dialog open={firstDialogOpen} onClose={closeFirstDialog}>
+        <DialogTitle>Add Words</DialogTitle>
+        <DialogContent>
+          <FormControl>
+            <InputLabel>Select Source</InputLabel>
+            <Select defaultValue="MW" onChange={onSelectChange}>
+              <ListSubheader>Auto Query</ListSubheader>
+              <MenuItem value="MW">Merriam-Webster</MenuItem>
+              <MenuItem value="Google">Google Dictionary</MenuItem>
+              <MenuItem value="Urban">Urban Dictionary</MenuItem>
+              <ListSubheader>Manual</ListSubheader>
+            </Select>
+          </FormControl>
+          <TextField fullWidth multiline rows={2} placeholder="Input words" variant="outlined" onChange={onInputChange} />
+          <DialogContentText>
+            Input words to add. To add multiple words, separate them with comma (,).
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={closeFirstDialog}>Cancel</Button>
+          <Button color="primary" onClick={submitQuery}>Submit</Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={dialogState.secondDialogOpen}
+        onClose={closeSecondDialog}
+        disableBackdropClick
+        disableEscapeKeyDown
+        scroll="paper"
+      >
+        <DialogTitle>Processing</DialogTitle>
+        <DialogContent>
+          {dialogState.wordQueries.map((w) => (
+            <WordQuery word={w} uid={uid} />
+          ))}
+        </DialogContent>
+        <DialogActions>
+          <Button variant="text" onClick={closeSecondDialog}>Suspend to Background</Button>
+        </DialogActions>
+      </Dialog>
+    </>
   );
 }
 

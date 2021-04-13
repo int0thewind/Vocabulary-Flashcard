@@ -1,10 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import axios from 'axios';
-import db from '../../src/utils/db';
+import db from 'src/utils/db';
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
-  const { method } = req;
-  const word = req.query.word as string;
+export default function handler(req: NextApiRequest, res: NextApiResponse) {
+  const { method, query } = req;
+  const word = query.word as string;
 
   if (word.length === 0) {
     res.status(404).end('Word should be passed to the api');
@@ -14,8 +14,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   switch (method) {
     case 'GET': {
-      const result = await wordsCollection.doc(word).get();
-      res.status(200).json(result.data());
+      wordsCollection.doc(word).get()
+        .then((result) => {
+          res.status(200).json(result.data());
+        });
       break;
     }
 
@@ -26,16 +28,12 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       const fetchJobs = [
         // fetch Merriam Webster Collegiate Thesaurus Dictionary
         axios.get(`https://www.dictionaryapi.com/api/v3/references/thesaurus/json/${word}`, {
-          params: {
-            key: MerriamWebsterThesaurusKey,
-          },
+          params: { key: MerriamWebsterThesaurusKey },
         }),
-        // fetch google dictionary
         axios.get(`https://api.dictionaryapi.dev/api/v2/entries/en_US/${word}`),
-        // fetch urban dictionary
         axios.get(`https://api.urbandictionary.com/v0/define?term=${word}`),
       ];
-      const definitions = await axios.all(fetchJobs)
+      axios.all(fetchJobs)
         .then(axios.spread(
           (...responses) => {
             const MerriamWebsterCollegiateThesaurusResp = responses[0].data;
@@ -62,21 +60,17 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             };
           },
         ))
-        .catch((error) => {
-          console.log(error);
-          return {};
+        .then((definitions) => wordsCollection.doc(word).set(definitions))
+        .then((writeResult) => {
+          res.status(200).json({ result: `AddWord result: ${JSON.stringify(writeResult)}` });
         });
-
-      // Push the new word into Firestore using the Firebase Admin SDK.
-      const writeResult = await wordsCollection.doc(word).set(definitions);
-      // Send back a message that we've successfully written the word
-      res.status(200).json({ result: `AddWord result: ${JSON.stringify(writeResult)}` });
       break;
     }
 
     case 'DELETE': {
-      const result = await wordsCollection.doc(word).delete();
-      res.json(result);
+      wordsCollection.doc(word).delete().then((result) => {
+        res.json(result);
+      });
       break;
     }
 
@@ -85,4 +79,4 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       res.status(405).end(`Method ${method} Not Allowed`);
     }
   }
-};
+}
