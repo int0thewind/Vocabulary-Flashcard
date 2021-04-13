@@ -28,11 +28,11 @@ const firebaseConfig = {
 if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 
 export const appAuth = firebase.auth();
-export const appFirestore = firebase.firestore();
+// export const appFirestore = firebase.firestore();
 
 if (process.env.NODE_ENV !== 'production') {
   appAuth.useEmulator('http://localhost:9099');
-  appFirestore.useEmulator('localhost', 8080);
+  // appFirestore.useEmulator('localhost', 8080);
 }
 
 type UseFirebaseUserType = [firebase.User | null, boolean, firebase.auth.Error | null];

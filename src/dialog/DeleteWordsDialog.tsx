@@ -18,7 +18,7 @@ type DialogStateType = {
   input: string
 };
 
-function AddWordsDialog(props: Props) {
+function DeleteWordsDialog(props: Props) {
   const { open, onClose, uid } = props;
   const [dialogState, setDialogState] = React.useState<DialogStateType>({
     source: 'MW',
@@ -41,19 +41,14 @@ function AddWordsDialog(props: Props) {
     console.table(dialogState);
     const words = dialogState.input.split(',');
     words.map(async (word) => {
-      const vocResp = await axios.put('/api/vocabularies', null, {
+      const vocResp = await axios.delete('/api/vocabularies', {
         params: {
           word,
           uid,
           vocabulary: 'default',
         },
       });
-      const wordsResp = await axios.put('/api/words', null, {
-        params: {
-          word,
-        },
-      });
-      console.log(vocResp, wordsResp);
+      console.log(vocResp);
     });
     onClose();
   };
@@ -83,4 +78,4 @@ function AddWordsDialog(props: Props) {
   );
 }
 
-export default AddWordsDialog;
+export default DeleteWordsDialog;
