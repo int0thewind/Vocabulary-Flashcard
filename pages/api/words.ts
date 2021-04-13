@@ -1,10 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import axios from 'axios';
-import db from '../../src/utils/db';
+import db from 'src/utils/db';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  const { method } = req;
-  const word = req.query.word as string;
+  const { method, query } = req;
+  const word = query.word as string;
 
   if (word.length === 0) {
     res.status(404).end('Word should be passed to the api');
@@ -62,10 +62,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             };
           },
         ))
-        .catch((error) => {
-          console.log(error);
-          return {};
-        });
+        .catch(() => {});
 
       // Push the new word into Firestore using the Firebase Admin SDK.
       const writeResult = await wordsCollection.doc(word).set(definitions);

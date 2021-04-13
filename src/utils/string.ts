@@ -16,11 +16,7 @@
  */
 export function getNameInitial(name?: string | null): string {
   if (!name) return '';
-  return name
-    .split(' ')
-    .map((part) => part[0])
-    .join('')
-    .toUpperCase();
+  return name.split(' ').map((s) => s[0]).join('').toLocaleUpperCase();
 }
 
 /**
@@ -32,4 +28,15 @@ export function getNameInitial(name?: string | null): string {
 export function validateEmailAddress(str?: string | null): boolean {
   if (!str) return false;
   return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(str);
+}
+
+/**
+ * Parse a query of multiple words to a trimmed string array.
+ *
+ * @param query the series of words.
+ * @returns a parsed string array.
+ */
+export function parseMultipleWords(query?: string | null): string[] {
+  if (!query) return [];
+  return query.split(',').map((s) => s.trim());
 }

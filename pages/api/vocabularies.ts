@@ -1,18 +1,14 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import axios from 'axios';
-import db from '../../src/utils/db';
+import db from 'src/utils/db';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  const { method } = req;
+  const { method, query } = req;
 
-  const uid = req.query.uid as string; // required
-  const vocabulary = req.query.vocabulary as string; // required
-  const word = req.query.word as string; // optional
+  const uid = query.uid as string; // required
+  const vocabulary = query.vocabulary as string; // required
+  const word = query.word as string; // optional
 
-  if (
-    (uid === undefined || vocabulary === undefined)
-        || (method !== 'GET' && word === undefined)
-  ) {
+  if ((!uid || !vocabulary) || (method !== 'GET' && !word)) {
     res.status(400).end('Invalid Param');
   }
 

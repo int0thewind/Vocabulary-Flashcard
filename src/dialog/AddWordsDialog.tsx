@@ -53,7 +53,6 @@ function AddWordsDialog(props: Props) {
           word,
         },
       });
-      console.log(vocResp, wordsResp);
     });
     onClose();
   };

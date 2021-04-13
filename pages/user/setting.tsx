@@ -5,7 +5,7 @@ import {
 } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
 import withUserSignedIn, { WithUserSignedInProps } from 'src/component/withUserSignedIn';
-import { validateEmailAddress } from 'src/utils/account';
+import { validateEmailAddress } from 'src/utils/string';
 
 const userSettingsStyle = makeStyles((theme) => ({
   hr: {
