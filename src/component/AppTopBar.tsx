@@ -9,14 +9,13 @@
 
 import React from 'react';
 import Link from 'next/link';
-import 'firebase/auth';
 import {
   AppBar, Button, Drawer, Hidden, IconButton, Toolbar, Typography, List,
   ListItem, ListItemText, useTheme, useMediaQuery, makeStyles,
 } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
-import { appTopBarRoutesSignedIn as signInRoute, appTopBarRoutesSignedOut as signOutRoute } from '../lib/routes';
-import { useFirebaseUser } from '../lib/firebase';
+import { appTopBarRoutesSignedIn as signInRoute, appTopBarRoutesSignedOut as signOutRoute } from 'src/lib/routes';
+import { useFirebaseUser } from 'src/lib/firebase';
 
 const appTopBarStyle = makeStyles((theme) => ({
   icon: { marginRight: theme.spacing(2) },

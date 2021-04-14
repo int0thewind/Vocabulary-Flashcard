@@ -1,77 +1,10 @@
 rules_version = '2';
 service cloud.firestore {
-
   match /databases/{database}/documents {
-
-    function isSignedIn(auth) {
-      return auth != null;
-    }
-    
-    function isAdmin(auth) {
-      return auth.token.isAdmin == true; 
-    }
-
-    function hasAllKeys(data, requiredKeys) {
-      return data.keys().hasAll(requiredKeys) == true;
-    }
-
-    // Users
-    match /users/{userID} {
-      // `nickname`: string, required
-      // `vocabulary`: collection, required
-      allow create: if 
-        // User can only create its own information
-        request.auth.uid == userID &&
-        // Must include needed fields
-        hasAllKeys(request.resource.data, [
-          "nickname",
-          "createdAt",
-        ]) &&
-        // nickname should be < 50 chars
-        request.resource.data.nickname.size() < 50;
-
-      allow read: if 
-        // Admin can read all data
-        isAdmin(request.auth) ||
-        // User can only read its own information
-        request.auth.uid == request.resource.data.uid;
-
-      allow update: if 
-        // Admin can modify all data
-        isAdmin(request.auth) || 
-          // User can only update its own information
-          request.auth.uid == request.resource.data.uid &&
-          // `uid` and `createdAt` are unchanged
-          request.resource.data.diff(resource.data).unchangedKeys().hasAll([
-            "uid",
-            "createdAt",
-          ]) && 
-          // nickname should be < 50 chars
-          request.resource.data.nickname.size < 50
-        ;
-
-
-      match /vocabularies/{vocabularyID} {
-        function isOwner(auth) {
-          return auth.uid == userID;
-        }
-
-        allow create: if 
-          isOwner(request.auth) && 
-          hasAllKeys(request.resource.data, ["name", "createdAt"]);
-
-        allow read: if isOwner(request.auth);
-
-        allow update: if isOwner(request.auth);
-
-        allow delete: if isOwner(request.auth);
-      }
-    }
-
-    match /words/{wordID} {
-      allow read: if isSignedIn(request.auth);
-
-      allow delete: if false;
+  	match /users/{uid} {
+    	allow read, write:
+      	if request.auth != null
+        && uid == request.auth.uid
     }
   }
 }
