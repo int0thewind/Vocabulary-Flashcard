@@ -3,7 +3,7 @@ import React from 'react';
 import {
   Box, Container, IconButton, makeStyles, Typography, Tooltip,
 } from '@material-ui/core';
-import { AddRounded, RefreshRounded } from '@material-ui/icons';
+import { Add, Refresh } from '@material-ui/icons';
 import withUserSignedIn, { WithUserSignedInProps } from 'src/HOC/withUserSignedIn';
 
 const userPageStyle = makeStyles((theme) => ({
@@ -23,14 +23,14 @@ function User({ user }: WithUserSignedInProps) {
 
         {/* Pannel */}
         <Box display="flex" flexDirection="row" justifyContent="flex-start" alignItems="center" flexWrap="wrap">
-          <Tooltip title="Add Words" placement="top">
+          <Tooltip title="Add Words" placement="bottom">
             <IconButton className={classes.button} color="primary">
-              <AddRounded />
+              <Add />
             </IconButton>
           </Tooltip>
-          <Tooltip title="Refresh" placement="top">
+          <Tooltip title="Refresh" placement="bottom">
             <IconButton className={classes.button} color="primary">
-              <RefreshRounded />
+              <Refresh />
             </IconButton>
           </Tooltip>
         </Box>

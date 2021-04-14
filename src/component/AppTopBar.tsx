@@ -13,7 +13,7 @@ import {
   AppBar, Button, Drawer, Hidden, IconButton, Toolbar, Typography, List,
   ListItem, ListItemText, useTheme, useMediaQuery, makeStyles,
 } from '@material-ui/core';
-import MenuIcon from '@material-ui/icons/Menu';
+import { Menu } from '@material-ui/icons';
 import { appTopBarRoutesSignedIn as signInRoute, appTopBarRoutesSignedOut as signOutRoute } from 'src/lib/routes';
 import { useFirebaseUser } from 'src/lib/firebase';
 
@@ -50,7 +50,7 @@ function AppTopBar() {
         {/* Left menu button to open drawer. Only on mobile. */}
         <Hidden smUp>
           <IconButton onClick={toggleDrawer} color="inherit" className={classes.icon}>
-            <MenuIcon />
+            <Menu />
           </IconButton>
         </Hidden>
 
