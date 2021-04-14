@@ -48,6 +48,7 @@ function DeleteWordsDialog(props: Props) {
           vocabulary: 'default',
         },
       });
+      // eslint-disable-next-line no-console
       console.log(vocResp);
     });
     onClose();
