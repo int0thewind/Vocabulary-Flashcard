@@ -27,7 +27,7 @@ const appTopBarStyle = makeStyles((theme) => ({
  * App top bar component.
  * This app top bar would be hung on the top of all the pages in this web app.
  *
- * It displayes different routing buttons responsively by the viewport's width.
+ * It displays different routing buttons responsively by the viewport's width.
  */
 function AppTopBar() {
   const [user, loading, error] = useFirebaseUser();

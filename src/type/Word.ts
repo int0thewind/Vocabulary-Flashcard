@@ -2,7 +2,7 @@ type WordSource = 'MW' | 'Oxford' | 'manual';
 
 /**
  * A word may have multiple audio recording
- * indicaing different accent/gender.
+ * indicating different accent/gender.
  */
 type WordAudio = {
   accent: string,
@@ -14,7 +14,8 @@ type WordAudio = {
  * A word may have multiple definitions.
  * A definition may have multiple sample sentences.
  */
-type WordExplaination = {
+type WordExplanation = {
+  wordFunction: string,
   definition: string,
   example: string[],
 };
@@ -23,19 +24,22 @@ export default interface Word {
   /** The word literal. */
   literal: string;
 
-  /** Where the word is added? */
+  /** Replicate number of this word entry */
+  homonym: number;
+
+  /** Where the word from? */
   source: WordSource;
 
   /** Phonetic symbol. */
   phoneticSymbol: string;
 
   /** Online audio recording file. */
-  audio: WordAudio[];
+  audio: WordAudio;
 
   /** Collection of word definition along with its sample sentence. */
-  explaination: WordExplaination[];
+  explanation: WordExplanation[];
 
-  /** Explaination of the word's origin. */
+  /** Explanation of the word's origin. */
   etymology: string;
 
   /** When the word is added. */

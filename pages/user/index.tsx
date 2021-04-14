@@ -1,18 +1,23 @@
-/* eslint-disable no-param-reassign */
 import React from 'react';
 import {
-  Box, Container, IconButton, makeStyles, Typography, Tooltip,
+  Box, Container, IconButton, makeStyles, Typography, Tooltip, Button,
 } from '@material-ui/core';
 import { Add, Refresh } from '@material-ui/icons';
 import withUserSignedIn, { WithUserSignedInProps } from 'src/HOC/withUserSignedIn';
+import AddWordDialog from '../../src/dialog/AddWordDialog';
 
 const userPageStyle = makeStyles((theme) => ({
   button: { marginLeft: theme.spacing(1) },
 }));
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function User({ user }: WithUserSignedInProps) {
   const classes = userPageStyle();
+  const [userDialogState, setUserDialogState] = React.useState({
+    firstDialogOpen: false,
+  });
+
+  const openFirstDialog = () => setUserDialogState((s) => ({ ...s, firstDialogOpen: true }));
+  const closeFirstDialog = () => setUserDialogState((s) => ({ ...s, firstDialogOpen: false }));
 
   return (
     <Container maxWidth="md" fixed>
@@ -21,19 +26,23 @@ function User({ user }: WithUserSignedInProps) {
           Manage Words
         </Typography>
 
-        {/* Pannel */}
+        {/* Panel */}
         <Box display="flex" flexDirection="row" justifyContent="flex-start" alignItems="center" flexWrap="wrap">
-          <Tooltip title="Add Words" placement="bottom">
-            <IconButton className={classes.button} color="primary">
-              <Add />
-            </IconButton>
-          </Tooltip>
           <Tooltip title="Refresh" placement="bottom">
             <IconButton className={classes.button} color="primary">
               <Refresh />
             </IconButton>
           </Tooltip>
+          <div style={{ flex: 1 }} />
+          <Button startIcon={<Add />} variant="contained" color="primary" onClick={openFirstDialog}>
+            Add
+          </Button>
         </Box>
+
+        <AddWordDialog
+          firstDialogOpen={userDialogState.firstDialogOpen}
+          closeFirstDialog={closeFirstDialog}
+        />
 
       </Box>
     </Container>
