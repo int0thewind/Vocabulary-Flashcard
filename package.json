@@ -6,9 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "deploy": "next build && next start",
     "lint": "eslint . --max-warnings 0",
     "test:e2e": "cypress run",
-    "test:unit": "mocha --exit",
+    "test:unit": "mocha --exit --timeout 10000",
     "emulators:start": "firebase emulators:start --import=firebase-emulators-data",
     "emulators:modify": "firebase emulators:start --import=firebase-emulators-data --export-on-exit=firebase-emulators-data"
   },

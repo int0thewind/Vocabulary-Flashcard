@@ -9,6 +9,7 @@ if (!admin.apps.length) {
       databaseURL: 'https://vocabulary-flashcard-dev-default-rtdb.firebaseio.com',
     });
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.log('Firebase admin initialization error', error.stack);
   }
 }
