@@ -24,12 +24,12 @@ function User({ user }: WithUserSignedInProps) {
         {/* Pannel */}
         <Box display="flex" flexDirection="row" justifyContent="flex-start" alignItems="center" flexWrap="wrap">
           <Tooltip title="Add Words" placement="top">
-            <IconButton className={classes.button}>
+            <IconButton className={classes.button} color="primary">
               <AddRounded />
             </IconButton>
           </Tooltip>
           <Tooltip title="Refresh" placement="top">
-            <IconButton className={classes.button}>
+            <IconButton className={classes.button} color="primary">
               <RefreshRounded />
             </IconButton>
           </Tooltip>

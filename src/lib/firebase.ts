@@ -1,9 +1,9 @@
 /**
  * Firebase Connection Module.
  *
- * This module initializes the Firebase app and exports Firebase app instance.
- * Firebase emulators would be started if not in production mode.
- * React hooks and functions related to firebase are also defined.
+ * This module initializes the Firebase app, exports Firebase app instance,
+ * starts Firebase emulators if not in production mode,
+ * and defines Firebase related React hooks and Firestore routines.
  *
  * @author Hanzhi Yin.
  * @since  0.1.0
@@ -29,6 +29,7 @@ if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 
 export const appAuth = firebase.auth();
 export const appFirestore = firebase.firestore();
+export const appUsersCollection = appFirestore.collection('users');
 
 if (process.env.NODE_ENV !== 'production') {
   appAuth.useEmulator('http://localhost:9099');
