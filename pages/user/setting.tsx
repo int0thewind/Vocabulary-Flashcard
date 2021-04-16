@@ -150,7 +150,7 @@ function UserSettings({ user }: WithUserSignedInProps) {
     <Container maxWidth="md" fixed>
       <Box padding={2}>
         {/* Title of the page */}
-        <Typography color="textPrimary" variant="h3" gutterBottom>
+        <Typography color="textPrimary" variant="h2" gutterBottom>
           Account Settings
         </Typography>
 
