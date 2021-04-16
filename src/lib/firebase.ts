@@ -99,9 +99,29 @@ export async function addWordToUser(wordData: Word) {
   return getUserWordCollection().doc().set(wordData);
 }
 
-export async function getWordFromUser(word: string) {
+/**
+ * Acquire a word by its exact literal.
+ *
+ * @param word the word to search.
+ */
+export async function getWordFromUser(word: string): Promise<Word> {
   return getUserWordCollection()
     .where('literal', '==', word)
     .limit(1)
-    .get();
+    .get()
+    .then((querySnapshot) => querySnapshot.docs[0].data() as Word);
+}
+
+/** Acquire all words. */
+export async function getAllWordFromUser() {
+  return getUserWordCollection().get();
+}
+
+export async function deleteWordFromUser(word: string) {
+  const docId = await getUserWordCollection()
+    .where('literal', '==', word)
+    .limit(1)
+    .get()
+    .then((snapshot) => snapshot.docs[0].id);
+  return getUserWordCollection().doc(docId).delete();
 }

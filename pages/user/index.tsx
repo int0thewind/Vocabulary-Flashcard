@@ -1,19 +1,44 @@
 import React from 'react';
 import {
-  Box, Container, IconButton, makeStyles, Typography, Tooltip, Button, Grid,
+  Box,
+  Container,
+  IconButton,
+  makeStyles,
+  Typography,
+  Tooltip,
+  Grid,
+  Paper,
+  Checkbox,
 } from '@material-ui/core';
 import {
   Add, Refresh, GetApp as Export, Delete,
 } from '@material-ui/icons';
 import Link from 'next/link';
 import withUserSignedIn, { WithUserSignedInProps } from 'src/HOC/withUserSignedIn';
+import { getAllWordFromUser } from '../../src/lib/firebase';
+import WordDisplayComponent from '../../src/component/WordDisplayComponent';
 
 const userPageStyle = makeStyles((theme) => ({
-  button: { marginLeft: theme.spacing(1) },
+  toolbar: { marginBottom: theme.spacing(2) },
 }));
 
 function User({ user }: WithUserSignedInProps) {
   const classes = userPageStyle();
+
+  const [wordList, setWordList] = React.useState<string[]>([]);
+
+  const refresh = () => {
+    getAllWordFromUser()
+      .then((querySnapshot) => {
+        const list = querySnapshot.docs
+          .map((val) => val.get('literal') as string);
+        setWordList(list);
+      });
+  };
+
+  React.useEffect(() => {
+    refresh();
+  });
 
   return (
     <Container maxWidth="md" fixed>
@@ -24,30 +49,36 @@ function User({ user }: WithUserSignedInProps) {
         </Typography>
 
         {/* Panel */}
-        <Box display="flex" flexDirection="row" justifyContent="flex-start" alignItems="center" flexWrap="wrap">
-          <Tooltip title="Refresh" placement="bottom">
-            <IconButton className={classes.button} color="primary">
-              <Refresh />
-            </IconButton>
-          </Tooltip>
-          <Link href="/user/add">
-            <Button startIcon={<Add />} variant="contained" color="primary" className={classes.button}>
-              Add
-            </Button>
-          </Link>
-
-          <div style={{ flex: 1 }} />
-
-          <Button startIcon={<Delete />} variant="contained" color="secondary" className={classes.button}>
-            Delete
-          </Button>
-          <Button startIcon={<Export />} variant="contained" className={classes.button}>
-            Export
-          </Button>
-        </Box>
+        <Paper elevation={3} className={classes.toolbar}>
+          <Box display="flex" flexDirection="row" justifyContent="flex-start" alignItems="center" flexWrap="wrap" margin={1}>
+            <Tooltip title="Refresh" placement="bottom">
+              <IconButton color="primary" onClick={refresh}><Refresh /></IconButton>
+            </Tooltip>
+            <Link href="/user/add">
+              <Tooltip title="Add" placement="bottom">
+                <IconButton color="primary"><Add /></IconButton>
+              </Tooltip>
+            </Link>
+            <Tooltip title="Delete" placement="bottom">
+              <IconButton color="secondary"><Delete /></IconButton>
+            </Tooltip>
+            <Tooltip title="Export" placement="bottom">
+              <IconButton><Export /></IconButton>
+            </Tooltip>
+          </Box>
+        </Paper>
 
         {/* Word List */}
-        <Grid />
+        <Grid container spacing={1}>
+          {wordList.map((word) => (
+            <Grid item xs={12} sm={6} md={4} key={word}>
+              <Paper>
+                <Checkbox color="primary" />
+                <WordDisplayComponent word={word} />
+              </Paper>
+            </Grid>
+          ))}
+        </Grid>
       </Box>
     </Container>
   );
