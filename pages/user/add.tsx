@@ -95,7 +95,7 @@ function AddWord() {
   };
 
   return (
-    <Container>
+    <Container fixed maxWidth="md">
       <Box padding={1}>
         <Typography variant="h2" color="textPrimary" gutterBottom>
           Add Word
