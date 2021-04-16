@@ -9,6 +9,7 @@ import firebase from 'firebase/app';
 import withUserSignedIn from '../../src/HOC/withUserSignedIn';
 import { addWord, checkWordExist } from '../../src/lib/firebase';
 import Word from '../../src/type/Word';
+import { useFlag } from '../../src/lib/hooks';
 
 const addWordStyle = makeStyles((theme) => ({
   queryForm: {
@@ -37,23 +38,25 @@ function AddWord() {
   const classes = addWordStyle();
   const { enqueueSnackbar } = useSnackbar();
 
+  // TODO: dictionary API may return possible words if a word is incorrect.
   const [wordSuggestion, setWordSuggestion] = React.useState<string[]>([]);
   const [source, setSource] = React.useState('MW');
   const onSourceChange = (e: React.ChangeEvent<{ name?: string; value: unknown }>) => {
     e.preventDefault();
     setSource(e.target.value as string);
   };
+  const [fetchButtonClicked, setFetchClickedTrue, setFetchedClickedFalse] = useFlag();
 
   const submitQueryForm = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // const data = new FormData(e.currentTarget);
+    setFetchClickedTrue();
+    // TODO: finish dictionary API.
   };
 
   const submitAddWordForm = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
     const literal = data.get('literal');
-
     if (!literal) {
       enqueueSnackbar('A word must exist', { variant: 'error' });
       return;
@@ -62,40 +65,34 @@ function AddWord() {
       enqueueSnackbar('A word must has definition.', { variant: 'error' });
       return;
     }
-
-    checkWordExist(literal as string) // The form only has strings.
-      .then((cond) => {
-        if (cond) {
-          enqueueSnackbar(
-            `The word "${literal}" has existed. Consider update it.`, { variant: 'error' },
-          );
-        } else {
-          const wordData: Word = {
-            literal: literal as string,
-            source,
-            definition: data.get('definition') as string,
-            phoneticSymbol: data.get('phonetic') as string,
-            sampleSentence: data.get('sampleSentence') as string,
-            etymology: data.get('etymology') as string,
-            related: (data.get('related') as string)
-              .split(',').map((s) => s.trim()),
-            addedAt: firebase.firestore.Timestamp.now(),
-            nextDue: firebase.firestore.Timestamp.now(),
-            prevGapDays: 1,
-          };
-          addWord(wordData)
-            .then(() => {
-              enqueueSnackbar(`"${literal}" added.`, { variant: 'success' });
-            })
-            .catch(() => {
-              enqueueSnackbar(`Failed to add word "${literal}"`, { variant: 'error' });
-            });
-        }
-      })
-      .catch((error) => {
-        enqueueSnackbar(error, { variant: 'error' });
-      });
+    checkWordExist(literal as string).then((cond) => {
+      if (cond) {
+        enqueueSnackbar(`The word "${literal}" has existed.`, { variant: 'error' });
+      } else {
+        const wordData: Word = {
+          literal: literal as string,
+          source: fetchButtonClicked ? source : 'Manual',
+          definition: data.get('definition') as string,
+          phoneticSymbol: data.get('phonetic') as string,
+          sampleSentence: data.get('sampleSentence') as string,
+          etymology: data.get('etymology') as string,
+          related: (data.get('related') as string)
+            .split(',').map((s) => s.trim()),
+          addedAt: firebase.firestore.Timestamp.now(),
+          nextDue: firebase.firestore.Timestamp.now(),
+          prevGapDays: 1,
+        };
+        addWord(wordData).then(() => {
+          enqueueSnackbar(`"${literal}" added.`, { variant: 'success' });
+        }).catch(() => {
+          enqueueSnackbar(`Failed to add word "${literal}"`, { variant: 'error' });
+        });
+      }
+    }).catch((error) => {
+      enqueueSnackbar(error, { variant: 'error' });
+    });
   };
+  const resetAddWordForm = () => setFetchedClickedFalse();
 
   return (
     <Container fixed maxWidth="md">
@@ -134,7 +131,11 @@ function AddWord() {
           )}
         </Paper>
 
-        <form className={classes.fillInForm} onSubmit={submitAddWordForm}>
+        <form
+          className={classes.fillInForm}
+          onSubmit={submitAddWordForm}
+          onReset={resetAddWordForm}
+        >
           <TextField name="literal" variant="outlined" label="Word Literal" />
           <TextField name="phonetic" variant="outlined" label="Phonetic Symbol" />
           <TextField fullWidth multiline rows={3} label="Definition" name="definition" variant="outlined" />

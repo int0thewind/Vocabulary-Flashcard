@@ -15,7 +15,7 @@ import { useRouter } from 'next/dist/client/router';
 import { useSnackbar } from 'notistack';
 import MiddleCenter from 'src/component/MiddleCenter';
 
-/** Type of UserComponent Prop. Packed witn Firebase user. */
+/** Type of UserComponent Prop. Packed with Firebase user. */
 export type WithUserSignedInProps = {
   user: firebase.User;
 };
@@ -25,14 +25,14 @@ type UserComponent = React.FunctionComponent<WithUserSignedInProps>;
 /**
  * Inject certain logics and components into a given React Component.
  *
- * Most user pages shares same logics and components.
- * This HOF wraps those same logics and components
- * by creating a function that returns a React Component.
+ * User related pages should not be accessible if no user is signed in.
+ * Getting users also requires some time, which may be long to wait.
+ * This HOC injects user handling components and actions to a given user page component.
  *
- * If the user is still loading, the page should be loading.
- * If an error occurred, the error should be displayed.
+ * If the page is still waiting for user state, the page should be loading.
+ * If an error occurred, it should be displayed.
  * If no user signed in, the page should be routed to '/signin'.
- * Otherwise, show the `UserComponent`.
+ * Otherwise, show `UserComponent`.
  *
  * The `UserComponent` must accept `user` to be a React component prop.
  * The `user` prop is an instance of Firebase user, which is guaranteed to be a valid instance.
@@ -50,7 +50,7 @@ function withUserSignedIn(UserComponent: UserComponent): React.FunctionComponent
     React.useEffect(() => {
       if (!(loading || error) && !user) {
         enqueueSnackbar('You are not signed in.', { variant: 'warning' });
-        router.push('/signin');
+        router.push('/signin').then();
       }
       if (error) {
         enqueueSnackbar(`${error.code}: ${error.message}`, { variant: 'error' });
