@@ -17,6 +17,7 @@ const userPageStyle = makeStyles((theme) => ({
 function User() {
   const classes = userPageStyle();
   const [wordList, setWordList] = React.useState<string[]>([]);
+  const selectFormRef = React.useRef<HTMLFormElement>(null);
 
   const refresh = () => {
     getAllWord()
@@ -25,6 +26,11 @@ function User() {
           .map((val) => val.get('literal') as string);
         setWordList(list);
       });
+  };
+
+  const deleteOrExport = () => {
+    const data = new FormData(selectFormRef.current ?? undefined);
+    console.log(new Map(data.entries()));
   };
 
   React.useEffect(() => {
@@ -50,26 +56,28 @@ function User() {
                 <IconButton color="primary"><Add /></IconButton>
               </Tooltip>
             </Link>
-            <Tooltip title="Delete" placement="bottom">
+            <Tooltip title="Delete" placement="bottom" onClick={deleteOrExport}>
               <IconButton color="secondary"><Delete /></IconButton>
             </Tooltip>
-            <Tooltip title="Export" placement="bottom">
+            <Tooltip title="Export" placement="bottom" onClick={deleteOrExport}>
               <IconButton><Export /></IconButton>
             </Tooltip>
           </Box>
         </Paper>
 
         {/* Word List */}
-        <Grid container spacing={1}>
-          {wordList.map((word) => (
-            <Grid item xs={12} sm={6} md={4} key={word}>
-              <Paper>
-                <Checkbox color="primary" name={word} />
-                <WordDisplayComponent word={word} refresh={refresh} />
-              </Paper>
-            </Grid>
-          ))}
-        </Grid>
+        <form ref={selectFormRef}>
+          <Grid container spacing={1}>
+            {wordList.map((word) => (
+              <Grid item xs={12} sm={6} md={4} key={word}>
+                <Paper>
+                  <Checkbox color="primary" name={word} />
+                  <WordDisplayComponent word={word} refresh={refresh} />
+                </Paper>
+              </Grid>
+            ))}
+          </Grid>
+        </form>
       </Box>
     </Container>
   );
