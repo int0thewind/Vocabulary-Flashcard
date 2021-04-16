@@ -13,6 +13,7 @@ import React from 'react';
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
+import Word from '../type/Word';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyA1idIe2_-3X4oL7Z6GV-QOyxVIlZib8MM',
@@ -34,6 +35,12 @@ export const appUsersCollection = appFirestore.collection('users');
 if (process.env.NODE_ENV !== 'production') {
   appAuth.useEmulator('http://localhost:9099');
   appFirestore.useEmulator('localhost', 8080);
+}
+
+function getUserWordCollection() {
+  const uid = appAuth.currentUser?.uid;
+  if (!uid) throw Error('No user has signed in');
+  return appUsersCollection.doc(uid).collection('words');
 }
 
 type UseFirebaseUserType = [firebase.User | null, boolean, firebase.auth.Error | null];
@@ -68,4 +75,33 @@ export function useFirebaseUser(): UseFirebaseUserType {
   }, []);
 
   return [user, loading, error];
+}
+
+/**
+ * Check whether a word is existed in the user's word collection.
+ *
+ * @param word the word to check
+ * @returns a boolean promise indicating the word is already existed or not.
+ */
+export async function checkWordExist(word: string) {
+  return getUserWordCollection()
+    .where('literal', '==', word)
+    .get()
+    .then((querySnapshot) => querySnapshot.size !== 0);
+}
+
+/**
+ * Add a word to the current user.
+ *
+ * @param wordData an object contains all the information of a word.
+ */
+export async function addWordToUser(wordData: Word) {
+  return getUserWordCollection().doc().set(wordData);
+}
+
+export async function getWordFromUser(word: string) {
+  return getUserWordCollection()
+    .where('literal', '==', word)
+    .limit(1)
+    .get();
 }

@@ -1,10 +1,12 @@
 import React from 'react';
 import {
-  Box, Container, IconButton, makeStyles, Typography, Tooltip, Button,
+  Box, Container, IconButton, makeStyles, Typography, Tooltip, Button, Grid,
 } from '@material-ui/core';
-import { Add, Refresh } from '@material-ui/icons';
+import {
+  Add, Refresh, GetApp as Export, Delete,
+} from '@material-ui/icons';
+import Link from 'next/link';
 import withUserSignedIn, { WithUserSignedInProps } from 'src/HOC/withUserSignedIn';
-import AddWordDialog from '../../src/dialog/AddWordDialog';
 
 const userPageStyle = makeStyles((theme) => ({
   button: { marginLeft: theme.spacing(1) },
@@ -12,16 +14,11 @@ const userPageStyle = makeStyles((theme) => ({
 
 function User({ user }: WithUserSignedInProps) {
   const classes = userPageStyle();
-  const [userDialogState, setUserDialogState] = React.useState({
-    firstDialogOpen: false,
-  });
-
-  const openFirstDialog = () => setUserDialogState((s) => ({ ...s, firstDialogOpen: true }));
-  const closeFirstDialog = () => setUserDialogState((s) => ({ ...s, firstDialogOpen: false }));
 
   return (
     <Container maxWidth="md" fixed>
       <Box padding={1}>
+        {/* Title */}
         <Typography color="textPrimary" variant="h2" gutterBottom>
           Manage Words
         </Typography>
@@ -33,17 +30,24 @@ function User({ user }: WithUserSignedInProps) {
               <Refresh />
             </IconButton>
           </Tooltip>
+          <Link href="/user/add">
+            <Button startIcon={<Add />} variant="contained" color="primary" className={classes.button}>
+              Add
+            </Button>
+          </Link>
+
           <div style={{ flex: 1 }} />
-          <Button startIcon={<Add />} variant="contained" color="primary" onClick={openFirstDialog}>
-            Add
+
+          <Button startIcon={<Delete />} variant="contained" color="secondary" className={classes.button}>
+            Delete
+          </Button>
+          <Button startIcon={<Export />} variant="contained" className={classes.button}>
+            Export
           </Button>
         </Box>
 
-        <AddWordDialog
-          firstDialogOpen={userDialogState.firstDialogOpen}
-          closeFirstDialog={closeFirstDialog}
-        />
-
+        {/* Word List */}
+        <Grid />
       </Box>
     </Container>
   );
