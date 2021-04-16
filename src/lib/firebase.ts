@@ -111,9 +111,17 @@ export async function getAWord(word: string): Promise<Word> {
     .then((querySnapshot) => querySnapshot.docs[0].data() as Word);
 }
 
+export async function getMultipleWords(words: string[]): Promise<Word[]> {
+  return Promise.all(words.map((w) => getAWord(w)));
+}
+
 /** Acquire all words. */
-export async function getAllWord() {
-  return getUserWordCollection().get();
+export async function getAllWordLiteral(): Promise<string[]> {
+  return getUserWordCollection()
+    .get()
+    .then((snapshot) => snapshot.docs.map(
+      (v) => v.get('literal') as string,
+    ));
 }
 
 /**
@@ -122,10 +130,9 @@ export async function getAllWord() {
  * @param word the word to delete.
  */
 export async function deleteWord(word: string) {
-  const docId = await getUserWordCollection()
+  return getUserWordCollection()
     .where('literal', '==', word)
     .limit(1)
     .get()
-    .then((snapshot) => snapshot.docs[0].id);
-  return getUserWordCollection().doc(docId).delete();
+    .then((snapshot) => snapshot.docs[0].ref.delete());
 }

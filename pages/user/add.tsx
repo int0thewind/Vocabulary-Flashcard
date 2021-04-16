@@ -1,10 +1,12 @@
 import React from 'react';
-import withUserSignedIn from 'src/HOC/withUserSignedIn';
+import Link from 'next/link';
 import {
   Box, Button, Container, makeStyles, MenuItem, Paper, Select, TextField, Typography,
 } from '@material-ui/core';
+import { ArrowBack } from '@material-ui/icons';
 import { useSnackbar } from 'notistack';
 import firebase from 'firebase/app';
+import withUserSignedIn from '../../src/HOC/withUserSignedIn';
 import { addWord, checkWordExist } from '../../src/lib/firebase';
 import Word from '../../src/type/Word';
 
@@ -21,6 +23,7 @@ const addWordStyle = makeStyles((theme) => ({
   },
   queryFormPaper: {
     padding: theme.spacing(2),
+    marginTop: theme.spacing(3),
   },
   fillInForm: {
     marginTop: theme.spacing(3),
@@ -60,7 +63,7 @@ function AddWord() {
       return;
     }
 
-    checkWordExist(data.get('literal') as string) // The form only has strings.
+    checkWordExist(literal as string) // The form only has strings.
       .then((cond) => {
         if (cond) {
           enqueueSnackbar(
@@ -96,10 +99,16 @@ function AddWord() {
 
   return (
     <Container fixed maxWidth="md">
-      <Box padding={1}>
+      <Box padding={2}>
         <Typography variant="h2" color="textPrimary" gutterBottom>
           Add Word
         </Typography>
+
+        <Link href="/user">
+          <Button startIcon={<ArrowBack />} variant="contained" color="primary">
+            Back
+          </Button>
+        </Link>
 
         <Paper elevation={3} className={classes.queryFormPaper}>
           <Typography variant="h6" color="textSecondary" gutterBottom>

@@ -1,13 +1,25 @@
 import React from 'react';
 import {
-  Box, Container, IconButton, makeStyles, Typography, Tooltip, Grid, Paper, Checkbox,
+  Box,
+  Container,
+  IconButton,
+  makeStyles,
+  Typography,
+  Tooltip,
+  Grid,
+  Paper,
+  Checkbox,
+  Dialog,
+  Link as MuiLink,
+  DialogTitle, DialogContent, DialogContentText, DialogActions, Button,
 } from '@material-ui/core';
 import {
   Add, Refresh, GetApp as Export, Delete,
 } from '@material-ui/icons';
 import Link from 'next/link';
 import withUserSignedIn from 'src/HOC/withUserSignedIn';
-import { getAllWord } from '../../src/lib/firebase';
+import { useSnackbar } from 'notistack';
+import { deleteWord, getAllWordLiteral, getMultipleWords } from '../../src/lib/firebase';
 import WordDisplayComponent from '../../src/component/WordDisplayComponent';
 
 const userPageStyle = makeStyles((theme) => ({
@@ -16,30 +28,60 @@ const userPageStyle = makeStyles((theme) => ({
 
 function User() {
   const classes = userPageStyle();
+  const { enqueueSnackbar } = useSnackbar();
+
+  // Refresh list related
   const [wordList, setWordList] = React.useState<string[]>([]);
-  const selectFormRef = React.useRef<HTMLFormElement>(null);
-
   const refresh = () => {
-    getAllWord()
-      .then((querySnapshot) => {
-        const list = querySnapshot.docs
-          .map((val) => val.get('literal') as string);
-        setWordList(list);
-      });
+    getAllWordLiteral().then((list) => setWordList(list));
+  };
+  React.useEffect(() => { refresh(); }, []);
+
+  // Checkbox selected
+  const [selectedWordList, setSelectedWordList] = React.useState<string[]>([]);
+  const selectFormRef = React.useRef<HTMLFormElement>(null);
+  const getAllSelectedWords = () => Array.from(
+    new FormData(selectFormRef.current ?? undefined).keys(),
+  );
+
+  // Batch delete words related
+  const [batchDeleteDialogOpen, setBatchDeleteDialogOpen] = React.useState(false);
+  const closeBatchDeleteDialog = () => setBatchDeleteDialogOpen(false);
+  const batchDeleteCheck = () => {
+    const words = getAllSelectedWords();
+    setSelectedWordList(words);
+    if (words.length !== 0) setBatchDeleteDialogOpen(true);
+  };
+  const batchDelete = () => {
+    const tasks = selectedWordList.map((w) => deleteWord(w));
+    Promise.all(tasks).then(() => {
+      enqueueSnackbar('Batch delete successful.', { variant: 'success' });
+      closeBatchDeleteDialog();
+      refresh();
+    }).catch((e) => {
+      enqueueSnackbar(e, { variant: 'error' });
+    });
   };
 
-  const deleteOrExport = () => {
-    const data = new FormData(selectFormRef.current ?? undefined);
-    console.log(new Map(data.entries()));
+  // Batch export words related
+  const [exportDialogOpen, setExportDialogOpen] = React.useState(false);
+  const closeExportDialog = () => setExportDialogOpen(false);
+  const [exportLink, setExportLink] = React.useState('');
+  const batchExport = () => {
+    const keys = getAllSelectedWords();
+    if (keys.length === 0) return;
+    getMultipleWords(keys)
+      .then((w) => JSON.stringify(w))
+      .then((s) => {
+        setExportLink(`data:text/plain;charset=utf-8,${encodeURIComponent(s)}`);
+        setExportDialogOpen(true);
+      })
+      .catch((e) => enqueueSnackbar(e, { variant: 'error' }));
   };
-
-  React.useEffect(() => {
-    refresh();
-  }, []);
 
   return (
     <Container maxWidth="md" fixed>
-      <Box padding={1}>
+      <Box padding={2}>
         {/* Title */}
         <Typography color="textPrimary" variant="h2" gutterBottom>
           Manage Words
@@ -48,20 +90,21 @@ function User() {
         {/* Panel */}
         <Paper elevation={3} className={classes.toolbar}>
           <Box display="flex" flexDirection="row" justifyContent="flex-start" alignItems="center" flexWrap="wrap" margin={1}>
-            <Tooltip title="Refresh" placement="bottom">
-              <IconButton color="primary" onClick={refresh}><Refresh /></IconButton>
-            </Tooltip>
-            <Link href="/user/add">
-              <Tooltip title="Add" placement="bottom">
-                <IconButton color="primary"><Add /></IconButton>
-              </Tooltip>
-            </Link>
-            <Tooltip title="Delete" placement="bottom" onClick={deleteOrExport}>
+            <Tooltip title="Delete" placement="bottom" onClick={batchDeleteCheck}>
               <IconButton color="secondary"><Delete /></IconButton>
             </Tooltip>
-            <Tooltip title="Export" placement="bottom" onClick={deleteOrExport}>
+            <Tooltip title="Export" placement="bottom" onClick={batchExport}>
               <IconButton><Export /></IconButton>
             </Tooltip>
+            <div style={{ flex: 1 }} />
+            <Button startIcon={<Refresh />} onClick={refresh}>
+              Refresh
+            </Button>
+            <Link href="/user/add">
+              <Button startIcon={<Add />} color="primary">
+                Add Word
+              </Button>
+            </Link>
           </Box>
         </Paper>
 
@@ -78,6 +121,35 @@ function User() {
             ))}
           </Grid>
         </form>
+
+        {/* Batch Delete Prompt. */}
+        <Dialog open={batchDeleteDialogOpen} onClose={closeBatchDeleteDialog}>
+          <DialogTitle>Batch Delete</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              {`Are you sure you want to delete 
+              ${selectedWordList.map((w) => `"${w}"`).join(', ')}?`}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={closeBatchDeleteDialog}>Cancel</Button>
+            <Button color="secondary" onClick={batchDelete}>Delete</Button>
+          </DialogActions>
+        </Dialog>
+
+        <Dialog open={exportDialogOpen} onClose={closeExportDialog}>
+          <DialogTitle>Export</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Your export data is ready.
+            </DialogContentText>
+            <DialogContentText>
+              <MuiLink href={exportLink} download="export.json">
+                Export
+              </MuiLink>
+            </DialogContentText>
+          </DialogContent>
+        </Dialog>
       </Box>
     </Container>
   );
