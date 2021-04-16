@@ -4,8 +4,6 @@ import {
   Box,
   Button,
   Container,
-  Dialog,
-  DialogTitle,
   makeStyles,
   MenuItem,
   Paper,
@@ -15,7 +13,7 @@ import {
 } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
 import firebase from 'firebase/app';
-import { checkWordExist } from '../../src/lib/firebase';
+import { addWordToUser, checkWordExist } from '../../src/lib/firebase';
 import Word from '../../src/type/Word';
 
 const addWordStyle = makeStyles((theme) => ({
@@ -45,17 +43,24 @@ function AddWord({ user }: WithUserSignedInProps) {
   const { enqueueSnackbar } = useSnackbar();
 
   const [wordSuggestion, setWordSuggestion] = React.useState<string[]>([]);
+  const [source, setSource] = React.useState('MW');
+  const onSourceChange = (e: React.ChangeEvent<{ name?: string; value: unknown }>) => {
+    e.preventDefault();
+    setSource(e.target.value as string);
+  };
 
   const submitQueryForm = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     const data = new FormData(e.currentTarget);
-    console.log(data);
+    console.log(new Map(data.entries()));
   };
 
   const addWord = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
+    const literal = data.get('literal');
 
-    if (!data.get('literal')) {
+    if (!literal) {
       enqueueSnackbar('A word must exist', { variant: 'error' });
       return;
     }
@@ -66,11 +71,14 @@ function AddWord({ user }: WithUserSignedInProps) {
 
     checkWordExist(data.get('literal') as string) // The form only has strings.
       .then((cond) => {
-        if (cond === true) {
-          // Open Dialog
+        if (cond) {
+          enqueueSnackbar(
+            `The word "${literal}" has existed. Consider update it.`, { variant: 'error' },
+          );
         } else {
           const wordData: Word = {
-            literal: data.get('literal') as string,
+            literal: literal as string,
+            source,
             definition: data.get('definition') as string,
             phoneticSymbol: data.get('phonetic') as string,
             sampleSentence: data.get('sampleSentence') as string,
@@ -79,7 +87,15 @@ function AddWord({ user }: WithUserSignedInProps) {
               .split(',').map((s) => s.trim()),
             addedAt: firebase.firestore.Timestamp.now(),
             nextDue: firebase.firestore.Timestamp.now(),
+            prevGapDays: 1,
           };
+          addWordToUser(wordData)
+            .then(() => {
+              enqueueSnackbar(`"${literal}" added.`, { variant: 'success' });
+            })
+            .catch(() => {
+              enqueueSnackbar(`Failed to add word "${literal}"`, { variant: 'error' });
+            });
         }
       })
       .catch((error) => {
@@ -87,7 +103,6 @@ function AddWord({ user }: WithUserSignedInProps) {
       });
   };
 
-  // @ts-ignore
   return (
     <Container>
       <Box padding={1}>
@@ -106,11 +121,11 @@ function AddWord({ user }: WithUserSignedInProps) {
               name="literal"
               variant="outlined"
             />
-            <select name="source">
-              <option value="MW">Merriam-Webster Collegiate Dictionary</option>
-              <option value="Oxford">Oxford Dictionary of English</option>
-            </select>
-            <Button color="primary" variant="outlined" type="submit">Fetch</Button>
+            <Select value={source} onChange={onSourceChange}>
+              <MenuItem value="MW">Merriam-Webster Collegiate Dictionary</MenuItem>
+              <MenuItem value="Oxford">Oxford Dictionary of English</MenuItem>
+            </Select>
+            <Button type="submit" color="primary" variant="outlined">Fetch</Button>
           </form>
           {Boolean(wordSuggestion.length) && (
           <Typography color="error" variant="caption">
@@ -128,7 +143,6 @@ function AddWord({ user }: WithUserSignedInProps) {
           <TextField fullWidth multiline rows={2} label="Related Words" name="related" variant="outlined" />
           <Button type="submit" color="primary" variant="contained">Add</Button>
         </form>
-
       </Box>
     </Container>
   );
