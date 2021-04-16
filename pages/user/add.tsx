@@ -1,19 +1,11 @@
 import React from 'react';
-import withUserSignedIn, { WithUserSignedInProps } from 'src/HOC/withUserSignedIn';
+import withUserSignedIn from 'src/HOC/withUserSignedIn';
 import {
-  Box,
-  Button,
-  Container,
-  makeStyles,
-  MenuItem,
-  Paper,
-  Select,
-  TextField,
-  Typography,
+  Box, Button, Container, makeStyles, MenuItem, Paper, Select, TextField, Typography,
 } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
 import firebase from 'firebase/app';
-import { addWordToUser, checkWordExist } from '../../src/lib/firebase';
+import { addWord, checkWordExist } from '../../src/lib/firebase';
 import Word from '../../src/type/Word';
 
 const addWordStyle = makeStyles((theme) => ({
@@ -38,7 +30,7 @@ const addWordStyle = makeStyles((theme) => ({
   },
 }));
 
-function AddWord({ user }: WithUserSignedInProps) {
+function AddWord() {
   const classes = addWordStyle();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -51,11 +43,10 @@ function AddWord({ user }: WithUserSignedInProps) {
 
   const submitQueryForm = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const data = new FormData(e.currentTarget);
-    console.log(new Map(data.entries()));
+    // const data = new FormData(e.currentTarget);
   };
 
-  const addWord = (e: React.FormEvent<HTMLFormElement>) => {
+  const submitAddWordForm = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
     const literal = data.get('literal');
@@ -89,7 +80,7 @@ function AddWord({ user }: WithUserSignedInProps) {
             nextDue: firebase.firestore.Timestamp.now(),
             prevGapDays: 1,
           };
-          addWordToUser(wordData)
+          addWord(wordData)
             .then(() => {
               enqueueSnackbar(`"${literal}" added.`, { variant: 'success' });
             })
@@ -134,7 +125,7 @@ function AddWord({ user }: WithUserSignedInProps) {
           )}
         </Paper>
 
-        <form className={classes.fillInForm} onSubmit={addWord}>
+        <form className={classes.fillInForm} onSubmit={submitAddWordForm}>
           <TextField name="literal" variant="outlined" label="Word Literal" />
           <TextField name="phonetic" variant="outlined" label="Phonetic Symbol" />
           <TextField fullWidth multiline rows={3} label="Definition" name="definition" variant="outlined" />
@@ -142,6 +133,7 @@ function AddWord({ user }: WithUserSignedInProps) {
           <TextField fullWidth multiline rows={2} label="Etymology" name="etymology" variant="outlined" />
           <TextField fullWidth multiline rows={2} label="Related Words" name="related" variant="outlined" />
           <Button type="submit" color="primary" variant="contained">Add</Button>
+          <Button type="reset">Clear Form</Button>
         </form>
       </Box>
     </Container>

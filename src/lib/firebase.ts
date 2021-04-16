@@ -37,12 +37,6 @@ if (process.env.NODE_ENV !== 'production') {
   appFirestore.useEmulator('localhost', 8080);
 }
 
-function getUserWordCollection() {
-  const uid = appAuth.currentUser?.uid;
-  if (!uid) throw Error('No user has signed in');
-  return appUsersCollection.doc(uid).collection('words');
-}
-
 type UseFirebaseUserType = [firebase.User | null, boolean, firebase.auth.Error | null];
 
 /**
@@ -77,11 +71,16 @@ export function useFirebaseUser(): UseFirebaseUserType {
   return [user, loading, error];
 }
 
+function getUserWordCollection() {
+  const uid = appAuth.currentUser?.uid;
+  if (!uid) throw Error('No user has signed in');
+  return appUsersCollection.doc(uid).collection('words');
+}
+
 /**
  * Check whether a word is existed in the user's word collection.
  *
  * @param word the word to check
- * @returns a boolean promise indicating the word is already existed or not.
  */
 export async function checkWordExist(word: string) {
   return getUserWordCollection()
@@ -95,7 +94,7 @@ export async function checkWordExist(word: string) {
  *
  * @param wordData an object contains all the information of a word.
  */
-export async function addWordToUser(wordData: Word) {
+export async function addWord(wordData: Word) {
   return getUserWordCollection().doc().set(wordData);
 }
 
@@ -104,7 +103,7 @@ export async function addWordToUser(wordData: Word) {
  *
  * @param word the word to search.
  */
-export async function getWordFromUser(word: string): Promise<Word> {
+export async function getAWord(word: string): Promise<Word> {
   return getUserWordCollection()
     .where('literal', '==', word)
     .limit(1)
@@ -113,11 +112,16 @@ export async function getWordFromUser(word: string): Promise<Word> {
 }
 
 /** Acquire all words. */
-export async function getAllWordFromUser() {
+export async function getAllWord() {
   return getUserWordCollection().get();
 }
 
-export async function deleteWordFromUser(word: string) {
+/**
+ * Delete a word in the user's collection.
+ *
+ * @param word the word to delete.
+ */
+export async function deleteWord(word: string) {
   const docId = await getUserWordCollection()
     .where('literal', '==', word)
     .limit(1)

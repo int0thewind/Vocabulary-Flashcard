@@ -10,14 +10,15 @@ import {
   DialogContentText,
 } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
-import { deleteWordFromUser, getWordFromUser } from '../lib/firebase';
+import { deleteWord, getAWord } from '../lib/firebase';
 import Word from '../type/Word';
 
 type Props = {
   word: string,
+  refresh: () => void,
 };
 
-function WordDisplayComponent({ word }: Props) {
+function WordDisplayComponent({ word, refresh }: Props) {
   const { enqueueSnackbar } = useSnackbar();
 
   const [wordDialogOpen, setWordDialogOpen] = React.useState(false);
@@ -31,16 +32,17 @@ function WordDisplayComponent({ word }: Props) {
   };
   const [wordData, setWordData] = React.useState<Word | null>(null);
 
-  const deleteWord = () => {
-    deleteWordFromUser(word).then(() => {
+  const submitToDelete = () => {
+    deleteWord(word).then(() => {
       enqueueSnackbar(`"${word}" successfully deleted.`, { variant: 'success' });
+      refresh();
     }).catch(() => {
       enqueueSnackbar(`Failed to delete "${word}".`, { variant: 'error' });
     });
   };
 
   React.useEffect(() => {
-    getWordFromUser(word).then(setWordData);
+    getAWord(word).then(setWordData);
   }, [word]);
 
   const buttonClick = () => openWordDialog();
@@ -75,7 +77,7 @@ function WordDisplayComponent({ word }: Props) {
         </DialogContent>
         <DialogActions>
           <Button onClick={closeDeleteConfirmDialog}>Cancel</Button>
-          <Button onClick={deleteWord} color="secondary">Delete Word</Button>
+          <Button onClick={submitToDelete} color="secondary">Delete Word</Button>
         </DialogActions>
       </Dialog>
 

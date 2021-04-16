@@ -1,34 +1,25 @@
 import React from 'react';
 import {
-  Box,
-  Container,
-  IconButton,
-  makeStyles,
-  Typography,
-  Tooltip,
-  Grid,
-  Paper,
-  Checkbox,
+  Box, Container, IconButton, makeStyles, Typography, Tooltip, Grid, Paper, Checkbox,
 } from '@material-ui/core';
 import {
   Add, Refresh, GetApp as Export, Delete,
 } from '@material-ui/icons';
 import Link from 'next/link';
-import withUserSignedIn, { WithUserSignedInProps } from 'src/HOC/withUserSignedIn';
-import { getAllWordFromUser } from '../../src/lib/firebase';
+import withUserSignedIn from 'src/HOC/withUserSignedIn';
+import { getAllWord } from '../../src/lib/firebase';
 import WordDisplayComponent from '../../src/component/WordDisplayComponent';
 
 const userPageStyle = makeStyles((theme) => ({
   toolbar: { marginBottom: theme.spacing(2) },
 }));
 
-function User({ user }: WithUserSignedInProps) {
+function User() {
   const classes = userPageStyle();
-
   const [wordList, setWordList] = React.useState<string[]>([]);
 
   const refresh = () => {
-    getAllWordFromUser()
+    getAllWord()
       .then((querySnapshot) => {
         const list = querySnapshot.docs
           .map((val) => val.get('literal') as string);
@@ -38,7 +29,7 @@ function User({ user }: WithUserSignedInProps) {
 
   React.useEffect(() => {
     refresh();
-  });
+  }, []);
 
   return (
     <Container maxWidth="md" fixed>
@@ -73,8 +64,8 @@ function User({ user }: WithUserSignedInProps) {
           {wordList.map((word) => (
             <Grid item xs={12} sm={6} md={4} key={word}>
               <Paper>
-                <Checkbox color="primary" />
-                <WordDisplayComponent word={word} />
+                <Checkbox color="primary" name={word} />
+                <WordDisplayComponent word={word} refresh={refresh} />
               </Paper>
             </Grid>
           ))}
