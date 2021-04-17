@@ -42,6 +42,6 @@ export async function MWQuery(word: string): Promise<WordFetch | string[]> {
   };
 }
 
-export async function OxfordQuery(word: string) {
+export async function OxfordQuery() {
   // TODO: finish Oxford query: same format as MW
 }
