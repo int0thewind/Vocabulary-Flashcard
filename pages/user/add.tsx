@@ -4,12 +4,14 @@ import {
   Box, Button, Container, makeStyles, MenuItem, Paper, Select, TextField, Typography,
 } from '@material-ui/core';
 import { ArrowBack } from '@material-ui/icons';
+import { Autocomplete } from '@material-ui/lab';
 import { useSnackbar } from 'notistack';
 import firebase from 'firebase/app';
 import withUserSignedIn from '../../src/HOC/withUserSignedIn';
 import { addWord, checkWordExist } from '../../src/lib/firebase';
-import Word from '../../src/type/Word';
+import { Word, WordFetch } from '../../src/type/Word';
 import { useFlag } from '../../src/lib/hooks';
+import { MWQuery } from '../../src/lib/api';
 
 const addWordStyle = makeStyles((theme) => ({
   queryForm: {
@@ -38,7 +40,15 @@ function AddWord() {
   const classes = addWordStyle();
   const { enqueueSnackbar } = useSnackbar();
 
-  // TODO: dictionary API may return possible words if a word is incorrect.
+  // Add word form input element
+  const literalRef = React.useRef<HTMLInputElement>(null);
+  const phoneticRef = React.useRef<HTMLInputElement>(null);
+  const definitionRef = React.useRef<HTMLInputElement>(null);
+  const sampleRef = React.useRef<HTMLInputElement>(null);
+  const etymologyRef = React.useRef<HTMLInputElement>(null);
+  const relatedRef = React.useRef<HTMLInputElement>(null);
+
+  // Query form related
   const [wordSuggestion, setWordSuggestion] = React.useState<string[]>([]);
   const [source, setSource] = React.useState('MW');
   const onSourceChange = (e: React.ChangeEvent<{ name?: string; value: unknown }>) => {
@@ -50,9 +60,28 @@ function AddWord() {
   const submitQueryForm = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setFetchClickedTrue();
-    // TODO: finish dictionary API.
+    const formData = new FormData(e.currentTarget);
+    const literal = formData.get('literal') as string;
+    if (source === 'MW') {
+      MWQuery(literal).then((val) => {
+        if (Array.isArray(val)) setWordSuggestion(val);
+        else {
+          const {
+            literal: lit, phoneticSymbol, definition, sampleSentence, etymology, related,
+          } = val as WordFetch;
+          setWordSuggestion([]);
+          if (literalRef.current) literalRef.current.value = lit ?? '';
+          if (phoneticRef.current) phoneticRef.current.value = phoneticSymbol ?? '';
+          if (definitionRef.current) definitionRef.current.value = definition ?? '';
+          if (sampleRef.current) sampleRef.current.value = sampleSentence ?? '';
+          if (etymologyRef.current) etymologyRef.current.value = etymology ?? '';
+          if (relatedRef.current) relatedRef.current.value = related?.join(', ') ?? '';
+        }
+      });
+    }
   };
 
+  // Add word form related.
   const submitAddWordForm = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
@@ -112,11 +141,14 @@ function AddWord() {
             Auto Query
           </Typography>
           <form onSubmit={submitQueryForm} className={classes.queryForm}>
-            <TextField
-              autoComplete={wordSuggestion.join(' ')}
-              label="Word Literal"
-              name="literal"
-              variant="outlined"
+            <Autocomplete
+              renderInput={(params) => (
+                // eslint-disable-next-line react/jsx-props-no-spreading
+                <TextField {...params} label="Word Literal" name="literal" variant="outlined" />
+              )}
+              freeSolo
+              options={wordSuggestion}
+              style={{ width: 300 }}
             />
             <Select value={source} onChange={onSourceChange}>
               <MenuItem value="MW">Merriam-Webster Collegiate Dictionary</MenuItem>
@@ -126,7 +158,7 @@ function AddWord() {
           </form>
           {Boolean(wordSuggestion.length) && (
           <Typography color="error" variant="caption">
-            {`Your input word does not exist. Did you mean one of ${wordSuggestion.join(' ,')}?`}
+            {`Your input word does not exist. Did you mean one of ${wordSuggestion.join(', ')}?`}
           </Typography>
           )}
         </Paper>
@@ -136,12 +168,12 @@ function AddWord() {
           onSubmit={submitAddWordForm}
           onReset={resetAddWordForm}
         >
-          <TextField name="literal" variant="outlined" label="Word Literal" />
-          <TextField name="phonetic" variant="outlined" label="Phonetic Symbol" />
-          <TextField fullWidth multiline rows={3} label="Definition" name="definition" variant="outlined" />
-          <TextField fullWidth multiline rows={2} label="Sample Sentence" name="sampleSentence" variant="outlined" />
-          <TextField fullWidth multiline rows={2} label="Etymology" name="etymology" variant="outlined" />
-          <TextField fullWidth multiline rows={2} label="Related Words" name="related" variant="outlined" />
+          <TextField inputRef={literalRef} name="literal" placeholder="Word Literal" />
+          <TextField inputRef={phoneticRef} name="phonetic" placeholder="Phonetic Symbol" />
+          <TextField inputRef={definitionRef} fullWidth multiline rows={3} placeholder="Definition" name="definition" />
+          <TextField inputRef={sampleRef} fullWidth multiline rows={2} placeholder="Sample Sentence" name="sampleSentence" />
+          <TextField inputRef={etymologyRef} fullWidth multiline rows={2} placeholder="Etymology" name="etymology" />
+          <TextField inputRef={relatedRef} fullWidth multiline rows={2} placeholder="Related Words" name="related" />
           <Button type="submit" color="primary" variant="contained">Add</Button>
           <Button type="reset">Clear Form</Button>
         </form>

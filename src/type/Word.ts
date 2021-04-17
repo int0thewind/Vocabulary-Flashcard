@@ -1,6 +1,7 @@
 import firebase from 'firebase/app';
 
-export default interface Word {
+/** Word entry type in each Firebase document. */
+export interface Word {
   /** The word literal. */
   literal: string;
 
@@ -30,4 +31,25 @@ export default interface Word {
 
   /** Last due date gaping days. */
   prevGapDays: number;
+}
+
+/** Minified word entry for API query. */
+export interface WordFetch {
+  /** The word literal. */
+  literal: string;
+
+  /** Phonetic symbol. */
+  phoneticSymbol?: string;
+
+  /** Word definition in one sentence. */
+  definition: string;
+
+  /** Sample sentence in one string. */
+  sampleSentence?: string;
+
+  /** Explanation of the word's origin. */
+  etymology?: string;
+
+  /** Related words to memorize together. */
+  related?: string[];
 }
