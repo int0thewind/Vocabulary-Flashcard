@@ -1,9 +1,9 @@
 /**
  * Firebase Connection Module.
  *
- * This module initializes the Firebase app and exports Firebase app instance.
- * Firebase emulators would be started if not in production mode.
- * React hooks and functions related to firebase are also defined.
+ * This module initializes the Firebase app, exports Firebase app instance,
+ * starts Firebase emulators if not in production mode,
+ * and defines Firebase related React hooks and Firestore routines.
  *
  * @author Hanzhi Yin.
  * @since  0.1.0
@@ -13,6 +13,7 @@ import React from 'react';
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
+import { Word } from '../type/Word';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyA1idIe2_-3X4oL7Z6GV-QOyxVIlZib8MM',
@@ -29,6 +30,7 @@ if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 
 export const appAuth = firebase.auth();
 export const appFirestore = firebase.firestore();
+export const appUsersCollection = appFirestore.collection('users');
 
 if (process.env.NODE_ENV !== 'production') {
   appAuth.useEmulator('http://localhost:9099');
@@ -67,4 +69,70 @@ export function useFirebaseUser(): UseFirebaseUserType {
   }, []);
 
   return [user, loading, error];
+}
+
+function getUserWordCollection() {
+  const uid = appAuth.currentUser?.uid;
+  if (!uid) throw Error('No user has signed in');
+  return appUsersCollection.doc(uid).collection('words');
+}
+
+/**
+ * Check whether a word is existed in the user's word collection.
+ *
+ * @param word the word to check
+ */
+export async function checkWordExist(word: string) {
+  return getUserWordCollection()
+    .where('literal', '==', word)
+    .get()
+    .then((querySnapshot) => querySnapshot.size !== 0);
+}
+
+/**
+ * Add a word to the current user.
+ *
+ * @param wordData an object contains all the information of a word.
+ */
+export async function addWord(wordData: Word) {
+  return getUserWordCollection().doc().set(wordData);
+}
+
+/**
+ * Acquire a word by its exact literal.
+ *
+ * @param word the word to search.
+ */
+export async function getAWord(word: string): Promise<Word> {
+  return getUserWordCollection()
+    .where('literal', '==', word)
+    .limit(1)
+    .get()
+    .then((querySnapshot) => querySnapshot.docs[0].data() as Word);
+}
+
+export async function getMultipleWords(words: string[]): Promise<Word[]> {
+  return Promise.all(words.map((w) => getAWord(w)));
+}
+
+/** Acquire all words. */
+export async function getAllWordLiteral(): Promise<string[]> {
+  return getUserWordCollection()
+    .get()
+    .then((snapshot) => snapshot.docs.map(
+      (v) => v.get('literal') as string,
+    ));
+}
+
+/**
+ * Delete a word in the user's collection.
+ *
+ * @param word the word to delete.
+ */
+export async function deleteWord(word: string) {
+  return getUserWordCollection()
+    .where('literal', '==', word)
+    .limit(1)
+    .get()
+    .then((snapshot) => snapshot.docs[0].ref.delete());
 }

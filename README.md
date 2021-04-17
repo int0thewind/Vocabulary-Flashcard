@@ -23,10 +23,7 @@ Install Java Runtime Environment. Firebase Emulators requires it.
 
 Run `yarn` to install dependencies. 
 
-Setup environment variables by acquiring API keys from Merriam Webster Collegiate Dictionary, Merriam Webster Collegiate Thesaurus, and Oxford Dictionary. Paste API keys in `env.local.sample` and rename it to `env.local`. `env.local` is the place to store secrets in [NextJS](https://nextjs.org/docs/basic-features/environment-variables#loading-environment-variables).
-
-Put the `GOOGLE_APPLICATION_CREDENTIALS` under the `util/db` folder with the name `serviceAccountKey.json`. 
-Details: https://firebase.google.com/docs/admin/setup
+Setup environment variables by acquiring API keys from Merriam-Webster Collegiate Dictionary, Merriam-ebster Collegiate Thesaurus, and Oxford Dictionary. Paste API keys in `env.local.sample` and rename it to `env.local`. `env.local` is the place to store secrets in [NextJS](https://nextjs.org/docs/basic-features/environment-variables#loading-environment-variables).
 
 ## Start the Development Server
 

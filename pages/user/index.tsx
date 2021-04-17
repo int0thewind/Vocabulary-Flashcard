@@ -1,137 +1,147 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable no-param-reassign */
 import React from 'react';
 import {
-  Box, Container, IconButton, makeStyles, Typography, Tooltip,
+  Box, Container, IconButton, makeStyles, Typography, Tooltip, Grid, Paper, Dialog,
+  Link as MuiLink, DialogTitle, DialogContent, DialogContentText, DialogActions, Button,
 } from '@material-ui/core';
-import { AddRounded, DeleteRounded, RefreshRounded } from '@material-ui/icons';
 import {
-  DataGrid, GridCellParams, GridColDef, GridToolbar,
-} from '@material-ui/data-grid';
-import axios from 'axios';
-import withUserSignedIn, { WithUserSignedInProps } from 'src/component/withUserSignedIn';
-import AddWordsDialog from 'src/dialog/AddWordsDialog';
-import DeleteWordsDialog from 'src/dialog/DeleteWordsDialog';
-import { WordDefinition, Definitions } from 'src/component/WordDefinition';
+  Add, Refresh, GetApp as Export, Delete, LocalLibrary,
+} from '@material-ui/icons';
+import Link from 'next/link';
+import { useSnackbar } from 'notistack';
+import withUserSignedIn from '../../src/HOC/withUserSignedIn';
+import { deleteWord, getAllWordLiteral, getMultipleWords } from '../../src/lib/firebase';
+import WordDisplayComponent from '../../src/component/WordDisplayComponent';
+import { useFlag } from '../../src/lib/hooks';
 
 const userPageStyle = makeStyles((theme) => ({
-  button: { marginLeft: theme.spacing(1) },
+  toolbar: { marginBottom: theme.spacing(2) },
+  toolbarElement: {
+    '& > *': { margin: theme.spacing(1) },
+  },
 }));
 
-function User({ user }: WithUserSignedInProps) {
-  const { uid } = user;
+function User() {
   const classes = userPageStyle();
+  const { enqueueSnackbar } = useSnackbar();
 
-  const [addWordDialogOpen, setAddWordDialogOpen] = React.useState(false);
-  const openAddWordDialog = () => setAddWordDialogOpen(true);
-  const closeAddWordDialog = () => setAddWordDialogOpen(false);
-  const [deleteWordDialogOpen, setDeleteWordDialogOpen] = React.useState(false);
-  const openDeleteWordDialog = () => setDeleteWordDialogOpen(true);
-  const closeDeleteWordDialog = () => setDeleteWordDialogOpen(false);
-  const [rowData, setRowData] = React.useState([]);
+  // Refresh list related
+  const [wordList, setWordList] = React.useState<string[]>([]);
+  const refresh = () => {
+    getAllWordLiteral().then((list) => setWordList(list));
+  };
+  React.useEffect(() => { refresh(); }, []);
 
-  const refreshDataGrid = async () => {
-    const response = await axios.get('/api/vocabularies', {
-      params: { uid, vocabulary: 'default' },
+  // Checkbox selected
+  const [selectedWordList, setSelectedWordList] = React.useState<string[]>([]);
+  const selectFormRef = React.useRef<HTMLFormElement>(null);
+  const getAllSelectedWords = () => Array.from(
+    new FormData(selectFormRef.current ?? undefined).keys(),
+  );
+
+  // Batch delete words related
+  const [batchDeleteDialogOpen,
+    openBatchDeleteDialog, closeBatchDeleteDialog] = useFlag();
+  const batchDeleteCheck = () => {
+    const words = getAllSelectedWords();
+    setSelectedWordList(words);
+    if (words.length !== 0) openBatchDeleteDialog();
+  };
+  const batchDelete = () => {
+    const tasks = selectedWordList.map((w) => deleteWord(w));
+    Promise.all(tasks).then(() => {
+      enqueueSnackbar('Batch delete successful.', { variant: 'success' });
+      closeBatchDeleteDialog();
+      refresh();
+    }).catch((e) => {
+      enqueueSnackbar(e, { variant: 'error' });
     });
-
-    const words = response.data;
-
-    await Promise.all(
-      words.map(async (word: { wordLiteral: string; addedAt: any }) => {
-        // @ts-ignore
-        word.id = word.wordLiteral;
-        word.addedAt = new Date(word.addedAt);
-        // @ts-ignore
-
-        word.learning = word.learningInfo.learning;
-
-        const wordsResp = await axios.get('/api/words', {
-          params: { word: word.wordLiteral },
-        });
-
-        const googleDef = JSON.parse(wordsResp.data.definitionsFromSources['Google Dictionary'].definition)[0];
-        // @ts-ignore
-        word.phonetics = googleDef.phonetics[0].text;
-        // @ts-ignore
-        word.definitions = googleDef.meanings;
-      }),
-    );
-
-    setRowData(words);
   };
 
-  React.useEffect(() => { refreshDataGrid(); });
-
-  const columns: GridColDef[] = [
-    { field: 'wordLiteral', headerName: 'Word', width: 100 },
-    { field: 'phonetics', headerName: 'Phonetics', width: 150 },
-    { field: 'rating', headerName: 'Rating', width: 100 },
-    {
-      field: 'learning', headerName: 'Learning', description: 'Learing this currently?', width: 100,
-    },
-    {
-      field: 'addedAt', type: 'dateTime', headerName: 'Added at', width: 200,
-    },
-    {
-      field: 'definitions',
-      headerName: 'Definition(s)',
-      sortable: false,
-      width: 200,
-      renderCell: (params: GridCellParams) => {
-        const { id, value } = params;
-        return (<WordDefinition wordLiteral={id as string} definitions={value as Definitions} />);
-      },
-    },
-  ];
+  // Batch export words related
+  const [exportDialogOpen, openExportDialog, closeExportDialog] = useFlag();
+  const [exportLink, setExportLink] = React.useState('');
+  const batchExport = () => {
+    const keys = getAllSelectedWords();
+    if (keys.length === 0) return;
+    getMultipleWords(keys)
+      .then((w) => JSON.stringify(w))
+      .then((s) => {
+        setExportLink(`data:text/plain;charset=utf-8,${encodeURIComponent(s)}`);
+        openExportDialog();
+      })
+      .catch((e) => enqueueSnackbar(e, { variant: 'error' }));
+  };
 
   return (
     <Container maxWidth="md" fixed>
-      <Box padding={1}>
+      <Box padding={2}>
+        {/* Title */}
         <Typography color="textPrimary" variant="h2" gutterBottom>
           Manage Words
         </Typography>
 
-        {/* Pannel */}
-        <Box display="flex" flexDirection="row" justifyContent="flex-start" alignItems="center" flexWrap="wrap">
-          <Tooltip title="Add Words" placement="top">
-            <IconButton onClick={openAddWordDialog} className={classes.button}>
-              <AddRounded />
-            </IconButton>
-          </Tooltip>
-          {/* <Tooltip title="Delete Words" placement="top">
-            <IconButton onClick={openDeleteWordDialog} className={classes.button}>
-              <DeleteRounded />
-            </IconButton>
-          </Tooltip> */}
-          <Tooltip title="Refresh" placement="top">
-            <IconButton onClick={refreshDataGrid} className={classes.button}>
-              <RefreshRounded />
-            </IconButton>
-          </Tooltip>
-        </Box>
+        {/* Panel */}
+        <Paper className={classes.toolbar} elevation={0}>
+          <Box
+            className={classes.toolbarElement}
+            display="flex"
+            flexDirection="row"
+            justifyContent="flex-start"
+            alignItems="center"
+            flexWrap="wrap"
+          >
+            <Link href="/user/add">
+              <Button startIcon={<Add />} color="primary">Add Word</Button>
+            </Link>
+            <Button startIcon={<Refresh />} onClick={refresh}>Refresh</Button>
+            <div style={{ flex: 1 }} />
+            <Button startIcon={<LocalLibrary />} color="primary" variant="contained">Learn</Button>
+            <Tooltip title="Export" placement="bottom" onClick={batchExport}>
+              <IconButton><Export /></IconButton>
+            </Tooltip>
+            <Tooltip title="Delete" placement="bottom" onClick={batchDeleteCheck}>
+              <IconButton color="secondary"><Delete /></IconButton>
+            </Tooltip>
+          </Box>
+        </Paper>
 
-        <AddWordsDialog
-          uid={uid}
-          open={addWordDialogOpen}
-          onClose={closeAddWordDialog}
-        />
-        <DeleteWordsDialog
-          uid={uid}
-          open={deleteWordDialogOpen}
-          onClose={closeDeleteWordDialog}
-        />
+        {/* Word List */}
+        <form ref={selectFormRef}>
+          <Grid container spacing={1}>
+            {wordList.map((word) => (
+              <Grid item xs={12} sm={6} md={4} key={word}>
+                <WordDisplayComponent word={word} refresh={refresh} />
+              </Grid>
+            ))}
+          </Grid>
+        </form>
 
-        <div style={{ height: 600, width: '100%' }}>
-          <DataGrid
-            components={{ Toolbar: GridToolbar }}
-            rows={rowData}
-            columns={columns}
-            pageSize={5}
-            checkboxSelection
-          />
-        </div>
+        {/* Batch Delete Prompt. */}
+        <Dialog open={batchDeleteDialogOpen} onClose={closeBatchDeleteDialog}>
+          <DialogTitle>Batch Delete</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              {`Are you sure you want to delete 
+              ${selectedWordList.map((w) => `"${w}"`).join(', ')}?`}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={closeBatchDeleteDialog}>Cancel</Button>
+            <Button color="secondary" onClick={batchDelete}>Delete</Button>
+          </DialogActions>
+        </Dialog>
 
+        <Dialog open={exportDialogOpen} onClose={closeExportDialog}>
+          <DialogTitle>Export</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Your export data is ready.
+            </DialogContentText>
+            <DialogContentText>
+              <MuiLink href={exportLink} download="export.json">Export</MuiLink>
+            </DialogContentText>
+          </DialogContent>
+        </Dialog>
       </Box>
     </Container>
   );

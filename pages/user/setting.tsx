@@ -4,8 +4,9 @@ import {
   TextField, Box, makeStyles, DialogContentText,
 } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
-import withUserSignedIn, { WithUserSignedInProps } from 'src/component/withUserSignedIn';
-import { validateEmailAddress } from 'src/utils/string';
+import { validate as validateEmail } from 'email-validator';
+import withUserSignedIn, { WithUserSignedInProps } from 'src/HOC/withUserSignedIn';
+import { useFlag } from '../../src/lib/hooks';
 
 const userSettingsStyle = makeStyles((theme) => ({
   hr: {
@@ -20,48 +21,29 @@ function UserSettings({ user }: WithUserSignedInProps) {
   const { email, emailVerified, displayName } = user;
 
   const [dialogState, setDialogState] = React.useState({
-    displayNameDialog: false,
     displayNameButton: false,
     newDisplayName: '',
-    emailDialog: false,
     emailButton: false,
     newEmail: '',
-    passwordDialog: false,
     passwordButton: false,
     newPassword: '',
     newPasswordVerify: '',
-    deleteAccountDialog: false,
     deleteAccountButton: false,
     deleteAccountVerify: '',
   });
 
-  const pushErrorNotification = (e: any) => enqueueSnackbar(`Failed to change display name.\n${e}`, { variant: 'error' });
-  const pushSuccessNotification = (s: string) => enqueueSnackbar(s, { variant: 'success' });
+  const [displayNameDialog,
+    openChangeDisplayNameDialog, closeChangeDisplayNameDialog] = useFlag();
+  const [emailDialog, openChangeEmailDialog, closeChangeEmailDialog] = useFlag();
+  const [passwordDialog,
+    openChangePasswordDialog, closeChangePasswordDialog] = useFlag();
+  const [deleteAccountDialog,
+    openDeleteAccountDialog, closeDeleteAccountDialog] = useFlag();
 
-  const openChangeDisplayNameDialog = () => {
-    setDialogState((s) => ({ ...s, displayNameDialog: true }));
+  const pushErrorNotification = (e: any) => {
+    enqueueSnackbar(`Failed to change display name.\n${e}`, { variant: 'error' });
   };
-  const closeChangeDisplayNameDialog = () => {
-    setDialogState((s) => ({ ...s, displayNameDialog: false }));
-  };
-  const openChangeEmailDialog = () => {
-    setDialogState((s) => ({ ...s, emailDialog: true }));
-  };
-  const closeChangeEmailDialog = () => {
-    setDialogState((s) => ({ ...s, emailDialog: false }));
-  };
-  const openChangePasswordDialog = () => {
-    setDialogState((s) => ({ ...s, passwordDialog: true }));
-  };
-  const closeChangePasswordDialog = () => {
-    setDialogState((s) => ({ ...s, passwordDialog: false }));
-  };
-  const openDeleteAccountDialog = () => {
-    setDialogState((s) => ({ ...s, deleteAccountDialog: true }));
-  };
-  const closeDeleteAccountDialog = () => {
-    setDialogState((s) => ({ ...s, deleteAccountDialog: false }));
-  };
+  const pushSuccessNotification = (s: string) => enqueueSnackbar(s, { variant: 'success' });
 
   const onNewDisplayNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newDisplayName = e.currentTarget.value;
@@ -76,7 +58,7 @@ function UserSettings({ user }: WithUserSignedInProps) {
     setDialogState((s) => ({
       ...s,
       newEmail,
-      emailButton: validateEmailAddress(newEmail),
+      emailButton: validateEmail(newEmail),
     }));
   };
   const onNewPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -109,7 +91,7 @@ function UserSettings({ user }: WithUserSignedInProps) {
     user.updateProfile({
       displayName: newDisplayName,
     }).then(() => {
-      pushSuccessNotification(`Successfuly changed display name to "${newDisplayName}".`);
+      pushSuccessNotification(`Successfully changed display name to "${newDisplayName}".`);
       closeChangeDisplayNameDialog();
     }).catch(pushErrorNotification);
   };
@@ -149,7 +131,7 @@ function UserSettings({ user }: WithUserSignedInProps) {
     <Container maxWidth="md" fixed>
       <Box padding={2}>
         {/* Title of the page */}
-        <Typography color="textPrimary" variant="h3" gutterBottom>
+        <Typography color="textPrimary" variant="h2" gutterBottom>
           Account Settings
         </Typography>
 
@@ -158,12 +140,12 @@ function UserSettings({ user }: WithUserSignedInProps) {
           Display Name
         </Typography>
         <Typography color="textSecondary" variant="body1">
-          {displayName}
+          {displayName || 'No display name specified'}
         </Typography>
         <Button variant="text" color="primary" onClick={openChangeDisplayNameDialog}>
           Change Display Name
         </Button>
-        <Dialog open={dialogState.displayNameDialog} onClose={closeChangeDisplayNameDialog}>
+        <Dialog open={displayNameDialog} onClose={closeChangeDisplayNameDialog}>
           <DialogTitle>Change Display Name</DialogTitle>
           <DialogContent>
             <TextField autoFocus onChange={onNewDisplayNameChange} color="primary" name="displayName" placeholder="New display name" type="text" fullWidth />
@@ -184,7 +166,7 @@ function UserSettings({ user }: WithUserSignedInProps) {
           Email
         </Typography>
         <Typography color="textSecondary" variant="body1">
-          { email || 'No email specified'}
+          {email || 'No email specified'}
         </Typography>
         {emailVerified ? (
           <Button variant="text" color="primary" onClick={openChangeEmailDialog}>
@@ -200,7 +182,7 @@ function UserSettings({ user }: WithUserSignedInProps) {
             </Button>
           </>
         )}
-        <Dialog open={dialogState.emailDialog} onClose={closeChangeEmailDialog}>
+        <Dialog open={emailDialog} onClose={closeChangeEmailDialog}>
           <DialogTitle>Change Email</DialogTitle>
           <DialogContent>
             <TextField onChange={onNewEmailChange} autoFocus color="primary" name="email" placeholder="New email address" type="email" fullWidth />
@@ -219,7 +201,7 @@ function UserSettings({ user }: WithUserSignedInProps) {
         <Button variant="text" color="primary" onClick={openChangePasswordDialog}>
           Change Password
         </Button>
-        <Dialog open={dialogState.passwordDialog} onClose={closeChangePasswordDialog}>
+        <Dialog open={passwordDialog} onClose={closeChangePasswordDialog}>
           <DialogTitle>Change Password</DialogTitle>
           <DialogContent>
             <TextField autoFocus onChange={onNewPasswordChange} color="primary" name="password" placeholder="New password" type="password" error={!dialogState.passwordButton} fullWidth />
@@ -236,7 +218,7 @@ function UserSettings({ user }: WithUserSignedInProps) {
         <Button variant="contained" color="secondary" onClick={openDeleteAccountDialog}>
           Delete Account
         </Button>
-        <Dialog open={dialogState.deleteAccountDialog} onClose={closeDeleteAccountDialog}>
+        <Dialog open={deleteAccountDialog} onClose={closeDeleteAccountDialog}>
           <DialogTitle>
             Delete Account
           </DialogTitle>
