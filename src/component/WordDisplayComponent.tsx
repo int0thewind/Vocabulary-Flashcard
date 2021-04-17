@@ -15,7 +15,7 @@ import {
 } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
 import { deleteWord, getAWord } from '../lib/firebase';
-import Word from '../type/Word';
+import { Word } from '../type/Word';
 import { useFlag } from '../lib/hooks';
 
 type Props = {

@@ -13,7 +13,7 @@ import React from 'react';
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
-import Word from '../type/Word';
+import { Word } from '../type/Word';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyA1idIe2_-3X4oL7Z6GV-QOyxVIlZib8MM',

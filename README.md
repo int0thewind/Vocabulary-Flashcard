@@ -23,7 +23,7 @@ Install Java Runtime Environment. Firebase Emulators requires it.
 
 Run `yarn` to install dependencies. 
 
-Setup environment variables by acquiring API keys from Merriam Webster Collegiate Dictionary, Merriam Webster Collegiate Thesaurus, and Oxford Dictionary. Paste API keys in `env.local.sample` and rename it to `env.local`. `env.local` is the place to store secrets in [NextJS](https://nextjs.org/docs/basic-features/environment-variables#loading-environment-variables).
+Setup environment variables by acquiring API keys from Merriam-Webster Collegiate Dictionary, Merriam-ebster Collegiate Thesaurus, and Oxford Dictionary. Paste API keys in `env.local.sample` and rename it to `env.local`. `env.local` is the place to store secrets in [NextJS](https://nextjs.org/docs/basic-features/environment-variables#loading-environment-variables).
 
 ## Start the Development Server
 
