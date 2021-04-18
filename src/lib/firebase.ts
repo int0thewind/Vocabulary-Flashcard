@@ -13,7 +13,7 @@ import React from 'react';
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
-import { Word } from '../type/Word';
+import { Word, WordUpdate } from '../type/Word';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyA1idIe2_-3X4oL7Z6GV-QOyxVIlZib8MM',
@@ -116,11 +116,11 @@ export async function getMultipleWords(words: string[]): Promise<Word[]> {
 }
 
 /** Acquire all words. */
-export async function getAllWordLiteral(): Promise<string[]> {
+export async function getAllWord(): Promise<Word[]> {
   return getUserWordCollection()
     .get()
     .then((snapshot) => snapshot.docs.map(
-      (v) => v.get('literal') as string,
+      (v) => v.data() as Word,
     ));
 }
 
@@ -135,4 +135,12 @@ export async function deleteWord(word: string) {
     .limit(1)
     .get()
     .then((snapshot) => snapshot.docs[0].ref.delete());
+}
+
+export async function updateWord(word: string, wordData: WordUpdate) {
+  return getUserWordCollection()
+    .where('literal', '==', word)
+    .limit(1)
+    .get()
+    .then((snapshot) => snapshot.docs[0].ref.update(wordData));
 }

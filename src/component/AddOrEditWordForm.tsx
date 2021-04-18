@@ -1,3 +1,13 @@
+/**
+ * Add or Edit Word Form (React Component).
+ *
+ * This component is used to edit or add a word,
+ * consumed by `/user/add` page and edit word dialog.
+ *
+ * @author Hanzhi Yin
+ * @since 0.1.0
+ */
+
 import React from 'react';
 import {
   Button, makeStyles, MenuItem, Paper, Select, TextField, Typography,
@@ -5,10 +15,14 @@ import {
 import { Autocomplete } from '@material-ui/lab';
 import { useSnackbar } from 'notistack';
 import firebase from 'firebase/app';
-import { addWord, checkWordExist } from '../lib/firebase';
-import { Word, WordFetch } from '../type/Word';
+import { addWord, checkWordExist, updateWord } from '../lib/firebase';
+import { Word, WordFetch, WordUpdate } from '../type/Word';
 import { useFlag } from '../lib/hooks';
 import { MWQuery } from '../lib/api';
+
+type Props = {
+  word?: Word,
+};
 
 const addWordStyle = makeStyles((theme) => ({
   queryForm: {
@@ -33,7 +47,10 @@ const addWordStyle = makeStyles((theme) => ({
   },
 }));
 
-function AddOrEditWordForm() {
+function AddOrEditWordForm(props: Props) {
+  const { word: wordToDisplay } = props;
+  const isEdit = wordToDisplay !== undefined;
+
   const classes = addWordStyle();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -44,6 +61,22 @@ function AddOrEditWordForm() {
   const sampleRef = React.useRef<HTMLInputElement>(null);
   const etymologyRef = React.useRef<HTMLInputElement>(null);
   const relatedRef = React.useRef<HTMLInputElement>(null);
+
+  const fillInForm = (w?: Word | WordFetch) => {
+    if (!w) return;
+    const {
+      literal: lit, phoneticSymbol, definition, sampleSentence, etymology, related,
+    } = w;
+    if (literalRef.current) literalRef.current.value = lit ?? '';
+    if (phoneticRef.current) phoneticRef.current.value = phoneticSymbol ?? '';
+    if (definitionRef.current) definitionRef.current.value = definition ?? '';
+    if (sampleRef.current) sampleRef.current.value = sampleSentence ?? '';
+    if (etymologyRef.current) etymologyRef.current.value = etymology ?? '';
+    if (relatedRef.current) relatedRef.current.value = related?.join(', ') ?? '';
+  };
+
+  // Fill in previous value if a data object is present.
+  React.useEffect(() => { fillInForm(wordToDisplay); }, [isEdit, wordToDisplay]);
 
   // Query form related
   const [wordSuggestion, setWordSuggestion] = React.useState<string[]>([]);
@@ -63,66 +96,68 @@ function AddOrEditWordForm() {
       MWQuery(literal).then((val) => {
         if (Array.isArray(val)) setWordSuggestion(val);
         else {
-          const {
-            literal: lit, phoneticSymbol, definition, sampleSentence, etymology, related,
-          } = val as WordFetch;
           setWordSuggestion([]);
-          if (literalRef.current) literalRef.current.value = lit ?? '';
-          if (phoneticRef.current) phoneticRef.current.value = phoneticSymbol ?? '';
-          if (definitionRef.current) definitionRef.current.value = definition ?? '';
-          if (sampleRef.current) sampleRef.current.value = sampleSentence ?? '';
-          if (etymologyRef.current) etymologyRef.current.value = etymology ?? '';
-          if (relatedRef.current) relatedRef.current.value = related?.join(', ') ?? '';
+          fillInForm(val);
         }
       });
     }
   };
-
-  // Add word form related.
   const submitAddWordForm = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const data = new FormData(e.currentTarget);
-    const literal = data.get('literal');
-    if (!literal) {
-      enqueueSnackbar('A word must exist', { variant: 'error' });
-      return;
-    }
-    if (!data.get('definition')) {
+    const formData = new FormData(e.currentTarget);
+    const literal = formData.get('literal');
+    if (!formData.get('definition')) {
       enqueueSnackbar('A word must has definition.', { variant: 'error' });
       return;
     }
-    checkWordExist(literal as string).then((cond) => {
-      if (cond) {
-        enqueueSnackbar(`The word "${literal}" has existed.`, { variant: 'error' });
-      } else {
-        const wordData: Word = {
-          literal: literal as string,
-          source: fetchButtonClicked ? source : 'Manual',
-          definition: data.get('definition') as string,
-          phoneticSymbol: data.get('phonetic') as string,
-          sampleSentence: data.get('sampleSentence') as string,
-          etymology: data.get('etymology') as string,
-          related: (data.get('related') as string)
-            .split(',').map((s) => s.trim()),
-          addedAt: firebase.firestore.Timestamp.now(),
-          nextDue: firebase.firestore.Timestamp.now(),
-          prevGapDays: 1,
-        };
-        addWord(wordData).then(() => {
-          enqueueSnackbar(`"${literal}" added.`, { variant: 'success' });
-        }).catch(() => {
-          enqueueSnackbar(`Failed to add word "${literal}"`, { variant: 'error' });
-        });
+    const wordDataUpdate: WordUpdate = {
+      source: fetchButtonClicked ? source : 'Manual',
+      definition: formData.get('definition') as string,
+      phoneticSymbol: formData.get('phonetic') as string,
+      sampleSentence: formData.get('sampleSentence') as string,
+      etymology: formData.get('etymology') as string,
+      related: (formData.get('related') as string)
+        .split(',').map((s) => s.trim()),
+    };
+    if (!isEdit) {
+      if (!literal) {
+        enqueueSnackbar('A word must exist', { variant: 'error' });
+        return;
       }
-    }).catch((error) => {
-      enqueueSnackbar(error, { variant: 'error' });
-    });
+      checkWordExist(literal as string).then((cond) => {
+        if (cond) {
+          enqueueSnackbar(`The word "${literal}" has existed.`, { variant: 'error' });
+        } else {
+          const wordData: Word = {
+            literal: literal as string,
+            ...wordDataUpdate,
+            addedAt: firebase.firestore.Timestamp.now(),
+            nextDue: firebase.firestore.Timestamp.now(),
+            prevGapDays: 1,
+          };
+          addWord(wordData).then(() => {
+            enqueueSnackbar(`"${literal}" added.`, { variant: 'success' });
+          }).catch(() => {
+            enqueueSnackbar(`Failed to add word "${literal}"`, { variant: 'error' });
+          });
+        }
+      }).catch((error) => {
+        enqueueSnackbar(error, { variant: 'error' });
+      });
+    } else {
+      updateWord(literal as string, wordDataUpdate).then(() => {
+        enqueueSnackbar(`"${literal}" updated.`, { variant: 'success' });
+      }).catch((error) => {
+        enqueueSnackbar(error, { variant: 'error' });
+      });
+    }
   };
   const resetAddWordForm = () => setFetchedClickedFalse();
 
   return (
     <>
-      <Paper elevation={3} className={classes.queryFormPaper}>
+      {!isEdit && (
+      <Paper variant="outlined" elevation={3} className={classes.queryFormPaper}>
         <Typography variant="h6" color="textSecondary" gutterBottom>
           Auto Query
         </Typography>
@@ -148,23 +183,26 @@ function AddOrEditWordForm() {
         </Typography>
         )}
       </Paper>
+      )}
 
-      <form
-        className={classes.fillInForm}
-        onSubmit={submitAddWordForm}
-        onReset={resetAddWordForm}
-      >
-        <TextField inputRef={literalRef} name="literal" placeholder="Word Literal" />
+      <form className={classes.fillInForm} onSubmit={submitAddWordForm} onReset={resetAddWordForm}>
+        <TextField InputProps={{ readOnly: isEdit }} inputRef={literalRef} name="literal" placeholder="Word Literal" />
         <TextField inputRef={phoneticRef} name="phonetic" placeholder="Phonetic Symbol" />
         <TextField inputRef={definitionRef} fullWidth multiline rows={3} placeholder="Definition" name="definition" />
         <TextField inputRef={sampleRef} fullWidth multiline rows={2} placeholder="Sample Sentence" name="sampleSentence" />
         <TextField inputRef={etymologyRef} fullWidth multiline rows={2} placeholder="Etymology" name="etymology" />
         <TextField inputRef={relatedRef} fullWidth multiline rows={2} placeholder="Related Words" name="related" />
-        <Button type="submit" color="primary" variant="contained">Add</Button>
+        <Button type="submit" color="primary" variant="contained">
+          {isEdit ? 'Edit' : 'Add'}
+        </Button>
         <Button type="reset">Clear Form</Button>
       </form>
     </>
   );
 }
+
+AddOrEditWordForm.defaultProps = {
+  word: undefined,
+};
 
 export default AddOrEditWordForm;

@@ -14,12 +14,13 @@ import {
   DialogContentText, Checkbox, Paper, makeStyles,
 } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
-import { deleteWord, getAWord } from '../lib/firebase';
+import { deleteWord } from '../lib/firebase';
 import { Word } from '../type/Word';
 import { useFlag } from '../lib/hooks';
+import AddOrEditWordForm from './AddOrEditWordForm';
 
 type Props = {
-  word: string,
+  word: Word,
   refresh: () => void,
 };
 
@@ -44,70 +45,68 @@ const wordDisplayComponentStyle = makeStyles(({
  *
  * Each display component can also be checked, with the `name` attribute to be the word.
  * By putting this component under a HTMLFormElement, word checked state can be tracked.
- *
- * @param word
- * @param refresh
  */
 function WordDisplayComponent({ word, refresh }: Props) {
   const { enqueueSnackbar } = useSnackbar();
   const classes = wordDisplayComponentStyle();
+
   const [wordDialogOpen, openWordDialog, closeWordDialog] = useFlag();
-
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  const [deleteConfirmDialogOpen, _openDeleteConfirmDialog, closeDeleteConfirmDialog] = useFlag();
-  const openDeleteConfirmDialog = () => {
+  const [deleteConfirmDialogOpen, openDeleteConfirmDialog, closeDeleteConfirmDialog] = useFlag();
+  const switchToDeleteConfirmDialog = () => {
     closeWordDialog();
-    _openDeleteConfirmDialog();
+    openDeleteConfirmDialog();
   };
-
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  const [editDialogOpen, _openEditDialog, closeEditDialog] = useFlag();
-  const openEditDialog = () => {
-    closeWordDialog();
-    _openEditDialog();
-  };
-
-  const [wordData, setWordData] = React.useState<Word | null>(null);
-
+  // Delete form is within the dialog lifecycle.
+  // Only refresh the user dashboard page when the deletion is successful.
   const submitToDelete = () => {
-    deleteWord(word).then(() => {
-      enqueueSnackbar(`"${word}" successfully deleted.`, { variant: 'success' });
+    closeDeleteConfirmDialog();
+    deleteWord(word.literal).then(() => {
+      enqueueSnackbar(`"${word.literal}" successfully deleted.`, { variant: 'success' });
       refresh();
     }).catch(() => {
-      enqueueSnackbar(`Failed to delete "${word}".`, { variant: 'error' });
+      enqueueSnackbar(`Failed to delete "${word.literal}".`, { variant: 'error' });
     });
   };
 
-  React.useEffect(() => {
-    getAWord(word).then(setWordData);
-  }, [word]);
+  const [editDialogOpen, openEditDialog, closeEditDialog] = useFlag();
+  const switchToEditDialog = () => {
+    closeWordDialog();
+    openEditDialog();
+  };
+  // Edit form is not within the dialog lifecycle.
+  // To ensure data is always up-to-date, refresh the user dashboard page on close.
+  const endEditProcess = () => {
+    closeEditDialog();
+    refresh();
+  };
 
   return (
     <>
       {/* The word button and checkbox. */}
       <Paper className={classes.wordPaper} elevation={2}>
-        <Checkbox name={word} color="primary" />
+        <Checkbox name={word.literal} color="primary" />
         <ButtonBase onClick={openWordDialog} className={classes.wordButton}>
-          <Typography variant="body1" color="textPrimary">{word}</Typography>
+          <Typography variant="body1" color="textPrimary">{word.literal}</Typography>
         </ButtonBase>
       </Paper>
 
       {/* TODO: Finish word display dialog. */}
       <Dialog open={wordDialogOpen} onClose={closeWordDialog}>
-        <DialogTitle>{word}</DialogTitle>
-        <DialogContent>{JSON.stringify(wordData)}</DialogContent>
+        <DialogTitle>{word.literal}</DialogTitle>
+        <DialogContent>{JSON.stringify(word)}</DialogContent>
         <DialogActions>
-          <Button onClick={openEditDialog}>Edit Word</Button>
-          <Button onClick={openDeleteConfirmDialog} color="secondary">Delete Word</Button>
+          <Button onClick={closeWordDialog}>Close</Button>
+          <Button onClick={switchToEditDialog}>Edit Word</Button>
+          <Button onClick={switchToDeleteConfirmDialog} color="secondary">Delete Word</Button>
         </DialogActions>
       </Dialog>
 
       {/* Word delete confirm dialog */}
       <Dialog open={deleteConfirmDialogOpen} onClose={closeDeleteConfirmDialog}>
-        <DialogTitle>{`Delete ${word}`}</DialogTitle>
+        <DialogTitle>{`Delete ${word.literal}`}</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            {`Are you sure you want to delete "${word}"?`}
+            {`Are you sure you want to delete "${word.literal}"?`}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -116,12 +115,14 @@ function WordDisplayComponent({ word, refresh }: Props) {
         </DialogActions>
       </Dialog>
 
-      {/* TODO: Finish word edit dialog. */}
-      <Dialog open={editDialogOpen} onClose={closeEditDialog}>
-        <DialogTitle>{`Edit "${word}"`}</DialogTitle>
+      {/* Word edit dialog. */}
+      <Dialog open={editDialogOpen} onClose={endEditProcess} scroll="paper">
+        <DialogTitle>{`Edit "${word.literal}"`}</DialogTitle>
+        <DialogContent>
+          <AddOrEditWordForm word={word} />
+        </DialogContent>
         <DialogActions>
-          <Button onClick={closeEditDialog}>Cancel</Button>
-          <Button>Save</Button>
+          <Button onClick={endEditProcess}>Close</Button>
         </DialogActions>
       </Dialog>
     </>

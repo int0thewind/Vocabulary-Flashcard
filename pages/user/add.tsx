@@ -5,7 +5,7 @@ import {
 } from '@material-ui/core';
 import { ArrowBack } from '@material-ui/icons';
 import withUserSignedIn from '../../src/HOC/withUserSignedIn';
-import AddOrEditWordForm from '../../src/component/AddWordForm';
+import AddOrEditWordForm from '../../src/component/AddOrEditWordForm';
 
 function AddWord() {
   return (
