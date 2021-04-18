@@ -11,7 +11,7 @@
 import React from 'react';
 import {
   ButtonBase, Dialog, DialogActions, DialogContent, DialogTitle, Typography, Button,
-  DialogContentText, Checkbox, Paper, makeStyles,
+  DialogContentText, Checkbox, Paper, makeStyles, Box,
 } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
 import { deleteWord } from '../lib/firebase';
@@ -24,7 +24,7 @@ type Props = {
   refresh: () => void,
 };
 
-const wordDisplayComponentStyle = makeStyles(({
+const wordDisplayComponentStyle = makeStyles((theme) => ({
   wordPaper: {
     width: '100%',
     height: '100%',
@@ -34,6 +34,10 @@ const wordDisplayComponentStyle = makeStyles(({
   wordButton: {
     width: '100%',
     height: '100%',
+  },
+  wordDefinition: {
+    paddingTop: theme.spacing(1),
+    paddingBottom: theme.spacing(1),
   },
 }));
 
@@ -90,10 +94,44 @@ function WordDisplayComponent({ word, refresh }: Props) {
         </ButtonBase>
       </Paper>
 
-      {/* TODO: Finish word display dialog. */}
+      {/* Word display dialog. */}
       <Dialog open={wordDialogOpen} onClose={closeWordDialog}>
         <DialogTitle>{word.literal}</DialogTitle>
-        <DialogContent>{JSON.stringify(word)}</DialogContent>
+        <DialogContent>
+          {word.phoneticSymbol && (
+          <Typography variant="h6" color="textSecondary" display="block" gutterBottom>
+            {word.phoneticSymbol}
+          </Typography>
+          )}
+          <Typography color="textPrimary">
+            {word.definition}
+          </Typography>
+          {word.sampleSentence && (
+            <Paper variant="outlined">
+              <Typography>
+                Example:
+              </Typography>
+              <Typography>
+                {word.sampleSentence}
+              </Typography>
+            </Paper>
+          )}
+          {word.etymology && (
+            <Box marginTop={4}>
+              <Typography variant="h6" color="textSecondary">
+                Etymology
+              </Typography>
+              <Typography color="textSecondary">
+                {word.etymology}
+              </Typography>
+            </Box>
+          )}
+          {word.related && (
+            <Box overflow="visible">
+              {word.related.join(', ')}
+            </Box>
+          )}
+        </DialogContent>
         <DialogActions>
           <Button onClick={closeWordDialog}>Close</Button>
           <Button onClick={switchToEditDialog}>Edit Word</Button>
