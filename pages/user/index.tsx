@@ -19,6 +19,7 @@ const userPageStyle = makeStyles((theme) => ({
   toolbarElement: {
     '& > *': { margin: theme.spacing(1) },
   },
+  gridContainer: { marginBottom: theme.spacing(3) },
 }));
 
 function User() {
@@ -112,7 +113,7 @@ function User() {
           <Typography variant="h6" color="error" gutterBottom>
             Due
           </Typography>
-          <Grid container spacing={1}>
+          <Grid container spacing={1} className={classes.gridContainer}>
             {wordList
               .filter((word) => word.nextDue.toDate().getTime() <= Date.now())
               .map((word) => (
@@ -124,7 +125,7 @@ function User() {
           <Typography variant="h6" color="textSecondary" gutterBottom>
             Others
           </Typography>
-          <Grid container spacing={1}>
+          <Grid container spacing={1} className={classes.gridContainer}>
             {wordList
               .filter((word) => word.nextDue.toDate().getTime() > Date.now())
               .map((word) => (

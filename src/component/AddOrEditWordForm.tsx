@@ -193,9 +193,9 @@ function AddOrEditWordForm(props: Props) {
         <TextField inputRef={etymologyRef} fullWidth multiline rows={2} placeholder="Etymology" name="etymology" />
         <TextField inputRef={relatedRef} fullWidth multiline rows={2} placeholder="Related Words" name="related" />
         <Button type="submit" color="primary" variant="contained">
-          {isEdit ? 'Edit' : 'Add'}
+          {isEdit ? 'Update' : 'Add'}
         </Button>
-        <Button type="reset">Clear Form</Button>
+        {!isEdit && <Button type="reset">Clear Form</Button>}
       </form>
     </>
   );
