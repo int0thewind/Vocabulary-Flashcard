@@ -7,6 +7,7 @@ stages:
 build_image:
   stage: build
   script:
+    - echo "NEXT_PUBLIC_MW_DIC=$MW_DIC\nNEXT_PUBLIC_MW_THE=$MW_THE\nNEXT_PUBLIC_OX_DIC=$OX_DIC" >> .env.local
     - docker build -t $DOCKER_IMAGE_TAG .
 
 lint:
