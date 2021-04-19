@@ -7,20 +7,25 @@
  * @since 0.1.0
  */
 
-import React from 'react';
+import { useState } from 'react';
 
 /**
  * Custom React hooks that records a binary variable.
  * It exposes two setters in addition to set the variable true or false.
- *
- * A common usage would be recording a dialog's open or close state.
  */
 export function useFlag(initialValue?: boolean): [boolean, () => void, () => void] {
-  const [flag, setFlag] = React.useState(initialValue ?? false);
+  const [flag, setFlag] = useState(initialValue ?? false);
   const flagOn = () => setFlag(true);
   const flagOff = () => setFlag(false);
   return [flag, flagOn, flagOff];
 }
 
-// Temporary placeholder to suppress ESLint default export error.
-export const temp = 3;
+/**
+ * Custom React hooks that records a binary variable.
+ * It exposes a function to alter the binary variable.
+ */
+export function useToggle(initialValue?: boolean): [boolean, () => void] {
+  const [flag, setFlag] = useState(initialValue ?? false);
+  const toggle = () => setFlag((v) => !v);
+  return [flag, toggle];
+}

@@ -1,5 +1,8 @@
 import firebase from 'firebase/app';
 
+/** Word difficulty while learning. */
+export type WordDifficulty = 'hard' | 'medium' | 'easy';
+
 /** Minified word entry for API query. */
 export interface WordFetch {
   /** The word literal. */
@@ -79,5 +82,5 @@ export interface Word {
 export interface MemoWord {
   word: Word,
   againTimes: number,
-  rating: 'hard' | 'medium' | 'easy' | null
+  rating: WordDifficulty | null
 }
