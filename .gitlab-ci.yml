@@ -14,12 +14,11 @@ lint:
   script:
     - docker run $DOCKER_IMAGE_TAG yarn run lint
 
-unit_test:
-  stage: test
-  script:
-    - docker run $DOCKER_IMAGE_TAG firebase emulators:exec --token $FIREBASE_TOKEN --only firestore 'yarn run test:unit'
+#unit_test:
+#  stage: test
+#  script:
+#    - docker run $DOCKER_IMAGE_TAG firebase emulators:exec --token $FIREBASE_TOKEN --only firestore 'yarn run test:unit'
 
-#TODO: fix e2e tests
 #e2e_test:
 #  stage: test
 #  script:
