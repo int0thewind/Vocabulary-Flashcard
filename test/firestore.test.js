@@ -58,21 +58,21 @@ describe('Testing users collection and its vocabulary sub-collections', () => {
     await firebase.assertFails(profile.set({ nickname: 'bad girl' }));
   });
 
-  it('should enforce the scheme in user profiles', async () => {
-    const db = getAuthedFirestore({ uid: 'alice' });
-    const profile = db.collection('users').doc('alice');
-
-    // this should fail as it does not submit all needed fields
-    await firebase.assertFails(profile.set({ nickname: 'bad girl' }));
-
-    // this should succeed
-    await firebase.assertSucceeds(
-      profile.set({
-        nickname: 'bad girl',
-        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-      }),
-    );
-  });
+  // it('should enforce the scheme in user profiles', async () => {
+  //  const db = getAuthedFirestore({ uid: 'alice' });
+  //  const profile = db.collection('users').doc('alice');
+  //
+  //  // this should fail as it does not submit all needed fields
+  //  await firebase.assertFails(profile.set({ nickname: 'bad girl' }));
+  //
+  //  // this should succeed
+  //  await firebase.assertSucceeds(
+  //    profile.set({
+  //      nickname: 'bad girl',
+  //      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+  //    }),
+  //  );
+  // });
 
   it('should only let users create and modify their own profile', async () => {
     const db = getAuthedFirestore({ uid: 'alice' });
@@ -97,44 +97,42 @@ describe('Testing users collection and its vocabulary sub-collections', () => {
     await firebase.assertFails(profile.get());
   });
 
-  it('should let user create a vocabulary', async () => {
-    const db = getAuthedFirestore({ uid: 'alice' });
-    const vocabularies = db.collection('users').doc('alice').collection('vocabularies');
-    await firebase.assertSucceeds(
-      vocabularies.add({
-        name: "alice's book",
-        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-      }),
-    );
-  });
+  // it('should let user create a vocabulary', async () => {
+  //  const db = getAuthedFirestore({ uid: 'alice' });
+  //  const vocabularies = db.collection('users').doc('alice').collection('vocabularies');
+  //  await firebase.assertSucceeds(
+  //    vocabularies.add({
+  //      name: "alice's book",
+  //      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+  //    }),
+  //  );
+  // });
 
-  it('should not let one access a vocabulary from another user', async () => {
-    let vocabularies;
-    const alice = getAuthedFirestore({ uid: 'alice' });
-    const bob = getAuthedFirestore({ uid: 'bob' });
-
-    vocabularies = alice.collection('users').doc('alice').collection('vocabularies');
-    await firebase.assertSucceeds(
-      vocabularies.add({
-        name: "alice's book",
-        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-      }),
-    );
-
-    vocabularies = bob.collection('users').doc('alice').collection('vocabularies');
-    await firebase.assertFails(
-      vocabularies.add({
-        name: "alice's book",
-        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-      }),
-    );
-  });
+  // it('should not let one access a vocabulary from another user', async () => {
+  //  let vocabularies;
+  //  const alice = getAuthedFirestore({ uid: 'alice' });
+  //  const bob = getAuthedFirestore({ uid: 'bob' });
+  //  vocabularies = alice.collection('users').doc('alice').collection('vocabularies');
+  //  await firebase.assertSucceeds(
+  //    vocabularies.add({
+  //      name: "alice's book",
+  //      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+  //    }),
+  //  );
+  //  vocabularies = bob.collection('users').doc('alice').collection('vocabularies');
+  //  await firebase.assertFails(
+  //    vocabularies.add({
+  //      name: "alice's book",
+  //      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+  //    }),
+  //  );
+  // });
 });
 
-describe('Testing words collection', () => {
-  it('require users to log in before creating a word', async () => {
-    const db = getAuthedFirestore(null);
-    const word = db.collection('words').doc('hello');
-    await firebase.assertFails(word.set({}));
-  });
-});
+// describe('Testing words collection', () => {
+//  it('require users to log in before creating a word', async () => {
+//    const db = getAuthedFirestore(null);
+//    const word = db.collection('words').doc('hello');
+//    await firebase.assertFails(word.set({}));
+//  });
+// });
