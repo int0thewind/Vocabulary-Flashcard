@@ -11,13 +11,14 @@
 import React from 'react';
 import {
   ButtonBase, Dialog, DialogActions, DialogContent, DialogTitle, Typography, Button,
-  DialogContentText, Checkbox, Paper, makeStyles, Box,
+  DialogContentText, Checkbox, Paper, makeStyles,
 } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
 import { deleteWord } from '../lib/firebase';
 import { Word } from '../type/Word';
 import { useFlag } from '../lib/hooks';
 import AddOrEditWordForm from './AddOrEditWordForm';
+import WordInfo from './WordInfo';
 
 type Props = {
   word: Word,
@@ -60,8 +61,8 @@ function WordDisplayComponent({ word, refresh }: Props) {
     closeWordDialog();
     openDeleteConfirmDialog();
   };
-  // Delete form is within the dialog lifecycle.
-  // Only refresh the user dashboard page when the deletion is successful.
+    // Delete form is within the dialog lifecycle.
+    // Only refresh the user dashboard page when the deletion is successful.
   const submitToDelete = () => {
     closeDeleteConfirmDialog();
     deleteWord(word.literal).then(() => {
@@ -77,8 +78,8 @@ function WordDisplayComponent({ word, refresh }: Props) {
     closeWordDialog();
     openEditDialog();
   };
-  // Edit form is not within the dialog lifecycle.
-  // To ensure data is always up-to-date, refresh the user dashboard page on close.
+    // Edit form is not within the dialog lifecycle.
+    // To ensure data is always up-to-date, refresh the user dashboard page on close.
   const endEditProcess = () => {
     closeEditDialog();
     refresh();
@@ -98,39 +99,7 @@ function WordDisplayComponent({ word, refresh }: Props) {
       <Dialog open={wordDialogOpen} onClose={closeWordDialog}>
         <DialogTitle>{word.literal}</DialogTitle>
         <DialogContent>
-          {word.phoneticSymbol && (
-          <Typography variant="h6" color="textSecondary" display="block" gutterBottom>
-            {word.phoneticSymbol}
-          </Typography>
-          )}
-          <Typography color="textPrimary">
-            {word.definition}
-          </Typography>
-          {word.sampleSentence && (
-            <Paper variant="outlined">
-              <Typography>
-                Example:
-              </Typography>
-              <Typography>
-                {word.sampleSentence}
-              </Typography>
-            </Paper>
-          )}
-          {word.etymology && (
-            <Box marginTop={4}>
-              <Typography variant="h6" color="textSecondary">
-                Etymology
-              </Typography>
-              <Typography color="textSecondary">
-                {word.etymology}
-              </Typography>
-            </Box>
-          )}
-          {word.related && (
-            <Box overflow="visible">
-              {word.related.join(', ')}
-            </Box>
-          )}
+          <WordInfo word={word} />
         </DialogContent>
         <DialogActions>
           <Button onClick={closeWordDialog}>Close</Button>
