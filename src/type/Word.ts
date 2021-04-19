@@ -74,3 +74,10 @@ export interface Word {
   /** Last due date gaping days. */
   prevGapDays: number;
 }
+
+/** Word entry type for learning. */
+export interface MemoWord {
+  word: Word,
+  againTimes: number,
+  rating: 'hard' | 'medium' | 'easy' | null
+}
