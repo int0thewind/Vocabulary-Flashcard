@@ -4,16 +4,15 @@ import {
   Tooltip, Typography, IconButton,
 } from '@material-ui/core';
 import { useRouter } from 'next/dist/client/router';
-import {
-  ArrowBack, ArrowRightAlt, Help, LibraryBooks, Shuffle,
-} from '@material-ui/icons';
+import { ArrowBack, Help, LibraryBooks } from '@material-ui/icons';
 import { useSnackbar } from 'notistack';
-import { shuffle as shuffleArray } from 'lodash';
-import { MemoWord, Word, WordDifficulty } from '../../src/type/Word';
+import {
+  WordLearningMemo, Word, WordDifficulty, WordUpdateDue,
+} from '../../src/type/Word';
 import withUserSignedIn from '../../src/HOC/withUserSignedIn';
 import WordInfo from '../../src/component/WordInfo';
 import { useFlag, useToggle } from '../../src/lib/hooks';
-import { updateWord } from '../../src/lib/firebase';
+import { updateWordDueDate } from '../../src/lib/firebase';
 import { clearLearnStorage, readLearnStorage, storeLearnSession } from '../../src/lib/storage';
 import HelpDialog from '../../src/dialog/HelpDialog';
 import { getWordWithNewDue } from '../../src/lib/word';
@@ -34,11 +33,10 @@ function Learn() {
   const { enqueueSnackbar } = useSnackbar();
 
   // states
-  const [wordsLearning, setWordsLearning] = useState<MemoWord[]>([]);
-  const [wordsLearned, setWordsLearned] = useState<MemoWord[]>([]);
+  const [wordsLearning, setWordsLearning] = useState<WordLearningMemo[]>([]);
+  const [wordsLearned, setWordsLearned] = useState<WordLearningMemo[]>([]);
   const [allWordsToLearn, setAllWordsToLearn] = useState<Word[]>([]);
-  const [whetherShowSummary, showSummary, hideSummary] = useFlag();
-  const [isRandom, toggleIsRandom] = useToggle();
+  const [showSummary, setSummaryShown, setSummaryHidden] = useFlag();
   const [helpDialogOpen, openHelpDialog, closeHelpDialog] = useFlag();
 
   // read localStorage to get data
@@ -75,22 +73,26 @@ function Learn() {
     };
   }, [router.events, allWordsToLearn, wordsLearned, wordsLearning]);
 
-  const WordCard = ({ word }: { word: MemoWord }) => {
+  const WordCard = ({ word }: { word: WordLearningMemo }) => {
     const [showWordDetail, toggleShowWordDetail] = useToggle(false);
 
     const updateAndMoveCurrWordToLearned = (newRating: WordDifficulty) => {
       const [currWord, ...rest] = wordsLearning;
-      const updatedCurrWord = { ...currWord };
+      const updatedCurrWord: WordLearningMemo = { ...currWord };
       updatedCurrWord.rating = newRating;
       updatedCurrWord.word = getWordWithNewDue(updatedCurrWord.word, newRating);
 
-      updateWord(updatedCurrWord.word.literal, updatedCurrWord.word).catch(() => {
+      const wordUpdateDue: WordUpdateDue = {
+        nextDue: updatedCurrWord.word.nextDue,
+        prevGapDays: updatedCurrWord.word.prevGapDays,
+      };
+      updateWordDueDate(updatedCurrWord.word.literal, wordUpdateDue).catch(() => {
         enqueueSnackbar(`Failed to update "${updatedCurrWord.word.literal}" to firestore.`,
           { variant: 'warning' });
       });
 
-      setWordsLearning(shuffleArray(rest));
-      setWordsLearned(wordsLearned.concat(updatedCurrWord as MemoWord));
+      setWordsLearning(rest);
+      setWordsLearned(wordsLearned.concat(updatedCurrWord));
     };
 
     const handleHard = () => updateAndMoveCurrWordToLearned('hard');
@@ -100,7 +102,7 @@ function Learn() {
       const [currWord, ...rest] = wordsLearning;
       const updatedCurrWord = { ...currWord };
       updatedCurrWord.againTimes += 1;
-      setWordsLearning([...shuffleArray(rest), updatedCurrWord]);
+      setWordsLearning([...rest, updatedCurrWord]);
     };
 
     // capture keys
@@ -175,25 +177,18 @@ function Learn() {
 
             {wordsLearning.length > 0 && (
               <>
-                <Button
-                  startIcon={isRandom ? <Shuffle /> : <ArrowRightAlt />}
-                  onClick={toggleIsRandom}
-                >
-                  {isRandom ? 'Random' : 'Order'}
-                </Button>
-
                 <Tooltip title="Help">
                   <IconButton onClick={openHelpDialog}>
                     <Help />
                   </IconButton>
                 </Tooltip>
 
-                {!whetherShowSummary ? (
-                  <Button startIcon={<LibraryBooks />} variant="outlined" color="primary" onClick={showSummary}>
+                {!showSummary ? (
+                  <Button startIcon={<LibraryBooks />} variant="outlined" color="primary" onClick={setSummaryShown}>
                     Show Summary
                   </Button>
                 ) : (
-                  <Button startIcon={<ArrowBack />} variant="outlined" color="primary" onClick={hideSummary}>
+                  <Button startIcon={<ArrowBack />} variant="outlined" color="primary" onClick={setSummaryHidden}>
                     Back
                   </Button>
                 )}
@@ -209,7 +204,7 @@ function Learn() {
         </Paper>
 
         {/* Card / Summary */}
-        {wordsLearning.length > 0 && !whetherShowSummary
+        {wordsLearning.length > 0 && !showSummary
           ? <WordCard word={wordsLearning[0]} />
           : <LearnSummary wordsLearned={wordsLearned} wordsLearning={wordsLearning} />}
       </Box>

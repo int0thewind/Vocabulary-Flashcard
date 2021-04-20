@@ -6,8 +6,9 @@
  * @author Gary Liu.
  */
 
-import { Word } from '../type/Word';
-import { LearnSession } from '../type/Learn';
+import { Word, LearnSession } from '../type/Word';
+
+// TODO: Firestore timestamp being converted to JavaScript Date object.
 
 export function createLearnStorage(wordsToLearn: Word[]) {
   window.localStorage.removeItem('LearnSession');

@@ -1,10 +1,10 @@
 import React from 'react';
 import { DataGrid, GridColDef, GridValueGetterParams } from '@material-ui/data-grid';
-import { MemoWord } from '../type/Word';
+import { WordLearningMemo } from '../type/Word';
 
 interface LearnSummaryProps {
-  wordsLearned: MemoWord[]
-  wordsLearning: MemoWord[]
+  wordsLearned: WordLearningMemo[]
+  wordsLearning: WordLearningMemo[]
 }
 
 function LearnSummary({ wordsLearned, wordsLearning }: LearnSummaryProps) {
@@ -13,7 +13,7 @@ function LearnSummary({ wordsLearned, wordsLearning }: LearnSummaryProps) {
       field: 'literal',
       headerName: 'Word',
       width: 150,
-      valueGetter: (params: GridValueGetterParams) => (params.row as MemoWord).word.literal,
+      valueGetter: (params: GridValueGetterParams) => (params.row as WordLearningMemo).word.literal,
     },
     {
       field: 'againTimes',
@@ -32,14 +32,14 @@ function LearnSummary({ wordsLearned, wordsLearning }: LearnSummaryProps) {
       type: 'dateTime',
       width: 200,
       valueGetter: (params: GridValueGetterParams) => new Date(
-        (params.row as MemoWord).word.nextDue.seconds * 1000,
+        (params.row as WordLearningMemo).word.nextDue.seconds * 1000,
       ),
     },
     {
       field: 'gapDays',
       headerName: 'Gap Days',
       width: 150,
-      valueGetter: (params: GridValueGetterParams) => (params.row as MemoWord).word.prevGapDays,
+      valueGetter: (params: GridValueGetterParams) => (params.row as WordLearningMemo).word.prevGapDays,
     },
     {
       field: 'learned',
@@ -47,7 +47,7 @@ function LearnSummary({ wordsLearned, wordsLearning }: LearnSummaryProps) {
       description: 'whether the words are learned in this session',
       width: 125,
       type: 'boolean',
-      valueGetter: (params: GridValueGetterParams) => wordsLearned.includes(params.row as MemoWord),
+      valueGetter: (params: GridValueGetterParams) => wordsLearned.includes(params.row as WordLearningMemo),
     },
   ];
 

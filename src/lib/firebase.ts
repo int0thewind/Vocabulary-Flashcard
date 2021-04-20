@@ -13,7 +13,7 @@ import React from 'react';
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
-import { Word, WordUpdate } from '../type/Word';
+import { Word, WordUpdate, WordUpdateDue } from '../type/Word';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyA1idIe2_-3X4oL7Z6GV-QOyxVIlZib8MM',
@@ -138,6 +138,14 @@ export async function deleteWord(word: string) {
 }
 
 export async function updateWord(word: string, wordData: WordUpdate) {
+  return getUserWordCollection()
+    .where('literal', '==', word)
+    .limit(1)
+    .get()
+    .then((snapshot) => snapshot.docs[0].ref.update(wordData));
+}
+
+export async function updateWordDueDate(word: string, wordData: WordUpdateDue) {
   return getUserWordCollection()
     .where('literal', '==', word)
     .limit(1)
