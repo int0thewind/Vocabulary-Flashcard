@@ -2,9 +2,12 @@ import React from 'react';
 import { Box, Paper, Typography } from '@material-ui/core';
 import { Word } from '../type/Word';
 
-type Props = { word: Word };
+type Props = {
+  word: Word,
+  showDue?: boolean,
+};
 
-export default function WordInfo({ word }: Props) {
+function WordInfo({ word, showDue }: Props) {
   return (
     <>
       {/* Word display dialog. */}
@@ -18,10 +21,10 @@ export default function WordInfo({ word }: Props) {
       </Typography>
       {word.sampleSentence && (
         <Paper variant="outlined">
-          <Typography>
+          <Typography variant="h6" color="textSecondary">
             Example:
           </Typography>
-          <Typography>
+          <Typography color="textSecondary">
             {word.sampleSentence}
           </Typography>
         </Paper>
@@ -41,6 +44,22 @@ export default function WordInfo({ word }: Props) {
           {word.related.join(', ')}
         </Box>
       )}
+      {showDue && (
+        <Box marginTop={4}>
+          <Typography variant="subtitle2" color="textSecondary">
+            {`Added at: ${word.addedAt.toDate().toLocaleDateString()}`}
+          </Typography>
+          <Typography variant="subtitle2" color="textSecondary">
+            {`Next due at: ${word.nextDue.toDate().toLocaleDateString()}`}
+          </Typography>
+        </Box>
+      )}
     </>
   );
 }
+
+WordInfo.defaultProps = {
+  showDue: false,
+};
+
+export default WordInfo;

@@ -1,5 +1,10 @@
 import firebase from 'firebase/app';
 
+// TODO: figure out the best namings! These are too messy.
+
+/** Word difficulty while learning. */
+export type WordDifficulty = 'hard' | 'medium' | 'easy';
+
 /** Minified word entry for API query. */
 export interface WordFetch {
   /** The word literal. */
@@ -42,6 +47,14 @@ export interface WordUpdate {
   related?: string[];
 }
 
+export interface WordUpdateDue {
+  /** When the word should be studied. */
+  nextDue: firebase.firestore.Timestamp;
+
+  /** Last due date gaping days. */
+  prevGapDays: number;
+}
+
 /** Word entry type in each Firebase document. */
 export interface Word {
   /** The word literal. */
@@ -75,9 +88,17 @@ export interface Word {
   prevGapDays: number;
 }
 
-/** Word entry type for learning. */
-export interface MemoWord {
+/** Word learning tracker. */
+export interface WordLearningMemo {
   word: Word,
+
   againTimes: number,
-  rating: 'hard' | 'medium' | 'easy' | null
+
+  rating: WordDifficulty | null
+}
+
+export interface LearnSession {
+  allWordsToLearn: Word[]
+  wordsLearned: WordLearningMemo[]
+  wordsLearning: WordLearningMemo[]
 }

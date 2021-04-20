@@ -99,7 +99,7 @@ function WordDisplayComponent({ word, refresh }: Props) {
       <Dialog open={wordDialogOpen} onClose={closeWordDialog}>
         <DialogTitle>{word.literal}</DialogTitle>
         <DialogContent>
-          <WordInfo word={word} />
+          <WordInfo word={word} showDue />
         </DialogContent>
         <DialogActions>
           <Button onClick={closeWordDialog}>Close</Button>

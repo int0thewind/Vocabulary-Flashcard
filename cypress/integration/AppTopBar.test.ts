@@ -86,7 +86,7 @@ describe('Test AppTopBar behaviors.', () => {
       cy.url().should('not.include', 'user');
 
       // Button displays when user click on drawer button.
-      cy.get('header').get('button').click();
+      cy.get('header').get('button').first().click();
       cy.contains('Dashboard');
       cy.contains('Sign Out');
 
@@ -95,7 +95,7 @@ describe('Test AppTopBar behaviors.', () => {
       cy.url().should('include', 'user');
 
       // Sign out element in the drawer can sign out.
-      cy.get('header').get('button').click();
+      cy.get('header').get('button').first().click();
       cy.get('span:contains("Sign Out")').first().click();
       cy.url().should('not.include', 'user');
     });
