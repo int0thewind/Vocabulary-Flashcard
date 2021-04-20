@@ -35,6 +35,10 @@ export const appUsersCollection = appFirestore.collection('users');
 if (process.env.NODE_ENV !== 'production') {
   appAuth.useEmulator('http://localhost:9099');
   appFirestore.useEmulator('localhost', 8080);
+  appFirestore.settings({
+    experimentalForceLongPolling: true,
+    merge: true,
+  });
 }
 
 type UseFirebaseUserType = [firebase.User | null, boolean, firebase.auth.Error | null];
