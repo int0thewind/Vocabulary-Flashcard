@@ -39,7 +39,9 @@ function LearnSummary({ wordsLearned, wordsLearning }: LearnSummaryProps) {
       field: 'gapDays',
       headerName: 'Gap Days',
       width: 150,
-      valueGetter: (params: GridValueGetterParams) => (params.row as WordLearningMemo).word.prevGapDays,
+      valueGetter: (
+        params: GridValueGetterParams,
+      ) => (params.row as WordLearningMemo).word.prevGapDays,
     },
     {
       field: 'learned',
@@ -47,7 +49,9 @@ function LearnSummary({ wordsLearned, wordsLearning }: LearnSummaryProps) {
       description: 'whether the words are learned in this session',
       width: 125,
       type: 'boolean',
-      valueGetter: (params: GridValueGetterParams) => wordsLearned.includes(params.row as WordLearningMemo),
+      valueGetter: (
+        params: GridValueGetterParams,
+      ) => wordsLearned.includes(params.row as WordLearningMemo),
     },
   ];
 
