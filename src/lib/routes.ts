@@ -14,6 +14,7 @@ type RouteType = {
 
 export const appTopBarRoutesSignedIn: RouteType[] = [
   { caption: 'Dashboard', link: '/user' },
+  { caption: 'Setting', link: '/user/setting' },
   { caption: 'Sign Out', link: '/signout' },
 ];
 

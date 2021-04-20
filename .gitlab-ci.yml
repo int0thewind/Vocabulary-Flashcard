@@ -1,0 +1,40 @@
+stages:
+  - build
+  - lint
+  - test
+  - deploy
+
+build_image:
+  stage: build
+  script:
+    - echo "NEXT_PUBLIC_MW_DIC=$MW_DIC" >> .env.local
+    - echo "NEXT_PUBLIC_MW_THE=$MW_THE" >> .env.local
+    - echo "NEXT_PUBLIC_OX_DIC=$OX_DIC" >> .env.local
+    - docker build -t $DOCKER_IMAGE_TAG .
+
+lint:
+  stage: lint
+  script:
+    - docker run $DOCKER_IMAGE_TAG yarn run lint
+
+#unit_test:
+#  stage: test
+#  script:
+#    - docker run $DOCKER_IMAGE_TAG firebase emulators:exec --token $FIREBASE_TOKEN --only firestore 'yarn run test:unit'
+
+#e2e_test:
+#  stage: test
+#  script:
+#    - docker run my-docker-image firebase emulators:exec --token $FIREBASE_TOKEN --import=firebase-emulators-data 'yarn run dev & yarn run test:e2e'
+
+deploy:
+  stage: deploy
+  only:
+    - dev
+  script:
+    - echo "$DOCKERHUB_TOKEN" | docker login -u hangary --password-stdin
+    - docker push $DOCKER_IMAGE_TAG
+    - ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker login -u hangary -p $DOCKERHUB_TOKEN && docker pull $DOCKER_IMAGE_TAG"
+    - ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker container rm -f app || true"
+    - ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker run -d -v ~/serviceAccountKey.json:/app/serviceAccountKey.json -p 80:3000 --name app $DOCKER_IMAGE_TAG yarn deploy"
+    - echo Now the server is running over $SERVER_IP

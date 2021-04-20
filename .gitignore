@@ -32,3 +32,14 @@ yarn-error.log*
 
 # vercel
 .vercel
+
+# firebase logs
+*-debug.log
+
+# videos
+*.mp4
+cypress/videos
+cypress/screenshots
+
+# firestore-coverage
+firestore-coverage.html
