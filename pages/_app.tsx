@@ -37,6 +37,7 @@ export default function App({ Component, pageProps }: AppProps) {
           href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
         />
         <meta name="theme-color" content={theme.palette.primary.main} />
+        <title>Vocabulary Flashcard</title>
       </Head>
       <ThemeProvider theme={theme}>
         <SnackbarProvider maxSnack={5} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>

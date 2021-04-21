@@ -10,16 +10,14 @@ CS 242 SP21 Final Project, co-developed by Hanzhi Yin and Gary Liu.
 * Test suite: Cypress, Mocha
 * Linter: ESLint
 * CI: Gitlab CI
-* CD: TBD
+* CD: Self-hosted Docker Server
 
 ## Project Setup
 
-Install NodeJS and yarn.
-
-Install [Firebase CLI](https://firebase.google.com/docs/cli).
-On Apple Silicon computers, install version `9.7.0`. Newer versions would break.
-
-Install Java Runtime Environment. Firebase Emulators requires it.
+Install:
+* NodeJS and yarn.
+* [Firebase CLI](https://firebase.google.com/docs/cli).
+* Java Runtime Environment, required by Firebase Emulator
 
 Run `yarn` to install dependencies. 
 
@@ -31,7 +29,7 @@ Run `yarn dev` to start development. Firebase Emulators should also be initiated
 
 ## Firebase Emulators
 
-[Firebase Emulators](https://firebase.google.com/docs/emulator-suite) must be started if not in production. Local emulators data is in `./firebase-emulators-data`. It should be loaded and exported when emulator runs.
+[Firebase Emulators](https://firebase.google.com/docs/emulator-suite) must be started if not in production. Local emulators data is in `./firebase-emulators-data`. It should be loaded when emulator runs.
 
 ```
 firebase emulators:start --import=firebase-emulators-data
