@@ -43,3 +43,8 @@ cypress/screenshots
 
 # firestore-coverage
 firestore-coverage.html
+
+# PWA related
+**/public/workbox-*.js
+**/public/sw.js
+**/public/fallback-*.js
