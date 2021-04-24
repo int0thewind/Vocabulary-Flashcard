@@ -1,0 +1,7 @@
+{
+  "name": "Vocabulary Flashcard",
+  "short_name": "VF",
+  "display": "browser",
+  "scope": "/",
+  "start_url": "/"
+}

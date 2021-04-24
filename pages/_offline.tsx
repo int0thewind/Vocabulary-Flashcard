@@ -1,5 +1,5 @@
 import { Typography } from '@material-ui/core';
-import MiddleCenter from 'src/component/MiddleCenter';
+import MiddleCenter from '../src/component/MiddleCenter';
 
 function Offline() {
   return (
