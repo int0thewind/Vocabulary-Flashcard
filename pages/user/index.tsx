@@ -51,11 +51,16 @@ function User() {
   };
   const batchDelete = () => {
     const tasks = getAllSelectedWords().map((w) => deleteWord(w));
-    Promise.all(tasks).then(() => {
-      enqueueSnackbar('Batch delete successful.', { variant: 'success' });
-      closeBatchDeleteDialog();
-      refresh();
-    }).catch((e) => enqueueSnackbar(e, { variant: 'error' }));
+    Promise.all(tasks)
+      .then(() => {
+        enqueueSnackbar('Batch delete successful.', { variant: 'success' });
+        refresh();
+      })
+      .catch((e) => {
+        enqueueSnackbar(e, { variant: 'error' });
+      });
+    closeBatchDeleteDialog();
+    refresh();
   };
 
   // Batch export words related
