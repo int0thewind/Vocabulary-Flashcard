@@ -2,6 +2,7 @@
   "name": "Vocabulary Flashcard",
   "short_name": "VF",
   "theme_color": "#00796b",
+  "background_color": "#fafafa",
   "display": "fullscreen",
   "orientation": "portrait",
   "scope": "/",

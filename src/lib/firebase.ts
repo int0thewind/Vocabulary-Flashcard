@@ -32,6 +32,8 @@ export const appAuth = firebase.auth();
 export const appFirestore = firebase.firestore();
 export const appUsersCollection = appFirestore.collection('users');
 
+appFirestore.enablePersistence();
+
 if (process.env.NODE_ENV !== 'production') {
   appAuth.useEmulator('http://localhost:9099');
   appFirestore.useEmulator('localhost', 8080);
