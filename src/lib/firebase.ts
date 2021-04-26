@@ -33,8 +33,11 @@ export const appAuth = firebase.auth();
 const appFirestore = firebase.firestore();
 const appUsersCollection = appFirestore.collection('users');
 
-firebase.firestore().enablePersistence()
-  .catch(console.error);
+// ensure the persistent store is only enabled on client side
+if (process.browser) {
+  firebase.firestore().enablePersistence()
+    .catch(console.error);
+}
 
 if (process.env.NODE_ENV !== 'production') {
   appAuth.useEmulator('http://localhost:9099');
