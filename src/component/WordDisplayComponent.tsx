@@ -65,6 +65,7 @@ function WordDisplayComponent({ word, refresh }: Props) {
     // Only refresh the user dashboard page when the deletion is successful.
   const submitToDelete = () => {
     closeDeleteConfirmDialog();
+    refresh();
     deleteWord(word.literal).then(() => {
       enqueueSnackbar(`"${word.literal}" successfully deleted.`, { variant: 'success' });
       refresh();
