@@ -17,6 +17,7 @@ import { Menu } from '@material-ui/icons';
 import { appTopBarRoutesSignedIn as signInRoute, appTopBarRoutesSignedOut as signOutRoute } from '../lib/routes';
 import { useFirebaseUser } from '../lib/firebase';
 import { appTitle } from '../lib/manifest';
+import ConnectionIcon from './ConnectionIndicator';
 
 const appTopBarStyle = makeStyles((theme) => ({
   icon: { marginRight: theme.spacing(2) },
@@ -64,6 +65,9 @@ function AppTopBar() {
 
         {/* Placeholder. Push the rest to the very right. */}
         <div className={classes.placeHolder} />
+
+        {/* Connection Indicator */}
+        {!(loading || error) && <ConnectionIcon />}
 
         {/* Routing buttons for mobile devices. */}
         <Drawer anchor="top" open={drawerOpen} onClose={closeDrawer}>

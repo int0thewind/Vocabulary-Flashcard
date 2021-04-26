@@ -32,7 +32,14 @@ function User() {
   const refresh = () => {
     getAllWord().then((list) => setWordList(list));
   };
-  React.useEffect(() => { refresh(); }, []);
+  React.useEffect(() => {
+    refresh();
+    // refresh per 5 seconds
+    const interval = setInterval(() => {
+      refresh();
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   // Checkbox selected
   // const [selectedWordList, setSelectedWordList] = React.useState<string[]>([]);
