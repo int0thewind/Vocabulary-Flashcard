@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import {
-  Box, Container, IconButton, makeStyles, Typography, Tooltip, Grid, Paper, Dialog,
+  Box, Container, IconButton, makeStyles, Typography, Tooltip, Grid, Dialog,
   Link as MuiLink, DialogTitle, DialogContent, DialogContentText, DialogActions, Button,
 } from '@material-ui/core';
 import {
@@ -9,6 +9,7 @@ import {
 } from '@material-ui/icons';
 import { useSnackbar } from 'notistack';
 import { useRouter } from 'next/dist/client/router';
+import UserToolbar from 'src/component/UserToolbar';
 import withUserSignedIn from '../../src/HOC/withUserSignedIn';
 import { deleteWord, getAllWord, getMultipleWords } from '../../src/lib/firebase';
 import WordDisplayComponent from '../../src/component/WordDisplayComponent';
@@ -17,10 +18,6 @@ import { Word } from '../../src/type/Word';
 import { clearLearnStorage, createLearnStorage, readLearnStorage } from '../../src/lib/storage';
 
 const userPageStyle = makeStyles((theme) => ({
-  toolbar: { marginBottom: theme.spacing(2) },
-  toolbarElement: {
-    '& > *': { margin: theme.spacing(1) },
-  },
   gridContainer: { marginBottom: theme.spacing(3) },
 }));
 
@@ -35,7 +32,14 @@ function User() {
   const refresh = () => {
     getAllWord().then((list) => setWordList(list));
   };
-  React.useEffect(() => { refresh(); }, []);
+  React.useEffect(() => {
+    refresh();
+    // refresh per 5 seconds
+    const interval = setInterval(() => {
+      refresh();
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   // Checkbox selected
   // const [selectedWordList, setSelectedWordList] = React.useState<string[]>([]);
@@ -54,11 +58,16 @@ function User() {
   };
   const batchDelete = () => {
     const tasks = getAllSelectedWords().map((w) => deleteWord(w));
-    Promise.all(tasks).then(() => {
-      enqueueSnackbar('Batch delete successful.', { variant: 'success' });
-      closeBatchDeleteDialog();
-      refresh();
-    }).catch((e) => enqueueSnackbar(e, { variant: 'error' }));
+    Promise.all(tasks)
+      .then(() => {
+        enqueueSnackbar('Batch delete successful.', { variant: 'success' });
+        refresh();
+      })
+      .catch((e) => {
+        enqueueSnackbar(e, { variant: 'error' });
+      });
+    closeBatchDeleteDialog();
+    refresh();
   };
 
   // Batch export words related
@@ -113,36 +122,27 @@ function User() {
         </Typography>
 
         {/* Panel */}
-        <Paper className={classes.toolbar} variant="outlined" elevation={3}>
-          <Box
-            className={classes.toolbarElement}
-            display="flex"
-            flexDirection="row"
-            justifyContent="flex-start"
-            alignItems="center"
-            flexWrap="wrap"
+        <UserToolbar>
+          <Link href="/user/add">
+            <Button startIcon={<Add />} color="primary">Add Word</Button>
+          </Link>
+          <Button startIcon={<Refresh />} onClick={refresh}>Refresh</Button>
+          <div style={{ flex: 1 }} />
+          <Button
+            startIcon={<LocalLibrary />}
+            color="primary"
+            variant="contained"
+            onClick={learn}
           >
-            <Link href="/user/add">
-              <Button startIcon={<Add />} color="primary">Add Word</Button>
-            </Link>
-            <Button startIcon={<Refresh />} onClick={refresh}>Refresh</Button>
-            <div style={{ flex: 1 }} />
-            <Button
-              startIcon={<LocalLibrary />}
-              color="primary"
-              variant="contained"
-              onClick={learn}
-            >
-              Learn
-            </Button>
-            <Tooltip title="Export" placement="bottom" onClick={batchExport}>
-              <IconButton><Export /></IconButton>
-            </Tooltip>
-            <Tooltip title="Delete" placement="bottom" onClick={batchDeleteCheck}>
-              <IconButton color="secondary"><Delete /></IconButton>
-            </Tooltip>
-          </Box>
-        </Paper>
+            Learn
+          </Button>
+          <Tooltip title="Export" placement="bottom" onClick={batchExport}>
+            <IconButton><Export /></IconButton>
+          </Tooltip>
+          <Tooltip title="Delete" placement="bottom" onClick={batchDeleteCheck}>
+            <IconButton color="secondary"><Delete /></IconButton>
+          </Tooltip>
+        </UserToolbar>
 
         {/* Word list */}
         <form ref={selectFormRef}>

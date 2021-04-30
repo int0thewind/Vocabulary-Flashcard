@@ -14,8 +14,10 @@ import {
   ListItem, ListItemText, useTheme, useMediaQuery, makeStyles,
 } from '@material-ui/core';
 import { Menu } from '@material-ui/icons';
-import { appTopBarRoutesSignedIn as signInRoute, appTopBarRoutesSignedOut as signOutRoute } from 'src/lib/routes';
-import { useFirebaseUser } from 'src/lib/firebase';
+import { appTopBarRoutesSignedIn as signInRoute, appTopBarRoutesSignedOut as signOutRoute } from '../lib/routes';
+import { useFirebaseUser } from '../lib/firebase';
+import { appTitle } from '../lib/manifest';
+import ConnectionIcon from './ConnectionIndicator';
 
 const appTopBarStyle = makeStyles((theme) => ({
   icon: { marginRight: theme.spacing(2) },
@@ -57,12 +59,15 @@ function AppTopBar() {
         {/* Title. Clickable. Route to homepage. */}
         <Link href="/">
           <Typography variant="h6" className={classes.pointer}>
-            Vocabulary Flashcard
+            {appTitle}
           </Typography>
         </Link>
 
         {/* Placeholder. Push the rest to the very right. */}
         <div className={classes.placeHolder} />
+
+        {/* Connection Indicator */}
+        {!(loading || error) && <ConnectionIcon />}
 
         {/* Routing buttons for mobile devices. */}
         <Drawer anchor="top" open={drawerOpen} onClose={closeDrawer}>

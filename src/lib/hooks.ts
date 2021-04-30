@@ -7,6 +7,8 @@
  * @since 0.1.0
  */
 
+// TODO: React-use provides lots of other hooks, consider using them.
+
 import { useState } from 'react';
 
 /**

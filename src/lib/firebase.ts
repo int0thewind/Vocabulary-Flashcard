@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /**
  * Firebase Connection Module.
  *
@@ -29,8 +30,14 @@ const firebaseConfig = {
 if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 
 export const appAuth = firebase.auth();
-export const appFirestore = firebase.firestore();
-export const appUsersCollection = appFirestore.collection('users');
+const appFirestore = firebase.firestore();
+const appUsersCollection = appFirestore.collection('users');
+
+// ensure the persistent store is only enabled on client side
+if (process.browser) {
+  firebase.firestore().enablePersistence()
+    .catch(console.error);
+}
 
 if (process.env.NODE_ENV !== 'production') {
   appAuth.useEmulator('http://localhost:9099');
